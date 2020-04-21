@@ -32,7 +32,7 @@ new Dialog({
         let dispoType = html.find('[name="dispo-type"]')[0].value || "none";
         switch (dispoType) {
           case "hostile":
-            token.update({"disposition": 2});
+            token.update({"disposition": -1});
             break;
           case "friendly":
             token.update({"disposition": 1});
