@@ -1,0 +1,184 @@
+/*
+Required Rollable Tables:
+*Wilderness Encounters*
+    coast
+    jungle1
+    jungle2
+    jungle3
+    mountains
+    rivers
+    ruins
+    swamp
+    wasteland
+
+*Other Tables*
+    weather
+    directions
+
+    cache
+    deadexplorers
+
+Cache and Deadexplorers are not mandatory, but if you don't want them search the file for // CACHE LINES or // DEAD EXPLORER LINES and comment out the 2 lines below the comments
+
+Explanation of those tables:
+If you have an encounter table that has the word cache in it, the cache table will be rolled automatically.
+    <br/><span id="cache">The party finds a cache: </span>
+If you have an encounter table that has DeadExplorers in it, the dead explorer table will be rolled automatically.
+    <br/><span id="DeadExplorers">The party finds: </span> 
+
+*/
+
+
+// Macro requires selecting a token to roll the survival check
+
+if (canvas.tokens.controlled.length === 0)
+    return ui.notifications.error("Please select the token of the Navigator!");
+
+// The option values below are the names of your rollable tables for each hex type. If these get changed here you will need to change them in the Survival Check DC section too!
+
+let pace = 'none';
+new Dialog({
+    title: `Hex Crawl Helper`,
+    content: `
+    <form>
+        <div class="form-group">
+            <label>Hex Type:</label>
+            <select id="hex-type" name="hex-type">
+                <option value="coast">Coast</option>
+                <option value="jungle1">Jungle: No Undead</option>
+                <option value="jungle2">Jungle: Lesser Undead</option>
+                <option value="jungle3">Jungle: Greater Undead</option>
+                <option value="mountains">Mountains</option>
+                <option value="rivers">River</option>
+                <option value="ruins">Ruins</option>
+                <option value="swamp">Swamp</option>
+                <option value="wasteland">Wasteland</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Travel Type:</label>
+            <select id="travel-type" name="travel-type">
+                <option value="on-foot">On Foot</option>
+                <option value="canoe">By Canoe</option>
+            </select>
+        </div>
+    </form>
+    `,
+    buttons: {
+        slow: {
+            icon: "<i class='fas fa-user-ninja'></i>",
+            label: `Slow Pace`,
+            callback: () => pace = 'slow'
+        },
+        average: {
+            icon: "<i class='fas fa-hiking'></i>",
+            label: `Average Pace`,
+            callback: () => pace = 'average'
+        },
+        fast: {
+            icon: "<i class='fas fa-running'></i>",
+            label: `Fast Pace`,
+            callback: () => pace = 'fast'
+        }
+    },
+    default: "average",
+    close: html => {
+        // set variables
+        let hexType = html.find('[name="hex-type"]')[0].value;
+        let travelType = html.find('[name="travel-type"]')[0].value;
+        const weathertable = game.tables.entities.find(t => t.name === "weather");
+        const directiontable = game.tables.entities.find(t => t.name === "directions");
+        const cachetable = game.tables.entities.find(t => t.name === "cache");
+        const deadexplorertable = game.tables.entities.find(t => t.name === "deadexplorers");
+        const encountertable = game.tables.entities.find(t => t.name === hexType);
+        let weatherroll = weathertable.roll()[1].text;
+        let lostdirection = directiontable.roll()[1].text;
+        let msgContent = '<strong>Weather</strong> ' + weatherroll + '<br/><br/>';
+        let navigator = Actors.instance.get(canvas.tokens.controlled[0].data.actorId);
+        let wis = navigator.data.data.abilities.wis.mod;
+        let survival = new Roll(`1d20`).roll().total + wis;
+        let cointoss = new Roll(`1d2`).roll().total;
+        let hexesMoved = 1;
+        let encounter = '';
+        let hexText = 'hexes';
+
+        if (travelType === 'canoe') {
+            hexesMoved++;
+        }
+
+        // build pace message and hex movement
+        if (pace === 'slow') {
+            if (cointoss > 1)
+                hexesMoved--;
+            if (hexesMoved === 1)
+                hexText = 'hex';
+            msgContent += '<strong>Slow pace:</strong> Can hide from encounters or approach stealthily.<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+        } else if (pace === 'average') {
+            if (hexesMoved === 1)
+                hexText = 'hex';
+            msgContent += '<strong>Average pace:</strong> For rivers, upstream and downstream have no effect, and waterfalls occur every 10 to 20 miles (requiring portage of canoes).<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+        } else if (pace === 'fast') {
+            if (cointoss > 1)
+                hexesMoved++;
+            if (hexesMoved === 1)
+                hexText = 'hex';
+            msgContent += '<strong>Fast pace:</strong> -5 to passive Perception.<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+        } else {
+            return;
+        }
+
+        // Survival Check DC for each hex type. If selected token rolls under DC the party is lost!
+        if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15))
+            msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostdirection + '<br/><br/>';
+
+        msgContent += '<strong>Morning Encounter:</strong> ';
+
+        if (new Roll(`1d20`).roll().total > 15) {
+            encounter = encountertable.roll()[1].text;
+            msgContent += encounter;
+            // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
+            if (encounter.indexOf('cache') > -1)
+                msgContent += cachetable.roll()[1].text + '<br/><br/>';
+            // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
+            if (encounter.indexOf('DeadExplorers') > -1)
+                msgContent += deadexplorertable.roll()[1].text + '<br/><br/>';
+            msgContent += '<strong>Afternoon Encounter:</strong> ';
+        } else {
+            msgContent += 'None.<br/><br/><strong>Afternoon Encounter:</strong> ';
+        }
+
+        if (new Roll(`1d20`).roll().total > 15) {
+            encounter = encountertable.roll()[1].text;
+            msgContent += encounter;
+            // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
+            if (encounter.indexOf('cache') > -1)
+                msgContent += cachetable.roll()[1].text + '<br/><br/>';
+            // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
+            if (encounter.indexOf('DeadExplorers') > -1)
+                msgContent += deadexplorertable.roll()[1].text + '<br/><br/>';
+            msgContent += '<strong>Evening Encounter:</strong> ';
+        } else {
+            msgContent += 'None.<br/><br/><strong>Evening Encounter:</strong> ';
+        }
+
+        if (new Roll(`1d20`).roll().total > 15) {
+            encounter = encountertable.roll()[1].text;
+            msgContent += encounter;
+            // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
+            if (encounter.indexOf('cache') > -1)
+                msgContent += cachetable.roll()[1].text + '<br/><br/>';
+            // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
+            if (encounter.indexOf('DeadExplorers') > -1)
+                msgContent += deadexplorertable.roll()[1].text + '<br/><br/>';
+        } else {
+            msgContent += 'None.';
+        }
+
+        // create the message
+        let chatData = {
+            content: msgContent,
+            whisper: game.users.entities.filter(u => u.isGM).map(u => u._id)
+        };
+        ChatMessage.create(chatData, {});
+    }
+}).render(true);
