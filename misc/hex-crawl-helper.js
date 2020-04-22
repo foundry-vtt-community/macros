@@ -114,6 +114,7 @@ new Dialog({
             if (hexesMoved === 1)
                 hexText = 'hex';
             msgContent += '<strong>Slow pace:</strong> Can hide from encounters or approach stealthily.<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+            survival += 5;
         } else if (pace === 'average') {
             if (hexesMoved === 1)
                 hexText = 'hex';
@@ -124,6 +125,7 @@ new Dialog({
             if (hexesMoved === 1)
                 hexText = 'hex';
             msgContent += '<strong>Fast pace:</strong> -5 to passive Perception.<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+            survival -= 5;
         } else {
             return;
         }
