@@ -86,18 +86,19 @@ new Dialog({
         // set variables
         let hexType = html.find('[name="hex-type"]')[0].value;
         let travelType = html.find('[name="travel-type"]')[0].value;
-        const weathertable = game.tables.entities.find(t => t.name === "weather");
-        const directiontable = game.tables.entities.find(t => t.name === "directions");
-        const cachetable = game.tables.entities.find(t => t.name === "cache");
-        const deadexplorertable = game.tables.entities.find(t => t.name === "deadexplorers");
-        const encountertable = game.tables.entities.find(t => t.name === hexType);
-        let weatherroll = weathertable.roll()[1].text;
-        let lostdirection = directiontable.roll()[1].text;
-        let msgContent = '<strong>Weather</strong> ' + weatherroll + '<br/><br/>';
+        const weatherTable = game.tables.entities.find(t => t.name === "weather");
+        const directionTable = game.tables.entities.find(t => t.name === "directions");
+        const cacheTable = game.tables.entities.find(t => t.name === "cache");
+        const deadExplorerTable = game.tables.entities.find(t => t.name === "deadexplorers");
+        const encounterTable = game.tables.entities.find(t => t.name === hexType);
+        let weatherRoll = weatherTable.roll()[1].text;
+        let lostDirection = directionTable.roll()[1].text;
+        let msgContent = '<strong>Weather</strong> ' + weatherRoll + '<br/><br/>';
         let navigator = Actors.instance.get(canvas.tokens.controlled[0].data.actorId);
         let wis = navigator.data.data.abilities.wis.mod;
         let survival = new Roll(`1d20`).roll().total + wis;
-        let cointoss = new Roll(`1d2`).roll().total;
+        let slowPace = new Roll(`1d4`).roll().total;
+        let fastPace = new Roll(`1d2`).roll().total;
         let hexesMoved = 1;
         let encounter = '';
         let hexText = 'hexes';
@@ -108,68 +109,70 @@ new Dialog({
 
         // build pace message and hex movement
         if (pace === 'slow') {
-            if (cointoss > 1)
+            if (slowPace === 1)
                 hexesMoved--;
             if (hexesMoved === 1)
                 hexText = 'hex';
             msgContent += '<strong>Slow pace:</strong> Can hide from encounters or approach stealthily.<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+            survival += 5;
         } else if (pace === 'average') {
             if (hexesMoved === 1)
                 hexText = 'hex';
             msgContent += '<strong>Average pace:</strong> For rivers, upstream and downstream have no effect, and waterfalls occur every 10 to 20 miles (requiring portage of canoes).<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
         } else if (pace === 'fast') {
-            if (cointoss > 1)
+            if (fastPace === 1)
                 hexesMoved++;
             if (hexesMoved === 1)
                 hexText = 'hex';
             msgContent += '<strong>Fast pace:</strong> -5 to passive Perception.<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
+            survival -= 5;
         } else {
             return;
         }
 
         // Survival Check DC for each hex type. If selected token rolls under DC the party is lost!
         if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15))
-            msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostdirection + '<br/><br/>';
+            msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostDirection + '<br/><br/>';
 
         msgContent += '<strong>Morning Encounter:</strong> ';
 
         if (new Roll(`1d20`).roll().total > 15) {
-            encounter = encountertable.roll()[1].text;
+            encounter = encounterTable.roll()[1].text;
             msgContent += encounter;
             // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
             if (encounter.indexOf('cache') > -1)
-                msgContent += cachetable.roll()[1].text + '<br/><br/>';
+                msgContent += cacheTable.roll()[1].text + '<br/><br/>';
             // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
             if (encounter.indexOf('DeadExplorers') > -1)
-                msgContent += deadexplorertable.roll()[1].text + '<br/><br/>';
+                msgContent += deadExplorerTable.roll()[1].text + '<br/><br/>';
             msgContent += '<strong>Afternoon Encounter:</strong> ';
         } else {
             msgContent += 'None.<br/><br/><strong>Afternoon Encounter:</strong> ';
         }
 
         if (new Roll(`1d20`).roll().total > 15) {
-            encounter = encountertable.roll()[1].text;
+            encounter = encounterTable.roll()[1].text;
             msgContent += encounter;
             // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
             if (encounter.indexOf('cache') > -1)
-                msgContent += cachetable.roll()[1].text + '<br/><br/>';
+                msgContent += cacheTable.roll()[1].text + '<br/><br/>';
             // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
             if (encounter.indexOf('DeadExplorers') > -1)
-                msgContent += deadexplorertable.roll()[1].text + '<br/><br/>';
+                msgContent += deadExplorerTable.roll()[1].text + '<br/><br/>';
             msgContent += '<strong>Evening Encounter:</strong> ';
         } else {
             msgContent += 'None.<br/><br/><strong>Evening Encounter:</strong> ';
         }
 
         if (new Roll(`1d20`).roll().total > 15) {
-            encounter = encountertable.roll()[1].text;
+            encounter = encounterTable.roll()[1].text;
             msgContent += encounter;
             // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
             if (encounter.indexOf('cache') > -1)
-                msgContent += cachetable.roll()[1].text + '<br/><br/>';
+                msgContent += cacheTable.roll()[1].text + '<br/><br/>';
             // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
             if (encounter.indexOf('DeadExplorers') > -1)
-                msgContent += deadexplorertable.roll()[1].text + '<br/><br/>';
+                msgContent += deadExplorerTable.roll()[1].text + '<br/><br/>';
         } else {
             msgContent += 'None.';
         }
