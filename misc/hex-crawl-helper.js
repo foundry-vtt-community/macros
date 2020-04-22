@@ -97,7 +97,8 @@ new Dialog({
         let navigator = Actors.instance.get(canvas.tokens.controlled[0].data.actorId);
         let wis = navigator.data.data.abilities.wis.mod;
         let survival = new Roll(`1d20`).roll().total + wis;
-        let extraHex = new Roll(`1d4`).roll().total;
+        let slowPace = new Roll(`1d4`).roll().total;
+        let fastPace = new Roll(`1d2`).roll().total;
         let hexesMoved = 1;
         let encounter = '';
         let hexText = 'hexes';
@@ -108,7 +109,7 @@ new Dialog({
 
         // build pace message and hex movement
         if (pace === 'slow') {
-            if (extraHex === 1)
+            if (slowPace === 1)
                 hexesMoved--;
             if (hexesMoved === 1)
                 hexText = 'hex';
@@ -118,7 +119,7 @@ new Dialog({
                 hexText = 'hex';
             msgContent += '<strong>Average pace:</strong> For rivers, upstream and downstream have no effect, and waterfalls occur every 10 to 20 miles (requiring portage of canoes).<br/><br/><strong>Party can move:</strong> ' + hexesMoved + ' ' + hexText + '.<br/><br/>';
         } else if (pace === 'fast') {
-            if (extraHex === 1)
+            if (fastPace === 1)
                 hexesMoved++;
             if (hexesMoved === 1)
                 hexText = 'hex';
