@@ -1,3 +1,5 @@
+// Maco requires https://www.vttassets.com/modules/vtta-dndbeyond with character sheets linked!
+
 if (!game.user.character)
     return ui.notifications.error("You must first have a character assigned to your user!");
 
