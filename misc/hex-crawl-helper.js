@@ -26,6 +26,10 @@ If you have an encounter table that has the word cache in it, the cache table wi
 If you have an encounter table that has DeadExplorers in it, the dead explorer table will be rolled automatically.
     <br/><span id="DeadExplorers">The party finds: </span> 
 
+
+You can have an automatic moving "Actual Location" Marker by creating a Token named "Actual Location" and placing it on your hex grid.
+This will move if the players are "Lost". If the players are not lost it will not move.
+
 */
 
 
@@ -33,6 +37,13 @@ If you have an encounter table that has DeadExplorers in it, the dead explorer t
 
 if (canvas.tokens.controlled.length === 0)
     return ui.notifications.error("Please select the token of the Navigator!");
+
+const locationMarker = canvas.scene.data.tokens.find(a => a.name === 'Actual Location');
+
+const gridSize = canvas.grid.size;
+const vertical = gridSize * 0.866666;
+const diagVertical = gridSize * 0.433333;
+const diagHorizontal = gridSize * 0.75;
 
 // The option values below are the names of your rollable tables for each hex type. If these get changed here you will need to change them in the Survival Check DC section too!
 
@@ -133,52 +144,54 @@ new Dialog({
         // Survival Check DC for each hex type. If selected token rolls under DC the party is lost!
         if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15)) {
             msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostDirection + '<br/><br/>';
-            const locToken = canvas.tokens.get(canvas.scene.data.tokens.find(a => a.name === 'Actual Location')[0]._id);
-            switch (lostDirection) {
-                case 'South':
-                    locToken.update({
-                        x: locToken.x,
-                        y: locToken.y + (130 * hexesMoved)
-                    });
-                    break;
+            if (locationMarker) {
+                const locToken = canvas.tokens.get(locationMarker._id);
+                switch (lostDirection) {
+                    case 'South':
+                        locToken.update({
+                            x: locToken.x,
+                            y: locToken.y + (vertical * hexesMoved)
+                        });
+                        break;
 
-                case 'Southwest':
-                    locToken.update({
-                        x: locToken.x - (112.5 * hexesMoved),
-                        y: locToken.y + (65 * hexesMoved)
-                    });
-                    break;
+                    case 'Southwest':
+                        locToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
 
-                case 'Southeast':
-                    locToken.update({
-                        x: locToken.x + (112.5 * hexesMoved),
-                        y: locToken.y + (65 * hexesMoved)
-                    });
-                    break;
+                    case 'Southeast':
+                        locToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
 
-                case 'North':
-                    locToken.update({
-                        x: locToken.x,
-                        y: locToken.y - (130 * hexesMoved)
-                    });
-                    break;
+                    case 'North':
+                        locToken.update({
+                            x: locToken.x,
+                            y: locToken.y - (vertical * hexesMoved)
+                        });
+                        break;
 
-                case 'Northwest':
-                    locToken.update({
-                        x: locToken.x - (112.5 * hexesMoved),
-                        y: locToken.y - (65 * hexesMoved)
-                    });
-                    break;
+                    case 'Northwest':
+                        locToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
 
-                case 'Northeast':
-                    locToken.update({
-                        x: locToken.x + (112.5 * hexesMoved),
-                        y: locToken.y - (65 * hexesMoved)
-                    });
-                    break;
+                    case 'Northeast':
+                        locToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
 
