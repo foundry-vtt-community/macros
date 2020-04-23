@@ -131,8 +131,56 @@ new Dialog({
         }
 
         // Survival Check DC for each hex type. If selected token rolls under DC the party is lost!
-        if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15))
+        if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15)) {
             msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostDirection + '<br/><br/>';
+            const locToken = canvas.tokens.get(canvas.scene.data.tokens.find(a => a.name === 'Actual Location')[0]._id);
+            switch (lostDirection) {
+                case 'South':
+                    locToken.update({
+                        x: locToken.x,
+                        y: locToken.y + (130 * hexesMoved)
+                    });
+                    break;
+
+                case 'Southwest':
+                    locToken.update({
+                        x: locToken.x - (112.5 * hexesMoved),
+                        y: locToken.y + (65 * hexesMoved)
+                    });
+                    break;
+
+                case 'Southeast':
+                    locToken.update({
+                        x: locToken.x + (112.5 * hexesMoved),
+                        y: locToken.y + (65 * hexesMoved)
+                    });
+                    break;
+
+                case 'North':
+                    locToken.update({
+                        x: locToken.x,
+                        y: locToken.y - (130 * hexesMoved)
+                    });
+                    break;
+
+                case 'Northwest':
+                    locToken.update({
+                        x: locToken.x - (112.5 * hexesMoved),
+                        y: locToken.y - (65 * hexesMoved)
+                    });
+                    break;
+
+                case 'Northeast':
+                    locToken.update({
+                        x: locToken.x + (112.5 * hexesMoved),
+                        y: locToken.y - (65 * hexesMoved)
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
         msgContent += '<strong>Morning Encounter:</strong> ';
 
