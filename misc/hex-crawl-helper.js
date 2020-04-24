@@ -26,6 +26,12 @@ If you have an encounter table that has the word cache in it, the cache table wi
 If you have an encounter table that has DeadExplorers in it, the dead explorer table will be rolled automatically.
     <br/><span id="DeadExplorers">The party finds: </span> 
 
+
+You can have an automatic moving "Actual Location" Marker by creating a Token named "Actual Location" and placing it on your hex grid.
+This will move if the players are "Lost". If the players are not lost it will not move.
+
+
+
 */
 
 
@@ -33,6 +39,14 @@ If you have an encounter table that has DeadExplorers in it, the dead explorer t
 
 if (canvas.tokens.controlled.length === 0)
     return ui.notifications.error("Please select the token of the Navigator!");
+
+const playerMarker = canvas.scene.data.tokens.find(a => a.name === 'Player Location');
+const locationMarker = canvas.scene.data.tokens.find(a => a.name === 'Actual Location');
+
+const gridSize = canvas.grid.size;
+const vertical = gridSize * 0.866666;
+const diagVertical = gridSize * 0.433333;
+const diagHorizontal = gridSize * 0.75;
 
 // The option values below are the names of your rollable tables for each hex type. If these get changed here you will need to change them in the Survival Check DC section too!
 
@@ -53,6 +67,17 @@ new Dialog({
                 <option value="ruins">Ruins</option>
                 <option value="swamp">Swamp</option>
                 <option value="wasteland">Wasteland</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Travel Direction:</label>
+            <select id="travel-direction" name="travel-direction">
+                <option value="North">North</option>
+                <option value="Northeast">Northeast</option>
+                <option value="Southeast">Southeast</option>
+                <option value="South">South</option>
+                <option value="Southwest">Southwest</option>
+                <option value="Northwest">Northwest</option>
             </select>
         </div>
         <div class="form-group">
@@ -86,6 +111,7 @@ new Dialog({
         // set variables
         let hexType = html.find('[name="hex-type"]')[0].value;
         let travelType = html.find('[name="travel-type"]')[0].value;
+        let playerDirection = html.find('[name="travel-direction"]')[0].value;
         const weatherTable = game.tables.entities.find(t => t.name === "weather");
         const directionTable = game.tables.entities.find(t => t.name === "directions");
         const cacheTable = game.tables.entities.find(t => t.name === "cache");
@@ -131,8 +157,183 @@ new Dialog({
         }
 
         // Survival Check DC for each hex type. If selected token rolls under DC the party is lost!
-        if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15))
+        if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15)) {
             msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostDirection + '<br/><br/>';
+            if (locationMarker) {
+                const locToken = canvas.tokens.get(locationMarker._id);
+                switch (lostDirection) {
+                    case 'South':
+                        locToken.update({
+                            x: locToken.x,
+                            y: locToken.y + (vertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Southwest':
+                        locToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Southeast':
+                        locToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'North':
+                        locToken.update({
+                            x: locToken.x,
+                            y: locToken.y - (vertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Northwest':
+                        locToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Northeast':
+                        locToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            if (playerMarker) {
+                const playerToken = canvas.tokens.get(playerMarker._id);
+                switch (playerDirection) {
+                    case 'South':
+                        playerToken.update({
+                            x: playerToken.x,
+                            y: playerToken.y + (vertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Southwest':
+                        playerToken.update({
+                            x: playerToken.x - (diagHorizontal * hexesMoved),
+                            y: playerToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Southeast':
+                        playerToken.update({
+                            x: playerToken.x + (diagHorizontal * hexesMoved),
+                            y: playerToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'North':
+                        playerToken.update({
+                            x: playerToken.x,
+                            y: playerToken.y - (vertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Northwest':
+                        playerToken.update({
+                            x: playerToken.x - (diagHorizontal * hexesMoved),
+                            y: playerToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Northeast':
+                        playerToken.update({
+                            x: playerToken.x + (diagHorizontal * hexesMoved),
+                            y: playerToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        } else {
+            if (playerMarker && locationMarker) {
+                const locToken = canvas.tokens.get(locationMarker._id);
+                const playerToken = canvas.tokens.get(playerMarker._id);
+
+                switch (playerDirection) {
+                    case 'South':
+                        playerToken.update({
+                            x: locToken.x,
+                            y: locToken.y + (vertical * hexesMoved)
+                        });
+                        locToken.update({
+                            x: locToken.x,
+                            y: locToken.y + (vertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Southwest':
+                        playerToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        locToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Southeast':
+                        playerToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        locToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y + (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'North':
+                        playerToken.update({
+                            x: locToken.x,
+                            y: locToken.y - (vertical * hexesMoved)
+                        });
+                        locToken.update({
+                            x: locToken.x,
+                            y: locToken.y - (vertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Northwest':
+                        playerToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        locToken.update({
+                            x: locToken.x - (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    case 'Northeast':
+                        playerToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        locToken.update({
+                            x: locToken.x + (diagHorizontal * hexesMoved),
+                            y: locToken.y - (diagVertical * hexesMoved)
+                        });
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
 
         msgContent += '<strong>Morning Encounter:</strong> ';
 
