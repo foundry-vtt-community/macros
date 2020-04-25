@@ -26,7 +26,7 @@ let dialogEditor = new Dialog({
     bullseye: {
       label: `Bullseye Lantern`,
       callback: () => {
-        token.update({"dimLight": 120, "brightLight": 60, "sightAngle": 20,});
+        token.update({"dimLight": 120, "brightLight": 60, "sightAngle": 45,});
         dialogEditor.render(true);
       }
     },
