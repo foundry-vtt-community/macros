@@ -6,7 +6,7 @@ async function start() {
   for ( let token of canvas.tokens.controlled) {      
     if (token.inCombat === false){
       // Change 'rollNPC' to 'rollAll' if you want to roll for your players as well.
-      await token.toggleCombat().then(() => game.combat.rollNPC());
+      await token.toggleCombat().then(() => game.combat.rollNPC(null, {rollMode: 'gmroll'}));
     }
   }
 }
