@@ -23,7 +23,7 @@ for (const selectedActor of validActors) {
   const uniqueActor = {};
   const caughtBy = canvas.tokens.placeables
     .filter((token) => { // filter out duplicate token names. ie: we assume all goblins have the same passive perception
-      if (uniqueActor[token.actor.name]) {
+      if (!token.actor || uniqueActor[token.actor.name]) {
         return false;
       }
       uniqueActor[token.actor.name] = true;
