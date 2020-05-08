@@ -35,6 +35,7 @@ function checkSurprise(playerActors, enemyActors) {
 
   // Displays a popup and handles the input. Thanks to PaperPunk for this.
   let calculateSurprise = false;
+
   new Dialog({
     title: `What Group is Sneaking?`,
     content: `
@@ -68,7 +69,16 @@ function checkSurprise(playerActors, enemyActors) {
     // Handle the input
     close: (html) => {
       if (calculateSurprise) {
-        let sneakingGroup = html.find('[name="sneaking-group"]')[0].value;
+        // Determine which group is sneaking based on the user's selection
+        const sneakyOptions = html.find('[name="sneaking-group"]'); 
+        let sneakingGroup;
+        for (const option of sneakyOptions) {
+          if(option.checked) {
+            sneakingGroup = option.value;
+            break;
+          }
+        }      
+
         let results = ``;
         let lowestStealthCheck = 0;
 
@@ -83,7 +93,9 @@ function checkSurprise(playerActors, enemyActors) {
 
           case "party":
             lowestStealthCheck = rollStealth(playerActors);
-            results = calculateSurpriseResults(lowestStealthCheck, enemyActors);
+            results = calculateSurpriseResults(
+              lowestStealthCheck, 
+              enemyActors);
             break;
         }
 
@@ -136,7 +148,7 @@ function getPlayerActors() {
 function getEnemyActors() {
   // Prioritize selected hostile enemies
   const controlledEnemyActors = canvas.tokens.controlled
-    .filter((ec) => ec.data.disposition === -1)
+    .filter((ec) => ec.actor.isPC === false && ec.data.disposition === -1)
     .map((a) => a.actor);
 
   if (controlledEnemyActors.length > 0) {
