@@ -2,7 +2,7 @@
     "name": "foundry_community_macros",
     "title": "Foundry Community Macros",
     "description": "<p>This is a collection of Macros added by the FoundryVTT Community!<br><br>You can add your own macros by making a pull request here: https://github.com/foundry-vtt-community/macros</p>",
-    "version": "0.2",
+    "version": "0.3",
     "author": "CyberPathogen",
     "packs": [
         {
@@ -13,21 +13,21 @@
             "entity": "Macro"
         },
         {
-            "name": "ommunity-macros-item",
+            "name": "community-macros-item",
             "label": "FVTT Community Macros - Item",
             "path": "packs/macros-item.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
         },
         {
-            "name": "ommunity-macros-misc",
+            "name": "community-macros-misc",
             "label": "FVTT Community Macros - MISC",
             "path": "packs/macros-misc.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
         },
         {
-            "name": "ommunity-macros-roll",
+            "name": "community-macros-roll",
             "label": "FVTT Community Macros - Roll",
             "path": "packs/macros-roll.db",
             "module": "foundry_community_macros",
@@ -36,7 +36,8 @@
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
     "manifest": "https://github.com/foundry-vtt-community/macros/master/module.json",
-    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.2.zip",
+    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.3.zip",
     "socket": true,
-    "minimumCoreVersion": "0.5.4"
+    "minimumCoreVersion": "0.5.5",
+    "compatibleCoreVersion": "0.5.5"
 }
