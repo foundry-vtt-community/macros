@@ -14,7 +14,7 @@ As GM go to the Manage Modules options menu in your World Settings tab then enab
 
 This module adds all of the community modules as a Compendium Pack called **FVTT Community Macros**.
 
-You can open this pack and drag macros you want to the macro toolbar at the bottom of the screen.
+You can open this pack, right click and click on import the macros you want. You can then add these macros to the macro toolbar at the bottom of the screen.
 
 ## Development/Contributing
 
