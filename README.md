@@ -5,7 +5,8 @@ Foundry macros community-contributed macros are noted here and merged into the F
 ## Installation
 
 You can now install this module automatically by specifying the following public module URL : 
-`https://github.com/foundry-vtt-community/macros/master/module.json`
+
+`https://raw.githubusercontent.com/foundry-vtt-community/macros/master/module.json`
 
 As GM go to the Manage Modules options menu in your World Settings tab then enable the Foundry Community Macros module.
 
