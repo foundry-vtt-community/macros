@@ -32,6 +32,13 @@
             "path": "packs/macros-roll.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
+        },
+        {
+            "name": "community-macros-token",
+            "label": "FVTT Community Macros - Token",
+            "path": "packs/macros-token.db",
+            "module": "foundry_community_macros",
+            "entity": "Macro"
         }
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
