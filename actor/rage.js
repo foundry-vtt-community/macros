@@ -108,6 +108,10 @@ if (actor !== undefined && actor !== null) {
 					ui.notifications.warn(`${actor.name} does not have any rage left, time for a rest!`);
 					return;
 				}
+				if (actor.sheet.rendered) {
+					// Update the actor sheet if it is currently open
+					actor.render(true);
+				}
 			}
 
 			chatMsg = `${actor.name} is RAAAAAGING!`;
