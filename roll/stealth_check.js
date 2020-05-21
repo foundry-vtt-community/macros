@@ -9,30 +9,33 @@ if (actors.length < 1) {
     }
   });
 }
+
 const validActors = actors.filter(actor => actor != null);
 
+// roll for every actor
 let messageContent = 'pp = passive perception<br>';
 
-// roll for every actor
+
 for (const selectedActor of validActors) {
-  const stealthMod = selectedActor.data.data.skills.ste.mod; 
-  const stealth = new Roll(`1d20+${stealthMod}`).roll().total; 
-  messageContent += `<hr><h3>${selectedActor.name} stealth roll was a <b>${stealth}</b>.</h3>`;
+  const stealthMod = selectedActor.data.data.skills.ste.mod; // stealth roll
+  const stealth = new Roll(`1d20+${stealthMod}`).roll().total; // rolling the formula
+  messageContent += `<hr><h3>${selectedActor.name} stealth roll was a <b>${stealth}</b>.</h3>`; // creating the output string
 
   // grab a list of unique tokens then check their passive perception against the rolled stealth.
   const uniqueActor = {};
   const caughtBy = canvas.tokens.placeables
-    .filter((token) => { // filter out duplicate token names. ie: we assume all goblins have the same passive perception
-      if (!token.actor || uniqueActor[token.actor.name]) {
+    .filter(token => !!token.actor)
+    .filter(({ actor }) => {
+      if (uniqueActor[actor.name]) {
         return false;
       }
-      uniqueActor[token.actor.name] = true;
+      uniqueActor[actor.name] = true;
       return true;
     })
-    .filter(token => {
-      return selectedActor.id !== token.actor.id; // Don't check to see if the token sees himself.
+    .filter(({ actor }) => {
+      return selectedActor.id !== actor.id;
     })
-    .filter(({ actor }) => actor.data.data.skills.prc.passive >= stealth); // check map tokens passives with roller stealth
+    .filter(({ actor }) => actor.data.data.skills.prc.passive >= stealth);
 
   if (!caughtBy.length) {
     messageContent += 'Stealth successful!<br>';
