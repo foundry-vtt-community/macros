@@ -196,7 +196,7 @@
             <div class="form-group">
                 <label>Select feature:</label>
                 <select id="feature" name="feature">`
-        features.forEach(o => {
+        features.filter(o => o.requireLevel <= monkLevels).forEach(o => {
             template += `<option value="${o.name}">${o.name}</option>`;
         });
         template += `</select>
