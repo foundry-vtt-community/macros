@@ -59,7 +59,7 @@ if (actorLevels >= 17) {
   numDie = 2;
 }
 
-let messageContent = `<p>${targetName} Roll WIS save DC [[8+${actor.data.data.abilities.con.mod}+@attributes.prof]] or take [[${numDie}d4]] damage and have disadvantage.</p>`
+let messageContent = `<p>${targetName} Roll WIS save DC [[8+${actor.data.data.abilities.cha.mod}+@attributes.prof]] or take [[${numDie}d4]] damage and have disadvantage.</p>`
 messageContent += `<p>${token.name} exclaims <b><i>"${mockery}"</i></b></p>`
 messageContent += `<details closed=""><summary><a>Vicious Mockery</a></summary><p>You unleash a string of insults laced with subtle enchantments at a creature you can see within range. If the target can hear you (though it need not understand you), it must succeed on a <strong>Wisdom saving throw</strong> or take <strong>1d4 psychic damage</strong> and have <strong>disadvantage on the next attack roll</strong> it makes before the end of its next turn.</p>
   <p>This spell’s damage increases by 1d4 when you reach 5th level ([[/r 2d4]]), 11th level ([[/r 3d4]]), and 17th level ([[/r 4d4]]).</p></details>`
