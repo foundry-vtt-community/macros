@@ -7,6 +7,7 @@ if (!actor) {
 }
 
 // Get Targets name
+let actorLevels = actor.data.data.levels || 1;
 const targetId = game.user.targets.ids[0];
 const targetToken = canvas.tokens.get(targetId);
 if (!targetToken) {
@@ -49,10 +50,19 @@ function checkTable(table) {
   return true
 }
 
+let dieType = 'd6';
+if (actorLevels >= 15) {
+  dieType = 'd12';
+} else if (actorLevels >= 10) {
+  dieType = 'd10';
+} else if (actorLevels >= 5) {
+  dieType = 'd8';
+}
+
 let messageContent = '';
 messageContent += `<p>${token.name} exclaims <b><i>"${inspiration}"</i></b></p>`
 messageContent += `<p>${targetName} is inspired.</p>`
-messageContent += `<details closed=""><summary><a>Bardic Inspiration</a></summary><table><tbody> </tbody></table><div class="beyond20-description">${targetName} gains one Bardic Inspiration die, a <strong>d6</strong>.<br>Once within the next 10 minutes, ${targetName} can roll the die and add the number rolled to one <b>ability check, attack roll, or saving throw</b>. ${targetName} can wait until after it rolls the <strong>d20</strong> before deciding to use the Bardic Inspiration die, but must decide before the DM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost.</div></details>`
+messageContent += `<details closed=""><summary><a>Bardic Inspiration</a></summary><p>${targetName} gains one Bardic Inspiration die, a <strong>${dieType}</strong>.<br>Once within the next 10 minutes, ${targetName} can roll the die and add the number rolled to one <b>ability check, attack roll, or saving throw</b>. ${targetName} can wait until after it rolls the <strong>d20</strong> before deciding to use the Bardic Inspiration die, but must decide before the DM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost.</p></details>`
 
 // create the message
 if (messageContent !== '') {
