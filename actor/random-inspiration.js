@@ -1,0 +1,65 @@
+// Courtesy of @Zarek
+// Selected target receives a random inspiration from a table called "Inspirations".
+
+if (!actor) {
+  ui.notifications.warn("You must have an actor selected.");
+  return
+}
+
+// Get Targets name
+const targetId = game.user.targets.ids[0];
+const targetToken = canvas.tokens.get(targetId);
+if (!targetToken) {
+  ui.notifications.warn("You must target a token.");
+  return
+}
+const targetName = targetToken.name;
+
+// Setup variables
+let tableName = "Inspirations";
+let table = game.tables.entities.find(t => t.name == tableName);
+//let inspiration = "Cowards die many times before their deaths; the valiant never taste death but once.";
+let inspiration = `I don't know what effect ${targetName} will have upon the enemy, but, by God, he terrifies me.`;
+// Roll the result, and mark it drawn
+if (table) {
+  if (checkTable(table)) {
+    // let result = table.roll()[1];
+    let roll = table.roll();
+    let result = roll.results[0];
+    inspiration = result.text;
+    table.updateEmbeddedEntity("TableResult", {
+      _id: result._id,
+      drawn: true
+    });
+  }
+}
+
+function checkTable(table) {
+  let results = 0;
+  for (let data of table.data.results) {
+    if (!data.drawn) {
+      results++;
+    }
+  }
+  if (results < 1) {
+    table.reset();
+    ui.notifications.notify("Table Reset")
+    return false
+  }
+  return true
+}
+
+let messageContent = '';
+messageContent += `<p>${token.name} exclaims <b><i>"${inspiration}"</i></b></p>`
+messageContent += `<p>${targetName} is inspired.</p>`
+messageContent += `<details closed=""><summary><a>Bardic Inspiration</a></summary><table><tbody> </tbody></table><div class="beyond20-description">${targetName} gains one Bardic Inspiration die, a <strong>d6</strong>.<br>Once within the next 10 minutes, ${targetName} can roll the die and add the number rolled to one <b>ability check, attack roll, or saving throw</b>. ${targetName} can wait until after it rolls the <strong>d20</strong> before deciding to use the Bardic Inspiration die, but must decide before the DM says whether the roll succeeds or fails. Once the Bardic Inspiration die is rolled, it is lost.</div></details>`
+
+// create the message
+if (messageContent !== '') {
+  let chatData = {
+    user: game.user._id,
+    speaker: ChatMessage.getSpeaker(),
+    content: messageContent,
+  };
+  ChatMessage.create(chatData, {});
+}
