@@ -102,9 +102,11 @@
         }
     }
 
+   const openHand = !!actor.items.find(o => o.data.name === 'Open Hand Technique') ? `<br />In addition, you can impose one of the following: <ul><li>It must succeed on a <b>Dexterity</b> saving throw or be knocked prone.</li><li>It must make a <b>Strength</b> saving throw. If it fails, you can push it up to 15 feet away from you.</li><li>It can’t take reactions until the end of your next turn.</li></ul> Saving throw <b>DC ${10 + actor.data.data.abilities.wis.mod}</b>` : "";
+
     const features = [
         new KiFeature("Ki: Flurry of Blows",
-            "Immediately after you take the <b>Attack</b> action on your turn, you can spend 1 ki point to make two unarmed strikes as a bonus action.",
+            `Immediately after you take the <b>Attack</b> action on your turn, you can spend 1 ki point to make two unarmed strikes as a bonus action. ${openHand}`,
             2,
             function () {
                 // Automatically roll two Unarmed Strike attacks
