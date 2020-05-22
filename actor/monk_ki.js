@@ -135,7 +135,7 @@
             null,
             function () {
                 // Append the saving throw DC to the chat message
-                return `CON saving throw (DC [[8+@abilities.wis.mod+@attributes.prof]])`;
+                return `CON saving throw (DC [[8+${actor.data.data.abilities.wis.mod}+@attributes.prof]])`;
             }),
         new KiFeature("Ki: Diamond Soul",
             `Beginning at 14th level, your mastery of ki grants you proficiency in all saving throws.
