@@ -106,7 +106,7 @@ if (actor !== undefined && actor !== null) {
 			
 			//If bear totem, add bear totem resistances.
 			bear = actor.items.find(i => i.name === "Totem Spirit: Bear")
-			if (bear !== undefined) {
+			if (bear !== undefined && bear !== null ) {
 				if (newResistance.value.indexOf('acid') === -1) newResistance.value.push('acid');
 				if (newResistance.value.indexOf('cold') === -1) newResistance.value.push('cold');
 				if (newResistance.value.indexOf('fire') === -1) newResistance.value.push('fire');
