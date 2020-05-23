@@ -1,6 +1,6 @@
 # Foundry VTT Macros Repository
 
-Foundry macros community-contributed macros are noted here and merged into the Foundry Community Macros module for ease of use.
+Foundry community-contributed macros are noted here and merged into the Foundry Community Macros module for ease of use.
 
 ## Installation
 
