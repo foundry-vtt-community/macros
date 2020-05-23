@@ -1,5 +1,5 @@
 // Courtesy of @Zarek
-// Selected target receives a random mockery from a table called "Mockeries" along with the DC and damage.
+// Selected target receives a random cutting word from a table called "Mockeries" along with the roll reduction.
 
 if (!actor) {
   ui.notifications.warn("You must have an actor selected.");
@@ -49,20 +49,22 @@ function checkTable(table) {
   return true
 }
 
-// Add a message with damage roll
-let numDie = 1;
-if (actorLevels >= 17) {
-  numDie = 4;
-} else if (actorLevels >= 11) {
-  numDie = 3;
+let dieType = 'd6';
+if (actorLevels >= 15) {
+  dieType = 'd12';
+} else if (actorLevels >= 10) {
+  dieType = 'd10';
 } else if (actorLevels >= 5) {
-  numDie = 2;
+  dieType = 'd8';
 }
 
-let messageContent = `<p>${targetName} Roll WIS save DC [[8+${actor.data.data.abilities.cha.mod}+@attributes.prof]] or take [[${numDie}d4]] damage and have disadvantage.</p>`
+let messageContent = `<p>${targetName} Reduce your roll by: <b>[[1${dieType}]]</b>.</p>`
 messageContent += `<p>${token.name} exclaims <b><i>"${mockery}"</i></b></p>`
-messageContent += `<details closed=""><summary><a>Vicious Mockery</a></summary><p>You unleash a string of insults laced with subtle enchantments at a creature you can see within range. If the target can hear you (though it need not understand you), it must succeed on a <strong>Wisdom saving throw</strong> or take <strong>1d4 psychic damage</strong> and have <strong>disadvantage on the next attack roll</strong> it makes before the end of its next turn.</p>
-  <p>This spell’s damage increases by 1d4 when you reach 5th level ([[/r 2d4]]), 11th level ([[/r 3d4]]), and 17th level ([[/r 4d4]]).</p></details>`
+messageContent += `<details closed=""><summary><a>Cutting Words</a></summary>
+<p>When a creature that you can see within 60 feet of you makes an <b>Attack roll, an ability check, or a damage roll</b>, you can use your <b>Reaction</b> to expend one of your uses of <b>Bardic Inspiration</b>,
+rolling a Bardic Inspiration die and subtracting the number rolled from the creature’s roll.</p>
+<p>You can choose to use this feature after the creature makes its roll, but before the GM determines whether the Attack roll or ability check succeeds or fails, or before the creature deals its damage. 
+The creature is immune if it can’t hear you or if it’s immune to being <b>Charmed</b>.</p></details>`
 
 // create the message
 if (messageContent !== '') {
