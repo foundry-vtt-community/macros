@@ -3,9 +3,6 @@
 if (canvas.tokens.controlled.length === 0)
   ui.notifications.error("Please select a token");
 
-if (game.modules.get("about-time").active != true)
-  ui.notifications.error("About Time isn't loaded");
-
 let namedfields = (...fields) => {
   return (...arr) => {
     var obj = {};
@@ -18,7 +15,7 @@ let namedfields = (...fields) => {
 
 // Very ugly automated construction below. DRY, but at what cost?
 let VisionType = namedfields('name', 'dim', 'bright');
-let visions = (() => {
+var visions = (() => {
   return [
     VisionType('Leave Unchanged', null, null),
     VisionType('Self', 5, 0),
@@ -29,7 +26,7 @@ let visions = (() => {
 })();
 
 let LightSource = namedfields('name', 'dim', 'bright', 'angle', 'lockRotation')
-let lightSources = [
+var lightSources = [
   LightSource('Leave Unchanged', null, null, null, null),
   LightSource('None', 0, 0, 360, null),
   LightSource('Candle', 10, 5, 360, null),
@@ -86,36 +83,42 @@ new Dialog({
   close: html => {
     if (applyChanges) {
       for ( let token of canvas.tokens.controlled ) {
-        let visionIndex = html.find('[name="vision-type"]')[0].value || null;
-        let lightIndex = html.find('[name="light-source"]')[0].value || null;
-        let duration = html.find('[name="duration"]')[0].value || 0;
+        let visionIndex = parseInt(html.find('[name="vision-type"]')[0].value) || 0;
+        let lightIndex = parseInt(html.find('[name="light-source"]')[0].value) || 0;
+        let duration = parseInt(html.find('[name="duration"]')[0].value) || 0;
 
         if (duration > 0) {
-          ((backup) => {
-            game.Gametime.doIn({minutes:Math.floor(3 * duration / 4)}, () => {
-              ChatMessage.create({
-                user: game.user._id,
-                content: "The fire burns low...",
-                speaker: speaker
-              }, {});
-            });
-            game.Gametime.doIn({minutes:duration}, () => {
-              ChatMessage.create({
-                user: game.user._id,
-                content: "The fire goes out, leaving you in darkness.",
-                speaker: speaker
-              }, {});
-              token.update({
-                vision: true,
-                dimSight: backup.dimSight,
-                brightSight: backup.brightSight,
-                dimLight: backup.dimLight,
-                brightLight:  backup.brightLight,
-                lightAngle: backup.lightAngle,
-                lockRotation: backup.lockRotation
+          if (game.modules.get("about-time").active != true) {
+            ui.notifications.error("About Time isn't loaded");
+          } else {
+            ((backup) => {
+              game.Gametime.doIn({minutes:Math.floor(3 * duration / 4)}, () => {
+                ChatMessage.create({
+                  user: game.user._id,
+                  content: "The fire burns low...",
+                  speaker: speaker
+                }, {});
               });
-            });
-          })(Object.assign({}, token.data));
+            })(Object.assign({}, token.data));
+            ((backup) => {
+              game.Gametime.doIn({minutes:duration}, () => {
+                ChatMessage.create({
+                  user: game.user._id,
+                  content: "The fire goes out, leaving you in darkness.",
+                  speaker: speaker
+                }, {});
+                token.update({
+                  vision: true,
+                  dimSight: backup.dimSight,
+                  brightSight: backup.brightSight,
+                  dimLight: backup.dimLight,
+                  brightLight:  backup.brightLight,
+                  lightAngle: backup.lightAngle,
+                  lockRotation: backup.lockRotation
+                });
+              });
+            })(Object.assign({}, token.data));
+          }
         }
 
         // Configure new token vision
