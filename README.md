@@ -2,6 +2,8 @@
 
 Foundry community-contributed macros are noted here and merged into the Foundry Community Macros module for ease of use.
 
+> Macros may cause unintended side effects, such as issues with performance. Please read the comments in each macro to understand how it works before running!
+
 ## Installation
 
 ### Usage as a Module
