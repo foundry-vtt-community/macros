@@ -18,7 +18,7 @@ You can open these packs, right click and click on import the macros you want. Y
 
 ### Usage without the Module:
 1. Download the `.js` file to your machine
-2. Create a new macro in foundry
+2. Create a new macro in Foundry
 3. Right click the macro in the **Macro Toolbar** and click import
 4. Import your `.js` file and celebrate
 
