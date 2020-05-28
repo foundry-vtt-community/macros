@@ -1,64 +1,70 @@
-var folderName = "Test Deeper";
-var desiredPermission = 0; // 0=None, 1=Limited, 2=Observer, 3=Owner
-var applyInSubfolders = true;
+const form = `
+  <div style="display: inline-block; width: 100px">Folder:</div>
+  <input type="string" id="folderName">
+  <br />
 
-/*****
-WARNING: This will overwrite the permissions of the items in the folder <folderName>!
-         That is, it will not keep the player permissions!
-         
-         Tested on FoundryVTT 0.5.5 & 0.5.7
-       
-* * * * * * * * * * * * * * * * * * * * * *
-       
-WARNING: Make sure the folder name is unique across actors, scenes, items, journals and roll tables!
-         This script will apply the desired permission on the first folder it finds with that name.
-******/
+  <div style="display: inline-block; width: 100px">Permission:</div>
+  <select id="desiredPermission" />
+    <option value="0">None</option>
+    <option value="1">Limited</option>
+    <option value="2">Observer</option>
+    <option value="3">Owner</option>
+  </select>
+  <br />
 
-function repermission(currentFolder) {
-  console.log("Repermissioning: ", currentFolder.name);
+  <label>
+  	<input type="checkbox" id="recurse" checked/>
+    Recurse into subfolders
+	</label>
+`;
 
-  if (currentFolder.content){
+const dialog = new Dialog({
+  title: "Set desired permission",
+  content: form,
+  buttons: {
+    use: {
+      label: "Apply permissions",
+      callback: applyPermissions
+    }
+  }
+}).render(true);
+
+function applyPermissions(html) {
+  const folderName = html.find(`input#folderName`)[0].value;
+  const permission = html.find(`select#desiredPermission`)[0].value;
+  const recurse = html.find(`input#recurse`)[0].checked;
+  
+  const folders = game.folders.filter(f => f.name === folderName);
+  if (folders.length === 0) {
+    ui.notifications.error(`Your world does not have any folders named '${folderName}'.`);
+  }
+  else if(folders.length > 1) {
+   ui.notifications.error(`Your world has more than one folder named ${folderName}`) 
+  }
+  else {
+    repermission(folders[0], permission, recurse);
+    ui.notifications.notify(`Desired permissions were set successfully for  '${folderName}'.`);
+  }
+}
+
+function repermission(currentFolder, desiredPermission, recurse) {
+  console.debug("Repermissioning: ", currentFolder.name);
+  
+  if (currentFolder.content) {
     currentFolder.content.map(item => {
       let newPermissions = duplicate(item.data.permission);
       newPermissions.default = desiredPermission;
-      console.log("  Item:", item.data.name);
-      item.update({permission: newPermissions});
+      console.debug("  Item:", item.data.name);
+      item.update({ permission: newPermissions });
     });
   }
-  
-  if (currentFolder.children && applyInSubfolders) {
-    currentFolder.children.map(({data}) => {
-      repermission(game.folders.entities.filter(f => f.data._id == data._id)[0]);
+
+  if (currentFolder.children && recurse) {
+    currentFolder.children.map(({ data }) => {
+      repermission(
+        game.folders.entities.filter(f => f.data._id == data._id)[0],
+        desiredPermission,
+        recurse);
     });
   }
-}
-
-function findFolder(parent) {
-  if (parent.data.name === folderName) {
-    return parent;
-  }
-  
-  for (let child of parent.children) {
-    let foundFolder = findFolder(child);
-    if (foundFolder) {
-      return foundFolder;
-    }
-  }
-  
-  return null;
-}
-
-if (game.folders.entities.length == 0) {
-	console.error("Your world does not have any folders.");
-}
-
-var root = { data: {}, children: game.folders.entities };
-
-var folder = findFolder(root);
-if (!folder) {
-  console.error(`Your world does not have any folders named '${folderName}'.`);
-}
-else {
-  repermission(folder);
-  console.log("Repermissioning finished successfully!");
 }
