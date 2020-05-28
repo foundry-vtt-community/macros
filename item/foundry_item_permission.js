@@ -1,14 +1,3 @@
-const dialog = new Dialog({
-  title: "Set desired permission",
-  content: form,
-  buttons: {
-    use: {
-      label: "Apply permissions",
-      callback: applyPermissions
-    }
-  }
-}).render(true);
-
 const form = `
   <div style="display: inline-block; width: 100px">Folder:</div>
   <input type="string" id="folderName">
@@ -28,6 +17,17 @@ const form = `
     Recurse into subfolders
 	</label>
 `;
+
+const dialog = new Dialog({
+  title: "Set desired permission",
+  content: form,
+  buttons: {
+    use: {
+      label: "Apply permissions",
+      callback: applyPermissions
+    }
+  }
+}).render(true);
 
 function applyPermissions(html) {
   const folderName = html.find(`input#folderName`)[0].value;
