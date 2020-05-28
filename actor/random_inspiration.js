@@ -1,6 +1,6 @@
 // Courtesy of @Zarek
 // Selected target receives a random inspiration from a table called "inspirations".
-// You can find a tabled called inspirations in the community tables module
+// You can find a table called inspirations in the community tables module
 
 // Setup variables
 let tableName = "inspirations";
