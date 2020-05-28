@@ -2,12 +2,13 @@
 // author @Erogroth#7134
 
 let actors = game.actors.entities.filter(e=> e.data.type==='character');
+
+// pull each player's passive perception
 let messageContent = '';
 let messageHeader = '<b>Passive Perception</b><br>';
 for(let actor of actors) {
-  let modifier = actor.data.data.skills.prc.mod; // this is total bonus for perception (abilitie mod + proficiency)
-  let result = 10 + modifier; // this gives the passive perception
-  messageContent += `${actor.name} <b>${result}</b><br>`; // creating the output string
+  let pp = actor.data.data.skills.prc.passive; // this gives the passive perception
+   messageContent += `${actor.name} <b>${pp}</b><br>`; // creating the output string
 }
 
 // create the message
