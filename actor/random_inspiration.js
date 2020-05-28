@@ -81,3 +81,4 @@ let bardicInspiration = () => {
     ChatMessage.create(chatData, {});
   }
 };
+bardicInspiration();
