@@ -1,6 +1,5 @@
 // Courtesy of @Zarek
 // Selected target receives a random inspiration from a table called "Inspirations".
-// Requires usage of The Furnace module for Advanced Macros
 
 if (!actor) {
   ui.notifications.warn("You must have an actor selected.");
