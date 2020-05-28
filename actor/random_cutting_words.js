@@ -1,6 +1,6 @@
 // Courtesy of @Zarek
 // Selected target receives a random cutting word from a table called "Mockeries" along with the roll reduction.
-// You may find a mockeries table in the community table module.
+// You can find a mockeries table in the community table module.
 
 let cuttingWords = () => {
   // Setup variables
