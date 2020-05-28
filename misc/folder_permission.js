@@ -1,3 +1,6 @@
+// Provides a prompt to set global permissions to all items within a folder.
+// Prompts the user for the folder name (case sensitive) and the permission level.
+
 const form = `
   <div style="display: inline-block; width: 100px">Folder:</div>
   <input type="string" id="folderName">
