@@ -1,5 +1,6 @@
 // Courtesy of @Zarek
 // Selected target receives a random mockery from a table called "Mockeries" along with the DC and damage.
+// Requires usage of The Furnace module for Advanced Macros
 
 if (!actor) {
   ui.notifications.warn("You must have an actor selected.");
