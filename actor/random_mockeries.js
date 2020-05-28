@@ -1,6 +1,6 @@
 // Courtesy of @Zarek
 // Selected target receives a random mockery from a table called "mockeries" along with the DC and damage.
-// you can find a table called mockeries in the community tables module.
+// You can find a table called mockeries in the community tables module.
 
 
 let tableName = "mockeries";
