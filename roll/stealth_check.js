@@ -1,5 +1,7 @@
+// Grabs selected tokens and rolls a stealth check against all other tokens passive perception on the map. Then returns the result.
+
 // getting all actors of selected tokens
-let actors = canvas.tokens.controlledTokens.map(({ actor }) => actor);
+let actors = canvas.tokens.controlled.map(({ actor }) => actor);
 
 // if there are no selected tokens, roll for the player's character.
 if (actors.length < 1) {
