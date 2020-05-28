@@ -1,5 +1,6 @@
 // Courtesy of @Zarek
 // Selected target receives a random cutting word from a table called "Mockeries" along with the roll reduction.
+// Requires usage of The Furnace module for Advanced Macros
 
 if (!actor) {
   ui.notifications.warn("You must have an actor selected.");
