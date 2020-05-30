@@ -17,7 +17,7 @@ let messageContent = 'pp = passive perception<br>';
 
 // roll for every actor
 for (const selectedActor of validActors) {
-  const stealthMod = selectedActor.data.data.skills.ste.mod; // stealth roll
+  const stealthMod = selectedActor.data.data.skills.ste.total; // stealth roll
   const stealth = new Roll(`1d20+${stealthMod}`).roll().total; // rolling the formula
   messageContent += `<hr><h3>${selectedActor.name} stealth roll was a <b>${stealth}</b>.</h3>`; // creating the output string
 
