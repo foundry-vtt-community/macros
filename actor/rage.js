@@ -1,30 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@Norc 
-Norc
-/
-macros
-forked from foundry-vtt-community/macros
-0
-026
- Code
- Pull requests 0 Actions
- Projects 0
- Security 0
- Insights
- Settings
-macros/actor/rage.js /
-@shawndibble shawndibble Update rage.js
-192f42b 9 days ago
-@shawndibble@sneat
-160 lines (136 sloc)  7.56 KB
-  
 // 	DISCLAIMER: This macro is a slightly modified version of the original masterwork written by Felix#6196.
 //				Original version is on the wiki here: 
 //				https://github.com/foundry-vtt-community/wiki/wiki/Script-Macros#rage-toggle-for-inhabited-character
@@ -185,15 +158,3 @@ if (chatMsg !== '') {
     };
 	ChatMessage.create(chatData, {});
 }
-© 2020 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
