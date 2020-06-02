@@ -1,7 +1,5 @@
 /**
- * Share an image to all when you have an image URL.
- * GMs can share to a popup, chat or both.
- * Players can only share to chat.
+ * Share an image to all players when you have an image URL
  * Author: @Krishmero#1792
  */
 
@@ -21,20 +19,22 @@ let chatDialog = (imageUrl) => {
 };
 
 let selectOptions = game.user.isGM ? `
-<label for="output-options" style="margin-right: 10px">Output Options:</label>
-<select id="output-options" />
-  <option value="popup">Popup</option>
-  <option value="chat">Chat</option>
-  <option value="both">Both</option>
-</select>
-` : null
+<div style="display: inline-block; width: 100%; margin-bottom: 10px">
+	<label for="output-options" style="margin-right: 10px">Output Options:</label>
+	<select id="output-options" />
+	  <option value="popup">Popup</option>
+	  <option value="chat">Chat</option>
+	  <option value="both">Both</option>
+	</select>
+</div>
+<br />
+` : '';
 
 new Dialog({
   title: `Share Image via URL`,
   content: `
     <form>
-      <div style="display: inline-block; width: 100%; margin-bottom: 10px">${selectOptions}</div>
-      <br />
+      ${selectOptions}
       <div style="display: flex; width: 100%; margin-bottom: 10px">
       	<label for="image-url" style="white-space: nowrap; margin-right: 10px; padding-top:4px">Image URL:</label>
       	<input type="text" id="image-url" name="image-url" />
@@ -47,7 +47,7 @@ new Dialog({
       label: `Share`,
       callback: (html) => {
 				let imageUrl = html.find('#image-url').val();
-				let permission = html.find('select#output-options')[0].value;
+				let permission = html.find('select#output-options')[0]?.value || null;
 			  if (!imageUrl) {
 			    return ui.notifications.info("You did not provide a valid image.");
 			  }
