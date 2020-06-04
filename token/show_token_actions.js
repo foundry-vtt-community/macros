@@ -413,7 +413,10 @@ class ActionDialog extends Application {
             this.options.title = `${targetActor.name} actions`;
             let actionLists = getActionLists(targetActor);
             innerContent = getContentTemplate(actionLists);
-        } else { throw new Error("No token selected or character found"); }
+        } else {
+            ui.notifications.error("No token selected or user character found.");
+            throw new Error("No token selected or character found");
+        }
         
         var content =  `<div id="actionDialog">${innerContent}</div>`;
         var contentsObject = {content:`${content}`}
