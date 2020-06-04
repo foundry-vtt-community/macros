@@ -1,6 +1,6 @@
 /*
 * An attempt to make managing actions in combat easier without having to access the sheet all the time.
-* Provides a dialog with a collection of equipped weapons, prepared spells, feats, and consumables.
+* Provides a dialog with a collection of action-triggered equipment, prepared spells, feats, and consumables.
 * author/blame: ^ and stick#0520
 * with enormous help from (and no blame to be attributed to): Skimble#8601
 */
@@ -64,9 +64,8 @@ class ActionDialog extends Application {
 
         function getContentTemplate(targetActor) {
 
-            console.log(targetActor);
-            let weapons = targetActor.data.items.filter(i => i.type =="weapon" && i.data.equipped);
-            let weaponsTemplate = "";
+            let equipment = targetActor.data.items.filter(i => i.type !="consumable" && i.data.equipped);
+            let equipmentTemplate = "";
 
             let spells = targetActor.data.items.filter(i => i.type == "spell" && i.data.preparation.prepared);
             let spellsTemplate = "";
@@ -79,23 +78,33 @@ class ActionDialog extends Application {
 
             let template = `
             <div>
-                 ${getStyle()}
+                 ${getCssStyle()}
                 <div class="show-action-form-group">
                     <div class="show-action-tabs">`
 
-            if (weapons.length > 0) {
-                template += `<button value="actionWeapons" class="show-action-tablink">Weapons</button>`;
-                weaponsTemplate = getWeaponsTemplate(weapons);
+            if (equipment.length > 0) {
+                template += `<button value="actionEquipment" class="show-action-tablink">Equipment</button>`;
+                let equipped = getActiveEquipment(equipment);
+                equipmentTemplate = getCategorisedEquipmentTemplate(
+                    equipped.filter(i => i.type == "weapon"),
+                    equipped.filter(i => i.type == "equipment"),
+                    equipped.filter(i => i.type != "weapon" && i.type != "equipment")
+                    );
             }
 
             if (spells.length > 0) {
                 template += `<button value="actionSpells" class="show-action-tablink">Spells</button>`;
-                spellsTemplate = getSpellsTemplate(spells);
+                let spellbook = getPreparedSpellsByLevel(spells);
+                spellsTemplate = getSpellsTemplate(spellbook);
             }
                 
             if (feats.length > 0) {
                 template += `<button value="actionFeats" class="show-action-tablink">Feats</button>`;
-                featsTemplate = getFeatsTemplate(feats);
+                
+                let activeFeats = getActiveFeats(feats);
+                let passiveFeats =  getPassiveFeats(feats);
+                
+                featsTemplate = getFeatsTemplate(activeFeats, passiveFeats);
             }
             
             if (consumables.length > 0) {
@@ -107,7 +116,7 @@ class ActionDialog extends Application {
                     <button value="actionAll" class="show-action-tablink">Show all</button>
                     </div>
                     <div class="show-action-actions">
-                        ${weaponsTemplate}
+                        ${equipmentTemplate}
                         ${spellsTemplate}
                         ${featsTemplate}
                         ${consumablesTemplate}
@@ -118,13 +127,28 @@ class ActionDialog extends Application {
             return template;
         }
 
+        function getActiveEquipment(equipment) {
+            const activationTypes = Object.entries(game.dnd5e.config.abilityActivationTypes);
+
+            let activeEquipment = equipment.filter(e => {
+                for (let [key, value] of activationTypes) {
+                    if (e.data.activation.type == key)
+                        return true;
+                }
+                
+                return false;
+            });
+
+            return activeEquipment;
+        }
+
         // Gets a template of abilities or skills, based on the type of check chosen.
-        function getWeaponsTemplate(weapons) {
-            let template = `<div id="actionWeapons" class="show-action-tabcontent">
-                                <label>Weapons:</label>`
-            // let template = "";
-            for (let w of weapons) {
-                template += `<input id="weapon-${w.name}" type="button" value="${w.name}" onclick="game.dnd5e.rollItemMacro('${w.name}')"/>`;    
+        function getEquipmentTemplate(equipment) {
+            let template = `<div id="actionEquipment" class="show-action-tabcontent">
+                                <label>Equipment:</label>`
+
+            for (let e of equipment) {
+                template += `<input id="equipment-${e.name}" type="button" value="${e.name}" onclick="game.dnd5e.rollItemMacro('${e.name}')"/>`;    
             }            
             
             template += `</div>`;
@@ -133,21 +157,88 @@ class ActionDialog extends Application {
         }
 
         // Gets a template of abilities or skills, based on the type of check chosen.
-        function getSpellsTemplate(spells) {
+        function getCategorisedEquipmentTemplate(weapons, armor, other) {
+            let template = `<div id="actionEquipment" class="show-action-tabcontent">
+                                <label>Equipment:</label>`
+
+            if (weapons.length > 0) {
+                template += `<label>Weapons</label>`;
+                for (let w of weapons) {
+                    template += `<input id="weapon-${w.name}" type="button" value="${w.name}" onclick="game.dnd5e.rollItemMacro('${w.name}')"/>`;    
+                }          
+            }
+
+            if (armor.length > 0) {
+                template += `<label>Equipment</label>`;
+                for (let a of armor) {
+                    template += `<input id="armor-${a.name}" type="button" value="${a.name}" onclick="game.dnd5e.rollItemMacro('${a.name}')"/>`;    
+                }          
+            }
+
+            if (other.length > 0) {
+                template += `<label>Other</label>`;
+                for (let o of other) {
+                    template += `<input id="equipment-other-${o.name}" type="button" value="${o.name}" onclick="game.dnd5e.rollItemMacro('${o.name}')"/>`;    
+                }          
+            }  
+            
+            template += `</div>`;
+
+            return template;
+        }
+
+        function getPreparedSpellsByLevel(spells) {
+            let spellbook = spells.reduce(function (spellbook, spell) {
+            
+                var level = spell.data.level;
+                let prep = spell.data.preparation.mode;
+
+                const prepTypes = game.dnd5e.config.spellPreparationModes;
+                let prepType = prepTypes[prep];
+
+                if (prep == "pact" || prep == "atwill" || prep == "innate") {
+                    if (!spellbook.hasOwnProperty(prepType)) {
+                        spellbook[prepTypes[prep]] = [];
+                    }
+
+                    spellbook[prepType].push(spell);
+                } else {
+                    if (!spellbook.hasOwnProperty(level)) {
+                        spellbook[level] = [];
+                    }
+
+                    spellbook[level].push(spell);
+                }
+            
+                return spellbook;
+            }, {});
+
+            // spellbook = [].sort.call(spellbook, function(a, b) { 
+            //     return a.id - b.id  ||  a.name.localeCompare(b.name);
+            //   });
+
+            return spellbook;
+        }
+
+        // Gets a template of abilities or skills, based on the type of check chosen.
+        function getSpellsTemplate(spellbook) {
             let template = `<div id="actionSpells" class="show-action-tabcontent">
                                 <label>Spells:</label>`
-            
-            let spellbook = reduceSpellsToLevel(spells);
 
             for (let [level, spells] of Object.entries(spellbook)) {
-                if (level == 0) {
+                if (isNaN(level)) {
+                    template += `<div><label>${level}</label>`
+                }
+                else if (level == 0) {
                     template += `<div><label>Cantrips</label>`
                 } else {
                     template += `<div><label>Level ${level}</label>`
                 }
+
                 for (let s of spells) {
                     template += `<input id="spell-${s.name}" type="button" value="${s.name}" onclick="game.dnd5e.rollItemMacro(&quot;${s.name}&quot;)"/>`;    
                 }
+
                 template += `</div>`
             }                
             
@@ -156,25 +247,7 @@ class ActionDialog extends Application {
             return template;
         }
 
-        function reduceSpellsToLevel(spells) {
-            return spells.reduce(function (spellbook, spell) {
-            
-                var level = spell.data.level;
-
-                if (!spellbook.hasOwnProperty(level)) {
-                    spellbook[level] = [];
-                }
-            
-                spellbook[level].push(spell);
-
-                return spellbook;
-            }, {});
-        }
-
-        function getFeatsTemplate(feats) {
-            let template = `<div id="actionFeats" class="show-action-tabcontent">
-                                <label>Feats</label>`
-
+        function getActiveFeats(feats) {
             const activationTypes = Object.entries(game.dnd5e.config.abilityActivationTypes);
             let activeFeats = feats.filter(f => {
                 for (let [key, value] of activationTypes) {
@@ -185,15 +258,12 @@ class ActionDialog extends Application {
                 return false;
             });
 
-            if (activeFeats.length > 0) {
-                template += `<div><label>Active</label>`
-                for (let f of activeFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="game.dnd5e.rollItemMacro('${f.name}')"/>`;    
-                }
-                template += `</div>`
-            }
-            
-            let passiveFeats =  feats.filter(f => {
+            return activeFeats;
+        }
+
+        function getPassiveFeats(feats) {
+            const activationTypes = Object.entries(game.dnd5e.config.abilityActivationTypes);
+            let passiveFeats = feats.filter(f => {
                 for (let [key, value] of activationTypes) {
                     if (f.data.activation.type == key)
                         return false;
@@ -201,6 +271,21 @@ class ActionDialog extends Application {
                 
                 return true;
             });
+
+            return passiveFeats;
+        }
+
+        function getFeatsTemplate(activeFeats, passiveFeats) {
+            let template = `<div id="actionFeats" class="show-action-tabcontent">
+                                <label>Feats</label>`
+
+            if (activeFeats.length > 0) {
+                template += `<div><label>Active</label>`
+                for (let f of activeFeats) {
+                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="game.dnd5e.rollItemMacro('${f.name}')"/>`;    
+                }
+                template += `</div>`
+            }
 
             if (passiveFeats.length > 0) {
                 template += `<div><label>Passive: </label>`
@@ -228,7 +313,7 @@ class ActionDialog extends Application {
             return template;
         }
 
-        function getStyle() {
+        function getCssStyle() {
             return `
             <style type="text/css">
             .show-action-tabs button {
