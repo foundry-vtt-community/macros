@@ -118,6 +118,9 @@ class ActionDialog extends Application {
             const activationTypes = Object.entries(game.dnd5e.config.abilityActivationTypes);
 
             let activeEquipment = equipment.filter(e => {
+                if (e.data.activation == undefined)
+                    return false;
+
                 for (let [key, value] of activationTypes) {
                     if (e.data.activation.type == key)
                         return true;
@@ -132,27 +135,33 @@ class ActionDialog extends Application {
         // Gets a template of abilities or skills, based on the type of check chosen.
         function getCategorisedEquipmentTemplate(weapons, armor, other) {
             let template = `<div id="actionEquipment" class="show-action-tabcontent">
-                                <label>Equipment:</label>`
+                                <div class="show-action-tabcontent-title">Equipment</div>`
 
             if (weapons.length > 0) {
-                template += `<label>Weapons</label>`;
+                template += `<div class="show-action-tabcontent-subtitle">Weapons</div>
+                <div>`;
                 for (let w of weapons) {
                     template += `<input id="weapon-${w.name}" type="button" value="${w.name}" onclick="${getRollItemMacro(w.name)}"/>`;    
-                }          
+                } 
+                template += `</div>`;
             }
 
             if (armor.length > 0) {
-                template += `<label>Equipment</label>`;
+                template += `<div class="show-action-tabcontent-subtitle">Equipment</div>
+                    <div>`;
                 for (let a of armor) {
                     template += `<input id="armor-${a.name}" type="button" value="${a.name}" onclick="${getRollItemMacro(a.name)}"/>`;    
-                }          
+                }
+                template += `</div>`;       
             }
 
             if (other.length > 0) {
-                template += `<label>Other</label>`;
+                template += `<div class="show-action-tabcontent-subtitle">Other</div>
+                <div>`;
                 for (let o of other) {
                     template += `<input id="equipment-other-${o.name}" type="button" value="${o.name}" onclick="${getRollItemMacro(o.name)}"/>`;    
-                }          
+                }
+                template += `</div>`;      
             }  
             
             template += `</div>`;
@@ -166,17 +175,15 @@ class ActionDialog extends Application {
                 return "";
                 
             let template = `<div id="actionSpells" class="show-action-tabcontent">
-                <label>Spells:</label>`;  
+                <div class="show-action-tabcontent-title">Spells</div>`;  
 
             let magic = getSpellbookAndPowers(spells);
-            console.log(magic);
 
             let powers = Object.entries(magic["powers"]);
             if (powers.length > 0) {
-                for (let [name, entries] of powers) {
-                    template += `<div>`;
-                    
-                    template += `<label>${name}</label>`;
+                for (let [name, entries] of powers) {                    
+                    template += `<div class="show-action-tabcontent-subtitle">${name}</div>
+                        <div>`;
          
                     for (let p of entries) {
                         template += `<input id="spell-${p.name}" type="button" value="${p.name}" onclick="${getRollItemMacro(p.name)}"/>`;    
@@ -187,15 +194,15 @@ class ActionDialog extends Application {
             }
                 
             let spellbook = Object.entries(magic["book"]);
-            console.log(spellbook);
             if (spellbook.length > 0) {
                 for (let [level, entries] of spellbook) {
-                    template += `<div>`;
 
                     if (level == 0) {
-                        template += `<label>Cantrips</label>`
+                        template += `<div class="show-action-tabcontent-subtitle">Cantrips</div>
+                        <div>`
                     } else {
-                        template += `<label>Level ${level}</label>`
+                        template += `<div class="show-action-tabcontent-subtitle">Level ${level}</div>
+                        <div>`
                     }
 
                     for (let s of entries) {
@@ -241,10 +248,46 @@ class ActionDialog extends Application {
             
             return {"book": book, "powers": powers};
         }
+        
+        function getFeatsTemplate(feats) {
+            if (feats.length == 0)
+                return "";
+
+            let activeFeats = getActiveFeats(feats);
+            let passiveFeats =  getPassiveFeats(feats);
+
+            let template = `<div id="actionFeats" class="show-action-tabcontent">
+                                <div class="show-action-tabcontent-title">Feats</div>`
+
+            if (activeFeats.length > 0) {
+                template += `<div class="show-action-tabcontent-subtitle">Active</div>
+                    <div>`
+                for (let f of activeFeats) {
+                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
+                }
+                template += `</div>`
+            }
+
+            if (passiveFeats.length > 0) {
+                template += `<div class="show-action-tabcontent-subtitle">Passive</div>
+                    <div>`
+                for (let f of passiveFeats) {
+                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
+                }
+                template += `</div>`
+            }
+            
+            template += `</div>`;
+
+            return template;
+        }
 
         function getActiveFeats(feats) {
             const activationTypes = Object.entries(game.dnd5e.config.abilityActivationTypes);
             let activeFeats = feats.filter(f => {
+                if (f.data.activation == undefined)
+                    return false;
+
                 for (let [key, value] of activationTypes) {
                     if (f.data.activation.type == key)
                         return true;
@@ -259,6 +302,9 @@ class ActionDialog extends Application {
         function getPassiveFeats(feats) {
             const activationTypes = Object.entries(game.dnd5e.config.abilityActivationTypes);
             let passiveFeats = feats.filter(f => {
+                if (f.data.activation == undefined)
+                    return false;
+
                 for (let [key, value] of activationTypes) {
                     if (f.data.activation.type == key)
                         return false;
@@ -270,46 +316,15 @@ class ActionDialog extends Application {
             return passiveFeats;
         }
 
-        function getFeatsTemplate(feats) {
-            if (feats.length == 0)
-                return "";
-
-            let activeFeats = getActiveFeats(feats);
-            let passiveFeats =  getPassiveFeats(feats);
-
-            let template = `<div id="actionFeats" class="show-action-tabcontent">
-                                <label>Feats</label>`
-
-            if (activeFeats.length > 0) {
-                template += `<div><label>Active</label>`
-                for (let f of activeFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
-                }
-                template += `</div>`
-            }
-
-            if (passiveFeats.length > 0) {
-                template += `<div><label>Passive: </label>`
-                for (let f of passiveFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
-                }
-                template += `</div>`
-            }
-            
-            template += `</div>`;
-
-            return template;
-        }
-
         function getConsumablesTemplate(consumables) {          
             if (consumables.length == 0)
                 return "";
 
             let template = `<div id="actionConsumables" class="show-action-tabcontent">
-                <label>Consumables:</label>`
+                <div class="show-action-tabcontent-title">Consumables</div>`
 
             for (let c of consumables) {
-                template += `<input id="consumable-${c.name}" type="button" value="${c.name}" onclick="${getRollItemMacro(c.name)}')"/>`;    
+                template += `<input id="consumable-${c.name}" type="button" value="${c.name}" onclick="${getRollItemMacro(c.name)}"/>`;    
             }            
             
             template += `</div>`;
@@ -320,14 +335,21 @@ class ActionDialog extends Application {
         function getCssStyle() {
             return `
             <style type="text/css">
+            .show-action-tabs {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                grid-gap: 10px;
+            }
+
             .show-action-tabs button {
                 width: auto;
-                background-color: inherit;
+                height: auto;
+                background-color: #eee;
                 float: left;
                 border: none;
                 outline: none;
                 cursor: pointer;
-                padding: 14px 16px;
+                padding: 5px 8px;
                 transition: 0.3s;
                 display: block;
               }
@@ -351,12 +373,22 @@ class ActionDialog extends Application {
                 display: block;
                 padding: 6px 12px;
                 border: 1px solid #ccc;
-                border-top: none;
+                border-bottom: none;
+                border-left: none;
+                border-right: none;
               }
-              
-              .show-action-tabcontent label {
-                padding: 6px 12px;
+
+              .show-action-tabcontent-title {
+                    clear: both;
+                    font-size: large;
               }
+
+              .show-action-tabcontent-subtitle {
+                  padding: 5px;
+                  margin: 2px;
+                  float: left;
+              }
+
               .show-action-tabcontent input {
                 border: 1px solid #555;
                 padding: 5px;
