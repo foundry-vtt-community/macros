@@ -1,8 +1,11 @@
 /*
-* An attempt to make managing actions in combat easier without having to access the sheet all the time.
-* Provides a dialog with a collection of action-triggered equipment, prepared spells, feats, and consumables.
+* Requires: DND5e.
+* Provides a dialog showing all action-triggered equipment, prepared and at-will spells, feats, and consumables,
+* as well as passive feats. Hopefully makes triggering actions easier without needing the character sheet open
+* all the time.
+* WARNING: Very ugly.
 * author/blame: ^ and stick#0520
-* with enormous help from (and no blame to be attributed to): Skimble#8601
+* with enormous help on the button events (and no blame to be attributed to): Skimble#8601
 */
 
 class ActionDialog extends Application {
@@ -40,14 +43,14 @@ class ActionDialog extends Application {
                 t.style.display= "block";
             }
         } else {
-            document.getElementById(event.target.value).style.display = "block";
+            if (document.getElementById(event.target.value) != null)
+                document.getElementById(event.target.value).style.display = "block";
         }
         event.currentTarget.className += " active";
     } 
 
     getData(){
-        
-        // Gets first of list of selected tokens, or if no tokens are selected then the user's character.
+        // Get user's character or the first token from the controlled list.
         function getTargetActor() {
             const character = game.user.character;
             if (character != null)
@@ -62,68 +65,52 @@ class ActionDialog extends Application {
             }
         }
 
-        function getContentTemplate(targetActor) {
-
+        function getActionLists(targetActor) {
             let equipment = targetActor.data.items.filter(i => i.type !="consumable" && i.data.equipped);
-            let equipmentTemplate = "";
-
             let spells = targetActor.data.items.filter(i => i.type == "spell" && i.data.preparation.prepared);
-            let spellsTemplate = "";
-            
             let feats = targetActor.data.items.filter(i => i.type == "feat");
-            let featsTemplate = "";
-
             let consumables = targetActor.data.items.filter(i => i.type == "consumable");
-            let consumablesTemplate = "";
 
+            return {"equipment": equipment,"spells": spells, "feats": feats,"consumables": consumables};
+        }
+
+        function getContentTemplate(actionLists) {
             let template = `
             <div>
                  ${getCssStyle()}
                 <div class="show-action-form-group">
-                    <div class="show-action-tabs">`
-
-            if (equipment.length > 0) {
-                template += `<button value="actionEquipment" class="show-action-tablink">Equipment</button>`;
-                let equipped = getActiveEquipment(equipment);
-                equipmentTemplate = getCategorisedEquipmentTemplate(
-                    equipped.filter(i => i.type == "weapon"),
-                    equipped.filter(i => i.type == "equipment"),
-                    equipped.filter(i => i.type != "weapon" && i.type != "equipment")
-                    );
-            }
-
-            if (spells.length > 0) {
-                template += `<button value="actionSpells" class="show-action-tablink">Spells</button>`;
-                let spellbook = getPreparedSpellsByLevel(spells);
-                spellsTemplate = getSpellsTemplate(spellbook);
-            }
-                
-            if (feats.length > 0) {
-                template += `<button value="actionFeats" class="show-action-tablink">Feats</button>`;
-                
-                let activeFeats = getActiveFeats(feats);
-                let passiveFeats =  getPassiveFeats(feats);
-                
-                featsTemplate = getFeatsTemplate(activeFeats, passiveFeats);
-            }
-            
-            if (consumables.length > 0) {
-                template += `<button value="actionConsumables" class="show-action-tablink">Consumables</button>`;
-                consumablesTemplate = getConsumablesTemplate(consumables);
-            }
-
-            template += `
-                    <button value="actionAll" class="show-action-tablink">Show all</button>
+                    <div class="show-action-tabs">
+                        <button value="actionEquipment" class="show-action-tablink">Equipment</button>
+                        <button value="actionSpells" class="show-action-tablink">Spells</button>
+                        <button value="actionFeats" class="show-action-tablink">Feats</button>
+                        <button value="actionConsumables" class="show-action-tablink">Consumables</button>
+                        <button value="actionAll" class="show-action-tablink">Show all</button>
+                    </div>
                     </div>
                     <div class="show-action-actions">
-                        ${equipmentTemplate}
-                        ${spellsTemplate}
-                        ${featsTemplate}
-                        ${consumablesTemplate}
+                        ${getEquipmentTemplate(actionLists["equipment"])}
+                        ${getSpellsTemplate(actionLists["spells"])}
+                        ${getFeatsTemplate(actionLists["feats"])}
+                        ${getConsumablesTemplate(actionLists["consumables"])}
                     </div>
                 </div>
             </div>`;
             
+            return template;
+        }
+
+                // Gets a template of abilities or skills, based on the type of check chosen.
+        function getEquipmentTemplate(equipment) {
+            if (equipment.length == 0)
+                return "";
+            
+            let equipped = getActiveEquipment(equipment);
+            let template = getCategorisedEquipmentTemplate(
+                    equipped.filter(i => i.type == "weapon"),
+                    equipped.filter(i => i.type == "equipment"),
+                    equipped.filter(i => i.type != "weapon" && i.type != "equipment")
+                    );
+
             return template;
         }
 
@@ -143,20 +130,6 @@ class ActionDialog extends Application {
         }
 
         // Gets a template of abilities or skills, based on the type of check chosen.
-        function getEquipmentTemplate(equipment) {
-            let template = `<div id="actionEquipment" class="show-action-tabcontent">
-                                <label>Equipment:</label>`
-
-            for (let e of equipment) {
-                template += `<input id="equipment-${e.name}" type="button" value="${e.name}" onclick="game.dnd5e.rollItemMacro('${e.name}')"/>`;    
-            }            
-            
-            template += `</div>`;
-
-            return template;
-        }
-
-        // Gets a template of abilities or skills, based on the type of check chosen.
         function getCategorisedEquipmentTemplate(weapons, armor, other) {
             let template = `<div id="actionEquipment" class="show-action-tabcontent">
                                 <label>Equipment:</label>`
@@ -164,21 +137,21 @@ class ActionDialog extends Application {
             if (weapons.length > 0) {
                 template += `<label>Weapons</label>`;
                 for (let w of weapons) {
-                    template += `<input id="weapon-${w.name}" type="button" value="${w.name}" onclick="game.dnd5e.rollItemMacro('${w.name}')"/>`;    
+                    template += `<input id="weapon-${w.name}" type="button" value="${w.name}" onclick="${getRollItemMacro(w.name)}"/>`;    
                 }          
             }
 
             if (armor.length > 0) {
                 template += `<label>Equipment</label>`;
                 for (let a of armor) {
-                    template += `<input id="armor-${a.name}" type="button" value="${a.name}" onclick="game.dnd5e.rollItemMacro('${a.name}')"/>`;    
+                    template += `<input id="armor-${a.name}" type="button" value="${a.name}" onclick="${getRollItemMacro(a.name)}"/>`;    
                 }          
             }
 
             if (other.length > 0) {
                 template += `<label>Other</label>`;
                 for (let o of other) {
-                    template += `<input id="equipment-other-${o.name}" type="button" value="${o.name}" onclick="game.dnd5e.rollItemMacro('${o.name}')"/>`;    
+                    template += `<input id="equipment-other-${o.name}" type="button" value="${o.name}" onclick="${getRollItemMacro(o.name)}"/>`;    
                 }          
             }  
             
@@ -187,9 +160,62 @@ class ActionDialog extends Application {
             return template;
         }
 
-        function getPreparedSpellsByLevel(spells) {
-            let spellbook = spells.reduce(function (spellbook, spell) {
+        // Gets a template of abilities or skills, based on the type of check chosen.
+        function getSpellsTemplate(spells) {
+            if (spells.length == 0)
+                return "";
+                
+            let template = `<div id="actionSpells" class="show-action-tabcontent">
+                <label>Spells:</label>`;  
+
+            let magic = getSpellbookAndPowers(spells);
+            console.log(magic);
+
+            let powers = Object.entries(magic["powers"]);
+            if (powers.length > 0) {
+                for (let [name, entries] of powers) {
+                    template += `<div>`;
+                    
+                    template += `<label>${name}</label>`;
+         
+                    for (let p of entries) {
+                        template += `<input id="spell-${p.name}" type="button" value="${p.name}" onclick="${getRollItemMacro(p.name)}"/>`;    
+                    }
+        
+                    template += `</div>`
+                }
+            }
+                
+            let spellbook = Object.entries(magic["book"]);
+            console.log(spellbook);
+            if (spellbook.length > 0) {
+                for (let [level, entries] of spellbook) {
+                    template += `<div>`;
+
+                    if (level == 0) {
+                        template += `<label>Cantrips</label>`
+                    } else {
+                        template += `<label>Level ${level}</label>`
+                    }
+
+                    for (let s of entries) {
+                        template += `<input id="spell-${s.name}" type="button" value="${s.name}" onclick="${getRollItemMacro(s.name)}"/>`;    
+                    }
+    
+                    template += `</div>`
+                }   
+            }
             
+            template += `</div>`;
+
+            return template;
+        }
+
+        function getSpellbookAndPowers(spells) {
+            let powers = {};
+            let book = {}
+
+            book = spells.reduce(function (book, spell) {
                 var level = spell.data.level;
                 let prep = spell.data.preparation.mode;
 
@@ -197,54 +223,23 @@ class ActionDialog extends Application {
                 let prepType = prepTypes[prep];
 
                 if (prep == "pact" || prep == "atwill" || prep == "innate") {
-                    if (!spellbook.hasOwnProperty(prepType)) {
-                        spellbook[prepTypes[prep]] = [];
+                    if (!powers.hasOwnProperty(prepType)) {
+                        powers[prepTypes[prep]] = [];
                     }
 
-                    spellbook[prepType].push(spell);
+                    powers[prepType].push(spell);
                 } else {
-                    if (!spellbook.hasOwnProperty(level)) {
-                        spellbook[level] = [];
+                    if (!book.hasOwnProperty(level)) {
+                        book[level] = [];
                     }
 
-                    spellbook[level].push(spell);
+                    book[level].push(spell);
                 }
-            
-                return spellbook;
+
+                return book;
             }, {});
-
-            // spellbook = [].sort.call(spellbook, function(a, b) { 
-            //     return a.id - b.id  ||  a.name.localeCompare(b.name);
-            //   });
-
-            return spellbook;
-        }
-
-        // Gets a template of abilities or skills, based on the type of check chosen.
-        function getSpellsTemplate(spellbook) {
-            let template = `<div id="actionSpells" class="show-action-tabcontent">
-                                <label>Spells:</label>`
-
-            for (let [level, spells] of Object.entries(spellbook)) {
-                if (isNaN(level)) {
-                    template += `<div><label>${level}</label>`
-                }
-                else if (level == 0) {
-                    template += `<div><label>Cantrips</label>`
-                } else {
-                    template += `<div><label>Level ${level}</label>`
-                }
-
-                for (let s of spells) {
-                    template += `<input id="spell-${s.name}" type="button" value="${s.name}" onclick="game.dnd5e.rollItemMacro(&quot;${s.name}&quot;)"/>`;    
-                }
-
-                template += `</div>`
-            }                
             
-            template += `</div>`;
-
-            return template;
+            return {"book": book, "powers": powers};
         }
 
         function getActiveFeats(feats) {
@@ -275,14 +270,20 @@ class ActionDialog extends Application {
             return passiveFeats;
         }
 
-        function getFeatsTemplate(activeFeats, passiveFeats) {
+        function getFeatsTemplate(feats) {
+            if (feats.length == 0)
+                return "";
+
+            let activeFeats = getActiveFeats(feats);
+            let passiveFeats =  getPassiveFeats(feats);
+
             let template = `<div id="actionFeats" class="show-action-tabcontent">
                                 <label>Feats</label>`
 
             if (activeFeats.length > 0) {
                 template += `<div><label>Active</label>`
                 for (let f of activeFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="game.dnd5e.rollItemMacro('${f.name}')"/>`;    
+                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
                 }
                 template += `</div>`
             }
@@ -290,7 +291,7 @@ class ActionDialog extends Application {
             if (passiveFeats.length > 0) {
                 template += `<div><label>Passive: </label>`
                 for (let f of passiveFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="game.dnd5e.rollItemMacro('${f.name}')"/>`;    
+                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
                 }
                 template += `</div>`
             }
@@ -300,12 +301,15 @@ class ActionDialog extends Application {
             return template;
         }
 
-        function getConsumablesTemplate(cons) {
-            let template = `<div id="actionConsumables" class="show-action-tabcontent">
-                                <label>Consumables:</label>`
+        function getConsumablesTemplate(consumables) {          
+            if (consumables.length == 0)
+                return "";
 
-            for (let c of cons) {
-                template += `<input id="consumable-${c.name}" type="button" value="${c.name}" onclick="game.dnd5e.rollItemMacro('${c.name}')"/>`;    
+            let template = `<div id="actionConsumables" class="show-action-tabcontent">
+                <label>Consumables:</label>`
+
+            for (let c of consumables) {
+                template += `<input id="consumable-${c.name}" type="button" value="${c.name}" onclick="${getRollItemMacro(c.name)}')"/>`;    
             }            
             
             template += `</div>`;
@@ -365,13 +369,18 @@ class ActionDialog extends Application {
             </style>`
         }
 
+        function getRollItemMacro(itemName) {
+            return `game.dnd5e.rollItemMacro(&quot;${itemName}&quot;)`;
+        }
+
         // set this to true if you want results whispered to the GM
         let targetActor = getTargetActor();
-        var innerContent = "";
+        let innerContent = "";
 
         if (targetActor != null || targetActor) {
             this.options.title = `${targetActor.name} actions`;
-            innerContent = getContentTemplate(targetActor);
+            let actionLists = getActionLists(targetActor);
+            innerContent = getContentTemplate(actionLists);
         } else { throw new Error("No token selected or character found"); }
         
         var content =  `<div id="actionDialog">${innerContent}</div>`;
