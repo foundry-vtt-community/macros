@@ -66,12 +66,12 @@ class ActionDialog extends Application {
         }
 
         function getActionLists(targetActor) {
-            let equipment = targetActor.data.items.filter(i => i.type !="consumable" && i.data.equipped);
-            let spells = targetActor.data.items.filter(i => i.type == "spell" && i.data.preparation.prepared);
+            let equippedItems = targetActor.data.items.filter(i => i.type !="consumable" && i.data.equipped);
+            let preparedSpells = targetActor.data.items.filter(i => i.type == "spell" && i.data.preparation.prepared);
             let feats = targetActor.data.items.filter(i => i.type == "feat");
             let consumables = targetActor.data.items.filter(i => i.type == "consumable");
 
-            return {"equipment": equipment,"spells": spells, "feats": feats,"consumables": consumables};
+            return {"equipment": equippedItems,"spells": preparedSpells, "feats": feats,"consumables": consumables};
         }
 
         function getContentTemplate(actionLists) {
