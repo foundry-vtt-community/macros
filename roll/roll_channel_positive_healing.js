@@ -15,7 +15,7 @@ function channelPositive() {
     return;
   }
   const clericLevel = caster.data.data.classes.cleric.level;
-  const rollString = `${(clericLevel + 1) / 2}d6`;
+  const rollString = `${Math.floor((clericLevel + 1) / 2)}d6`;
 
   const roll = new Roll(rollString);
   roll.roll();
