@@ -79,9 +79,9 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!	BASIC LOCALIZATION SUPPORT				Sets names of D&D5E features as constants instead of hardcoding to allow easier translation.
 
-const barbClassName = 'Barbarian';
-const rageFeatureName = 'Rage';
-const bearTotemFeatureName = 'Totem Spirit: Bear';
+				const barbClassName = 'Barbarian';
+				const rageFeatureName = 'Rage';
+				const bearTotemFeatureName = 'Totem Spirit: Bear';
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //declarations
