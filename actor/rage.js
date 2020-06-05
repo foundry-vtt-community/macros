@@ -20,6 +20,24 @@
 //						14. (2020/06/04) Added basic localization support to allow searching for translated class features
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!	Bonus Tip 1: Bear Totem Spirit Barbs
+//!!!	If you chose the Spirit Seeker Primal path, and at level 3 you chose the Bear Totem Spirit (resistance to all non-psychic damage), 
+//!!!	in your 5E character sheet, double-check that the name of your Totem Spirit feature to EXACTLY "Totem Spirit: Bear".  Note: Importing
+//!!!	via VTTA Beyond Integration uses this name already. The macro then automatically adds the extra Bear Totem Spirit resistances.
+//!!!
+//!!!	Bonus Tip 2: Thrown Weapons
+//!!!	When a barb throws a weapon using strength, typically a javelin but also possibly a dagger, dart, sword, bar table etc, the rage bonus
+//!!!	should not be added because it is a ranged attack. However, D&D5E calls javelins and daggers Melee Weapons, because technically they
+//!!!	are both. To solve this issue, if you always throw the weapon, click the weapon's details and change the attack type to "Ranged Weapon
+//!!!	Attack" in the Action Type dropdown. If you want, you can add a second copy of the item (with no weight/quantity) to use for meleeing.
+//!!!
+//!!!	Bonus Tip 3: The Rage Condition                                                                                                                       
+//!!!	If you use the Combat Utility Belt module's Condition Lab, try adding a condition called "Raging" with the same icon 			   
+//!!!	as the optional rage icon overlay, 'icons/svg/explosion.svg' by default.  See OPTIONAL TOKEN/MACRO ICONS section below.
+//!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!   OPTIONAL TOKEN ICON-	On by default. If a path to a rage icon is defined, it displays like a condition on the raging barbarian.
 //!!!							To use a different icon, manually change the filepath below or leave it empty ('') to disable the effect.
 //!!!
@@ -56,24 +74,6 @@
 
 				//You must update the following constant to this macro's exact for the macro icon toggling to work.
 				const rageMacroName = 'Rage';
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!	Bonus Tip 1: Bear Totem Spirit Barbs
-//!!!	If you chose the Spirit Seeker Primal path, and at level 3 you chose the Bear Totem Spirit (resistance to all non-psychic damage), 
-//!!!	in your 5E character sheet, double-check that the name of your Totem Spirit feature to EXACTLY "Totem Spirit: Bear".  Note: Importing
-//!!!	via VTTA Beyond Integration uses this name already. The macro then automatically adds the extra Bear Totem Spirit resistances.
-//!!!
-//!!!	Bonus Tip 2: Thrown Weapons
-//!!!	When a barb throws a weapon using strength, typically a javelin but also possibly a dagger, dart, sword, bar table etc, the rage bonus
-//!!!	should not be added because it is a ranged attack. However, D&D5E calls javelins and daggers Melee Weapons, because technically they
-//!!!	are both. To solve this issue, if you always throw the weapon, click the weapon's details and change the attack type to "Ranged Weapon
-//!!!	Attack" in the Action Type dropdown. If you want, you can add a second copy of the item (with no weight/quantity) to use for meleeing.
-//!!!
-//!!!	Bonus Tip 3: The Rage Condition                                                                                                                       
-//!!!	If you use the Combat Utility Belt module's Condition Lab, try adding a condition called "Raging" with the same icon 			   
-//!!!	as the optional rage icon overlay, 'icons/svg/explosion.svg' by default.  See OPTIONAL TOKEN/MACRO ICONS section above.
-//!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
