@@ -14,7 +14,7 @@ class ActionDialog extends Application {
 
     activateListeners(html) {
         super.activateListeners(html);
-        const buttons = html.find("button[class='show-action-tablink']");
+        const buttons = html.find("button[class='show-action-button']");
         
         if (buttons.length > 0)
             buttons.on("click", event => {this.openActionTab(event, html);});
@@ -25,20 +25,20 @@ class ActionDialog extends Application {
         var i, tabcontent, tablinks;
       
         // Get all elements with class="tabcontent" and hide them
-        tabcontent = document.getElementsByClassName("show-action-tabcontent");
+        tabcontent = document.getElementsByClassName("show-action-category");
         for (let t of tabcontent) {
           t.style.display = "none";
         }
       
         // Get all elements with class="tablinks" and remove the class "active"
-        tablinks = document.getElementsByClassName("show-action-tablink");
+        tablinks = document.getElementsByClassName("show-action-button");
         for (let t of tablinks) {
           t.className = t.className.replace(" active", "");
         }
       
         // Show the current tab, and add an "active" class to the button that opened the tab
-        if (event.target.value == "actionAll") {
-            tabcontent = document.getElementsByClassName("show-action-tabcontent");
+        if (event.target.value == "showActionAll") {
+            tabcontent = document.getElementsByClassName("show-action-category");
             for (let t of tabcontent) {
                 t.style.display= "block";
             }
@@ -65,53 +65,26 @@ class ActionDialog extends Application {
             }
         }
 
-        function getActionLists(targetActor) {
-            let equippedItems = targetActor.data.items.filter(i => i.type !="consumable" && i.data.equipped);
-            let preparedSpells = targetActor.data.items.filter(i => i.type == "spell" && i.data.preparation.prepared);
-            let feats = targetActor.data.items.filter(i => i.type == "feat");
+        function buildActionsList(targetActor) {
+            let equipped = targetActor.data.items.filter(i => i.type !="consumable" && i.data.equipped);
+            let activeEquipped = getActiveEquipment(equipped);
+            let weapons = activeEquipped.filter(i => i.type == "weapon");
+            let equipment = activeEquipped.filter(i => i.type == "equipment");
+
+            let other = activeEquipped.filter(i => i.type != "weapon" && i.type != "equipment");
             let consumables = targetActor.data.items.filter(i => i.type == "consumable");
+            let items = { "weapons": weapons, "equipment": equipment, "other": other, "consumables": consumables };
 
-            return {"equipment": equippedItems,"spells": preparedSpells, "feats": feats,"consumables": consumables};
-        }
+            let preparedSpells = targetActor.data.items.filter(i => i.type == "spell" && i.data.preparation.prepared);
+            let spells = categoriseSpells(preparedSpells);
 
-        function getContentTemplate(actionLists) {
-            let template = `
-            <div>
-                 ${getCssStyle()}
-                <div class="show-action-form-group">
-                    <div class="show-action-tabs">
-                        <button value="actionEquipment" class="show-action-tablink">Equipment</button>
-                        <button value="actionSpells" class="show-action-tablink">Spells</button>
-                        <button value="actionFeats" class="show-action-tablink">Feats</button>
-                        <button value="actionConsumables" class="show-action-tablink">Consumables</button>
-                        <button value="actionAll" class="show-action-tablink">Show all</button>
-                    </div>
-                    </div>
-                    <div class="show-action-actions">
-                        ${getEquipmentTemplate(actionLists["equipment"])}
-                        ${getSpellsTemplate(actionLists["spells"])}
-                        ${getFeatsTemplate(actionLists["feats"])}
-                        ${getConsumablesTemplate(actionLists["consumables"])}
-                    </div>
-                </div>
-            </div>`;
+            let allFeats = targetActor.data.items.filter(i => i.type == "feat");
+            let activeFeats = getActiveFeats(allFeats);
+            let passiveFeats =  getPassiveFeats(allFeats);
+            let feats = {"active": activeFeats, "passive": passiveFeats};
             
-            return template;
-        }
 
-                // Gets a template of abilities or skills, based on the type of check chosen.
-        function getEquipmentTemplate(equipment) {
-            if (equipment.length == 0)
-                return "";
-            
-            let equipped = getActiveEquipment(equipment);
-            let template = getCategorisedEquipmentTemplate(
-                    equipped.filter(i => i.type == "weapon"),
-                    equipped.filter(i => i.type == "equipment"),
-                    equipped.filter(i => i.type != "weapon" && i.type != "equipment")
-                    );
-
-            return template;
+            return { "equipment": items,"spells": spells, "feats": feats };
         }
 
         function getActiveEquipment(equipment) {
@@ -132,93 +105,7 @@ class ActionDialog extends Application {
             return activeEquipment;
         }
 
-        // Gets a template of abilities or skills, based on the type of check chosen.
-        function getCategorisedEquipmentTemplate(weapons, armor, other) {
-            let template = `<div id="actionEquipment" class="show-action-tabcontent">
-                                <div class="show-action-tabcontent-title">Equipment</div>`
-
-            if (weapons.length > 0) {
-                template += `<div class="show-action-tabcontent-subtitle">Weapons</div>
-                <div>`;
-                for (let w of weapons) {
-                    template += `<input id="weapon-${w.name}" type="button" value="${w.name}" onclick="${getRollItemMacro(w.name)}"/>`;    
-                } 
-                template += `</div>`;
-            }
-
-            if (armor.length > 0) {
-                template += `<div class="show-action-tabcontent-subtitle">Equipment</div>
-                    <div>`;
-                for (let a of armor) {
-                    template += `<input id="armor-${a.name}" type="button" value="${a.name}" onclick="${getRollItemMacro(a.name)}"/>`;    
-                }
-                template += `</div>`;       
-            }
-
-            if (other.length > 0) {
-                template += `<div class="show-action-tabcontent-subtitle">Other</div>
-                <div>`;
-                for (let o of other) {
-                    template += `<input id="equipment-other-${o.name}" type="button" value="${o.name}" onclick="${getRollItemMacro(o.name)}"/>`;    
-                }
-                template += `</div>`;      
-            }  
-            
-            template += `</div>`;
-
-            return template;
-        }
-
-        // Gets a template of abilities or skills, based on the type of check chosen.
-        function getSpellsTemplate(spells) {
-            if (spells.length == 0)
-                return "";
-                
-            let template = `<div id="actionSpells" class="show-action-tabcontent">
-                <div class="show-action-tabcontent-title">Spells</div>`;  
-
-            let magic = getSpellbookAndPowers(spells);
-
-            let powers = Object.entries(magic["powers"]);
-            if (powers.length > 0) {
-                for (let [name, entries] of powers) {                    
-                    template += `<div class="show-action-tabcontent-subtitle">${name}</div>
-                        <div>`;
-         
-                    for (let p of entries) {
-                        template += `<input id="spell-${p.name}" type="button" value="${p.name}" onclick="${getRollItemMacro(p.name)}"/>`;    
-                    }
-        
-                    template += `</div>`
-                }
-            }
-                
-            let spellbook = Object.entries(magic["book"]);
-            if (spellbook.length > 0) {
-                for (let [level, entries] of spellbook) {
-
-                    if (level == 0) {
-                        template += `<div class="show-action-tabcontent-subtitle">Cantrips</div>
-                        <div>`
-                    } else {
-                        template += `<div class="show-action-tabcontent-subtitle">Level ${level}</div>
-                        <div>`
-                    }
-
-                    for (let s of entries) {
-                        template += `<input id="spell-${s.name}" type="button" value="${s.name}" onclick="${getRollItemMacro(s.name)}"/>`;    
-                    }
-    
-                    template += `</div>`
-                }   
-            }
-            
-            template += `</div>`;
-
-            return template;
-        }
-
-        function getSpellbookAndPowers(spells) {
+        function categoriseSpells(spells) {
             let powers = {};
             let book = {}
 
@@ -246,40 +133,7 @@ class ActionDialog extends Application {
                 return book;
             }, {});
             
-            return {"book": book, "powers": powers};
-        }
-        
-        function getFeatsTemplate(feats) {
-            if (feats.length == 0)
-                return "";
-
-            let activeFeats = getActiveFeats(feats);
-            let passiveFeats =  getPassiveFeats(feats);
-
-            let template = `<div id="actionFeats" class="show-action-tabcontent">
-                                <div class="show-action-tabcontent-title">Feats</div>`
-
-            if (activeFeats.length > 0) {
-                template += `<div class="show-action-tabcontent-subtitle">Active</div>
-                    <div>`
-                for (let f of activeFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
-                }
-                template += `</div>`
-            }
-
-            if (passiveFeats.length > 0) {
-                template += `<div class="show-action-tabcontent-subtitle">Passive</div>
-                    <div>`
-                for (let f of passiveFeats) {
-                    template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
-                }
-                template += `</div>`
-            }
-            
-            template += `</div>`;
-
-            return template;
+            return {"book": Object.entries(book), "powers": Object.entries(powers)};
         }
 
         function getActiveFeats(feats) {
@@ -296,7 +150,7 @@ class ActionDialog extends Application {
                 return false;
             });
 
-            return activeFeats;
+            return Object.entries(activeFeats);
         }
 
         function getPassiveFeats(feats) {
@@ -313,21 +167,130 @@ class ActionDialog extends Application {
                 return true;
             });
 
-            return passiveFeats;
+            return Object.entries(passiveFeats);
         }
 
-        function getConsumablesTemplate(consumables) {          
-            if (consumables.length == 0)
+        function getContentTemplate(actions) {
+            let template = `
+            <div>
+                 ${getCssStyle()}
+                <div class="show-action-form-group">
+                    <div class="show-action-buttons">
+                        <button value="showActionItems" class="show-action-button">Items</button>
+                        <button value="showActionSpells" class="show-action-button">Spells</button>
+                        <button value="showActionFeats" class="show-action-button">Feats</button>
+                        <button value="showActionAll" class="show-action-button">Show all</button>
+                    </div>
+                    </div>
+                    <div class="show-action-categories">
+                        <div id="showActionItems" class="show-action-category">
+                            ${getItemsTemplate(actions.equipment)}
+                        </div>
+                        <div id="showActionSpells" class="show-action-category">
+                            ${getSpellsTemplate(actions.spells)}
+                        <div id="showActionFeats" class="show-action-category">
+                            ${getFeatsTemplate(actions.feats)}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            
+            return template;
+        }
+
+                // Gets a template of abilities or skills, based on the type of check chosen.
+        function getItemsTemplate(items) {
+            if (items.weapons.length + items.equipment.length + items.other.length + items.consumables.length === 0)
                 return "";
 
-            let template = `<div id="actionConsumables" class="show-action-tabcontent">
-                <div class="show-action-tabcontent-title">Consumables</div>`
+            let template = `<div id="actionItems" class="show-action-tabcontent">
+                                <div class="show-action-tabcontent-title">Items</div>
+                                    ${getItemsCategoryTemplate("Weapons", items.weapons)}
+                                    ${getItemsCategoryTemplate("Equipment", items.equipment)}
+                                    ${getItemsCategoryTemplate("Other", items.other)}
+                                    ${getItemsCategoryTemplate("Consumables", items.consumables)}
+                                </div>
+                            </div>`;
 
-            for (let c of consumables) {
-                template += `<input id="consumable-${c.name}" type="button" value="${c.name}" onclick="${getRollItemMacro(c.name)}"/>`;    
-            }            
-            
+            return template;
+        }
+
+        function getSpellsTemplate(spells) {                
+            let template = `<div id="actionSpells" class="show-action-tabcontent">
+                                <div class="show-action-tabcontent-title">Spells</div>
+                                    ${getSpellsCategoryTemplate(spells.powers)}
+                                    ${getSpellsCategoryTemplate(spells.book)}
+                                </div>
+                            </div>`;
+
+            return template;
+        }
+        
+        function getFeatsTemplate(feats) {
+            if (feats.active.length + feats.passive.length === 0)
+                return "";
+
+            let template = `<div id="actionFeats" class="show-action-tabcontent">
+                                <div class="show-action-tabcontent-title">Feats</div>
+                                    ${getFeatsCategoryTemplate("Active", feats.active)}
+                                    ${getFeatsCategoryTemplate("Passive", feats.passive)}
+                                </div>
+                            </div>`;
+
+            return template;
+        }
+
+        function getItemsCategoryTemplate(title, items) {
+            if (items.length === 0)
+                return "";
+
+            let template = `<div class="show-action-tabcontent-subtitle">${title}</div>
+                            <div class="show-action-tabcontent-actions">`;
+            for (let i of items) {
+                template += `<input id="weapon-${i.name}" type="button" value="${i.name}" onclick="${getRollItemMacro(i.name)}"/>`;    
+            } 
+
             template += `</div>`;
+
+            return template;
+        }
+
+        function getSpellsCategoryTemplate(spells) {
+            if (spells.length === 0)
+                return "";
+
+            let template = "";
+
+            for (let [level, entries] of spells) {
+                console.log(isNumber(level.toString()));
+                let subtitle = !isNumber(level) ? level : (level === 0 ? `Cantrips` : `Level ${level}`);
+
+                template += `<div class="show-action-tabcontent-subtitle">${subtitle}</div>
+                                <div class="show-action-tabcontent-actions">`;
+        
+                for (let s of entries) {
+                    template += `<input id="spell-${s.name}" type="button" value="${s.name}" onclick="${getRollItemMacro(s.name)}"/>`;    
+                }
+    
+                template += `</div>`;
+            }
+            
+            return template;
+        }
+
+        function getFeatsCategoryTemplate(subtitle, feats) {
+            if (feats.length === 0)
+                return "";
+            
+            let template = `<div class="show-action-tabcontent-subtitle">${subtitle}</div>
+                            <div class="show-action-tabcontent-actions">`
+                            
+            for (let [index, f] of feats) {
+                template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
+            }
+
+            template += `</div>`
+            
 
             return template;
         }
@@ -335,13 +298,13 @@ class ActionDialog extends Application {
         function getCssStyle() {
             return `
             <style type="text/css">
-            .show-action-tabs {
+            .show-action-buttons {
                 display: grid;
                 grid-template-columns: repeat(5, 1fr);
                 grid-gap: 10px;
             }
 
-            .show-action-tabs button {
+            .show-action-buttons button {
                 width: auto;
                 height: auto;
                 background-color: #eee;
@@ -355,16 +318,16 @@ class ActionDialog extends Application {
               }
                             
               /* Change background color of buttons on hover */
-              .show-action-tabs button:hover {
+              .show-action-buttons button:hover {
                 background-color: #ddd;
               }
               
               /* Create an active/current tablink class */
-              .show-action-tabs button.active {
+              .show-action-buttons button.active {
                 background-color: #ccc;
               }
 
-              .show-action-actions {
+              .show-action-categories {
                 clear: both;
               }
               
@@ -411,7 +374,7 @@ class ActionDialog extends Application {
 
         if (targetActor != null || targetActor) {
             this.options.title = `${targetActor.name} actions`;
-            let actionLists = getActionLists(targetActor);
+            let actionLists = buildActionsList(targetActor);
             innerContent = getContentTemplate(actionLists);
         } else {
             ui.notifications.error("No token selected or user character found.");
