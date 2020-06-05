@@ -1,8 +1,8 @@
-//	DISCLAIMER:			This s an evolved version of the original D&D 5e Rage Macro masterwork written by Felix#6196.
+//		DISCLAIMER:		This macro is an evolved version of the original D&D 5e Rage Macro masterwork written by Felix#6196.
 //						Norc#5108 is now maintaining this macro along with continued support from Felix.
 //
 //
-//	Updates:			1. 	Fixed errors resulting from declarations of "actor" and "token" in a script macro. 
+//		Updates:		1. 	Fixed errors resulting from declarations of "actor" and "token" in a script macro. 
 //						2. 	Added automatic Totem Spirit: Bear detection and resistance application 
 //							PLEASE NOTE: A minor update to the Totem Spirit item's name in the character sheet is needed if 
 //							the VTTA Beyond Integration was not used to create sheet. See Bonus Tip 1 below
@@ -16,8 +16,8 @@
 //						10.	(2020/05/30) Fixed rage damage formula again...
 //						11.	(2020/05/30) Added basic support for non-strength Based barbarians (Dex, Hexblade)
 //						12.	(2020/05/30) Added optional ability to toggle the icon and name of the macro itself based on current raging state.
-//						13.	(2020/06/04) Fixed bug with experimental macro name/icon toggle only by renaming "actor" and "token"
-//						14.	(2020/06/04) Added basic localization support to allow searching for translated class features
+//						13. (2020/06/04) Fixed bug with experimental macro name/icon toggle only by renaming "actor" and "token"
+//						14. (2020/06/04) Added basic localization support for messages and to allow searching for translated class features
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!	Bonus Tip 1: Bear Totem Spirit Barbs
@@ -33,7 +33,7 @@
 //!!!
 //!!!	Bonus Tip 3: The Rage Condition                                                                                                                       
 //!!!	If you use the Combat Utility Belt module's Condition Lab, try adding a condition called "Raging" with the same icon 			   
-//!!!	as the optional rage icon overlay, 'icons/svg/explosion.svg' by default.  See OPTIONAL TOKEN/MACRO ICONS section below.
+//!!!	as the optional rage icon overlay, 'icons/svg/explosion.svg' by default.  See EXPERIMENTAL MACRO ICON/NAME TOGGLE section below.
 //!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -41,7 +41,7 @@
 //!!!   OPTIONAL TOKEN ICON-	On by default. If a path to a rage icon is defined, it displays like a condition on the raging barbarian.
 //!!!							To use a different icon, manually change the filepath below or leave it empty ('') to disable the effect.
 //!!!
-				const rageIconPath = 'icons/svg/explosion.svg';
+const rageIconPath = 'icons/svg/explosion.svg';
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -72,16 +72,8 @@
 				//To use a different icon, manually change the filepath here
 				const stopRageIconPath = 'icons/svg/unconscious.svg';
 
-				//You must update the following constant to this macro's exact for the macro icon toggling to work.
+				//You must update the following constant to this macro's exact name for the macro icon toggling to work.
 				const rageMacroName = 'Rage';
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!	BASIC LOCALIZATION SUPPORT				Sets names of D&D5E features as constants instead of hardcoding to allow easier translation.
-
-				const barbClassName = 'Barbarian';
-				const rageFeatureName = 'Rage';
-				const bearTotemFeatureName = 'Totem Spirit: Bear';
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //declarations
@@ -93,6 +85,20 @@ let toggleResult = false;
 let macroActor = actor;
 let macroToken = token;
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!	BASIC LOCALIZATION SUPPORT				Sets names of D&D5E features as constants instead of hardcoding to allow easier translation.
+//!!!											Sets error messages as constants also for easier translation.
+const barbClassName = 'Barbarian';
+const rageFeatureName = 'Rage';
+const bearTotemFeatureName = 'Totem Spirit: Bear';
+
+const errorSelectBarbarian = 'Please select a single barbarian token.';;
+const errorNoRage = ' does not have any rage left, time for a long rest!';
+const warnMacroNotFound = ' is not a valid macro name, please fix. Rage toggle successful but unable to alter macro.';
+const errorSelectToken = 'Please select a token.';
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 //main
 //check to see if Actor exists and is a barbarian
 if (macroActor !== undefined && macroActor !== null) {
@@ -100,7 +106,7 @@ if (macroActor !== undefined && macroActor !== null) {
 	// get the barbarian class item
 	barb = macroActor.items.find(i => i.name === `${barbClassName}`);
 	if (barb == undefined) {
-		ui.notifications.warn("Please select a single barbarian token.");
+		ui.notifications.warn(`${errorSelectBarbarian}`);
 	}
 	if (barb !== undefined && barb !== null) {
 		chatMsg = '';
@@ -135,7 +141,7 @@ if (macroActor !== undefined && macroActor !== null) {
 					macroActor.update(obj);
 				}
 				if (!hasAvailableResource) {
-					ui.notifications.error(`${macroActor.name} does not have any rage left, time for a long rest!`);
+					ui.notifications.error(`${macroActor.name} ${errorNoRage}`);
 					noRage=true;
 				}
 				if (macroActor.sheet.rendered) {
@@ -225,11 +231,11 @@ if (macroActor !== undefined && macroActor !== null) {
 				}
 				rageMacro.update(obj);
 			} else {
-			if (toggleMacro == true) ui.notifications.warn("Rage macro named " + `${rageMacroName}` + " not found. Rage toggle successful but unable to toggle macro icon.");
+			if (toggleMacro == true) ui.notifications.warn(`${rageMacroName} ${warnMacroNotFound}`);
 			}	
 		}
 	}
-} else ui.notifications.warn("Please select a token.");
+} else ui.notifications.warn(errorSelectToken);
 // write to chat if needed:
 if (chatMsg !== '') {
 	let chatData = {
