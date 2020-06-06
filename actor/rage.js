@@ -16,6 +16,26 @@
 //						10.	(2020/05/30) Fixed rage damage formula again...
 //						11.	(2020/05/30) Added basic support for non-strength Based barbarians (Dex, Hexblade)
 //						12.	(2020/05/30) Added optional ability to toggle the icon and name of the macro itself based on current raging state.
+//						13. (2020/06/04) Fixed bug with experimental macro name/icon toggle only by renaming "actor" and "token"
+//						14. (2020/06/04) Added basic localization support for messages and to allow searching for translated class features
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!	Bonus Tip 1: Bear Totem Spirit Barbs
+//!!!	If you chose the Spirit Seeker Primal path, and at level 3 you chose the Bear Totem Spirit (resistance to all non-psychic damage), 
+//!!!	in your 5E character sheet, double-check that the name of your Totem Spirit feature to EXACTLY "Totem Spirit: Bear".  Note: Importing
+//!!!	via VTTA Beyond Integration uses this name already. The macro then automatically adds the extra Bear Totem Spirit resistances.
+//!!!
+//!!!	Bonus Tip 2: Thrown Weapons
+//!!!	When a barb throws a weapon using strength, typically a javelin but also possibly a dagger, dart, sword, bar table etc, the rage bonus
+//!!!	should not be added because it is a ranged attack. However, D&D5E calls javelins and daggers Melee Weapons, because technically they
+//!!!	are both. To solve this issue, if you always throw the weapon, click the weapon's details and change the attack type to "Ranged Weapon
+//!!!	Attack" in the Action Type dropdown. If you want, you can add a second copy of the item (with no weight/quantity) to use for meleeing.
+//!!!
+//!!!	Bonus Tip 3: The Rage Condition                                                                                                                       
+//!!!	If you use the Combat Utility Belt module's Condition Lab, try adding a condition called "Raging" with the same icon 			   
+//!!!	as the optional rage icon overlay, 'icons/svg/explosion.svg' by default.  See EXPERIMENTAL MACRO ICON/NAME TOGGLE section below.
+//!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!   OPTIONAL TOKEN ICON-	On by default. If a path to a rage icon is defined, it displays like a condition on the raging barbarian.
@@ -42,9 +62,9 @@ const rageIconPath = 'icons/svg/explosion.svg';
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!	EXPERIMENTAL MACRO ICON/NAME TOGGLE		If enabled, the macro icon and name toggles based on the barbarian's rage state. 
 //!!!											CAUTIONS: 	1. 	This feature is off by default and is intended for ADVANCED USERS ONLY. 
-//!!! 														2. 	Requires configuration using "The Furnace" module for a player to run!
+//!!!														2. 	Requires configuration using "The Furnace" module for a player to run!
 //!!!															The GM needs to grant The Furnace's "Run as GM" permission for this macro.
-//!!!															3. 	Works best with only one barbarian using this feature at a time.
+//!!!														3. 	Works best with only one barbarian using this feature at a time.
 
 				//To auto-toggle the macro's icon/name, override toggleMacro to true below.
 				const toggleMacro = false;
@@ -52,26 +72,8 @@ const rageIconPath = 'icons/svg/explosion.svg';
 				//To use a different icon, manually change the filepath here
 				const stopRageIconPath = 'icons/svg/unconscious.svg';
 
-				//You must update the following constant to this macro's exact for the macro icon toggling to work.
+				//You must update the following constant to this macro's exact name for the macro icon toggling to work.
 				const rageMacroName = 'Rage';
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!	Bonus Tip 1: Bear Totem Spirit Barbs
-//!!!	If you chose the Spirit Seeker Primal path, and at level 3 you chose the Bear Totem Spirit (resistance to all non-psychic damage), 
-//!!!	in your 5E character sheet, double-check that the name of your Totem Spirit feature to EXACTLY "Totem Spirit: Bear".  Note: Importing
-//!!!	via VTTA Beyond Integration uses this name already. The macro then automatically adds the extra Bear Totem Spirit resistances.
-//!!!
-//!!!	Bonus Tip 2: Thrown Weapons
-//!!!	When a barb throws a weapon using strength, typically a javelin but also possibly a dagger, dart, sword, bar table etc, the rage bonus
-//!!!	should not be added because it is a ranged attack. However, D&D5E calls javelins and daggers Melee Weapons, because technically they
-//!!!	are both. To solve this issue, if you always throw the weapon, click the weapon's details and change the attack type to "Ranged Weapon
-//!!!	Attack" in the Action Type dropdown. If you want, you can add a second copy of the item (with no weight/quantity) to use for meleeing.
-//!!!
-//!!!	Bonus Tip 3: The Rage Condition                                                                                                                       
-//!!!	If you use the Combat Utility Belt module's Condition Lab, try adding a condition called "Raging" with the same icon 			   
-//!!!	as the optional rage icon overlay, 'icons/svg/explosion.svg' by default.  See OPTIONAL TOKEN/MACRO ICONS section above.
-//!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //declarations
@@ -80,74 +82,89 @@ let chatMsg = '';
 let bear = '';
 let noRage = false;
 let toggleResult = false;
+let macroActor = actor;
+let macroToken = token;
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!	BASIC LOCALIZATION SUPPORT				Sets names of D&D5E features as constants instead of hardcoding to allow easier translation.
+//!!!											Sets error messages as constants also for easier translation.
+const barbClassName = 'Barbarian';
+const rageFeatureName = 'Rage';
+const bearTotemFeatureName = 'Totem Spirit: Bear';
+
+const errorSelectBarbarian = 'Please select a single barbarian token.';;
+const errorNoRage = ' does not have any rage left, time for a long rest!';
+const warnMacroNotFound = ' is not a valid macro name, please fix. Rage toggle successful but unable to alter macro.';
+const errorSelectToken = 'Please select a token.';
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 //main
 //check to see if Actor exists and is a barbarian
-if (actor !== undefined && actor !== null) {
+if (macroActor !== undefined && macroActor !== null) {
 				
 	// get the barbarian class item
-	barb = actor.items.find(i => i.name === 'Barbarian');
+	barb = macroActor.items.find(i => i.name === `${barbClassName}`);
 	if (barb == undefined) {
-		ui.notifications.warn("Please select a single barbarian token.");
+		ui.notifications.warn(`${errorSelectBarbarian}`);
 	}
 	if (barb !== undefined && barb !== null) {
 		chatMsg = '';
 		let enabled = false;
 		// store the state of the rage toggle in flags
-		if (actor.data.flags.rageMacro !== null && actor.data.flags.rageMacro !== undefined) {
+		if (macroActor.data.flags.rageMacro !== null && macroActor.data.flags.rageMacro !== undefined) {
 			enabled = true;
 		}
 		
 		// if rage is active, disable it
 		if (enabled) {
-			chatMsg = `${actor.name} is no longer raging.`;
+			chatMsg = `${macroActor.name} is no longer raging.`;
 			// reset resistances and melee weapon attack bonus
 			let obj = {};
 			obj['flags.rageMacro'] = null;
-			obj['data.traits.dr'] = actor.data.flags.rageMacro.oldResistances;
-			let test=0;			
-			obj['data.bonuses.mwak.damage'] = actor.data.flags.rageMacro.oldDmg;	
-			actor.update(obj);
+			obj['data.traits.dr'] = macroActor.data.flags.rageMacro.oldResistances;		
+			obj['data.bonuses.mwak.damage'] = macroActor.data.flags.rageMacro.oldDmg;	
+			macroActor.update(obj);
 			
 		// if rage is disabled, enable it
 		} else {
 			if (deductResource) {
 				let hasAvailableResource = false;
-				let newResources = duplicate(actor.data.data.resources)				
+				let newResources = duplicate(macroActor.data.data.resources)				
 				let obj = {}
-				// Look for Resources under the Core actor data
-				let resourceKey = Object.keys(actor.data.data.resources).filter(k => actor.data.data.resources[k].label === "Rage").shift();
-				if (resourceKey && (actor.data.data.resources[resourceKey].value > 0 || !preventNegativeResource)) {
+				// Look for Resources under the Core macroActor data
+				let resourceKey = Object.keys(macroActor.data.data.resources).filter(k => macroActor.data.data.resources[k].label === `${rageFeatureName}`).shift();
+				if (resourceKey && (macroActor.data.data.resources[resourceKey].value > 0 || !preventNegativeResource)) {
 					hasAvailableResource = true;
 					newResources[resourceKey].value--;					
 					obj['data.resources'] = newResources 
-					actor.update(obj);
+					macroActor.update(obj);
 				}
 				if (!hasAvailableResource) {
-					ui.notifications.error(`${actor.name} does not have any rage left, time for a long rest!`);
+					ui.notifications.error(`${macroActor.name} ${errorNoRage}`);
 					noRage=true;
 				}
-				if (actor.sheet.rendered) {
-					// Update the actor sheet if it is currently open
-					actor.render(true);
+				if (macroActor.sheet.rendered) {
+					// Update the macroActor sheet if it is currently open
+					macroActor.render(true);
 				}
 			}
 			
 			//activate rage if there is rage available, or if it is okay to rage with 0 resources
 			if (!noRage) {
-				chatMsg = `${actor.name} is RAAAAAGING!`;
+				chatMsg = `${macroActor.name} is RAAAAAGING!`;
 				// update resistance
 				let obj = {};
 				// storing old resistances in flags to restore later
 				obj['flags.rageMacro.enabled'] = true;
-				obj['flags.rageMacro.oldResistances'] = JSON.parse(JSON.stringify(actor.data.data.traits.dr));
+				obj['flags.rageMacro.oldResistances'] = JSON.parse(JSON.stringify(macroActor.data.data.traits.dr));
 				// add bludgeoning, piercing and slashing resistance
-				let newResistance = duplicate(actor.data.data.traits.dr);
+				let newResistance = duplicate(macroActor.data.data.traits.dr);
 				if (newResistance.value.indexOf('bludgeoning') === -1) newResistance.value.push('bludgeoning');
 				if (newResistance.value.indexOf('piercing') === -1) newResistance.value.push('piercing');
 				if (newResistance.value.indexOf('slashing') === -1) newResistance.value.push('slashing');
 				//If bear totem, add bear totem resistances.
-				bear = actor.items.find(i => i.name === "Totem Spirit: Bear")
+				bear = macroActor.items.find(i => i.name === `${bearTotemFeatureName}`)
 				if (bear !== undefined && bear!== null) {
 					if (newResistance.value.indexOf('acid') === -1) newResistance.value.push('acid');
 					if (newResistance.value.indexOf('cold') === -1) newResistance.value.push('cold');
@@ -160,12 +177,12 @@ if (actor !== undefined && actor !== null) {
 					if (newResistance.value.indexOf('thunder') === -1) newResistance.value.push('thunder');
 				}
 				obj['data.traits.dr'] = newResistance;
-				actor.update(obj);
+				macroActor.update(obj);
 			
 				// For Strength barbarians, update global melee weapon attack bonus to include rage bonus
 				if (strAttacks) {
 					// Preserve old mwak damage bonus if there was one
-					let dmg = actor.data.data.bonuses.mwak.damage;
+					let dmg = macroActor.data.data.bonuses.mwak.damage;
 					if (dmg==null || dmg == undefined || dmg == '') dmg = 0;
 					obj['flags.rageMacro.oldDmg'] = JSON.parse(JSON.stringify(dmg));
 			
@@ -184,7 +201,7 @@ if (actor !== undefined && actor !== null) {
 					obj['data.bonuses.mwak.damage'] = `${dmg} + ${rageDmg}`;
 					}
 					
-					actor.update(obj);
+					macroActor.update(obj);
 				}
 			}
 		}
@@ -192,8 +209,8 @@ if (actor !== undefined && actor !== null) {
 		if (!noRage) {
 			// toggle rage icon, if rage path is defined above
 			(async () => { 
-				toggleResult = await token.toggleEffect(rageIconPath);
-				if (toggleResult == enabled) token.toggleEffect(rageIconPath);  
+				toggleResult = await macroToken.toggleEffect(rageIconPath);
+				if (toggleResult == enabled) macroToken.toggleEffect(rageIconPath);  
 			})();
 			
 			//toggle macro icon and name, if macro name is correct and stop rage icon path is defined
@@ -214,11 +231,11 @@ if (actor !== undefined && actor !== null) {
 				}
 				rageMacro.update(obj);
 			} else {
-			if (toggleMacro == true) ui.notifications.warn("Rage macro named " + `${rageMacroName}` + " not found. Rage toggle successful but unable to toggle macro icon.");
+			if (toggleMacro == true) ui.notifications.warn(`${rageMacroName} ${warnMacroNotFound}`);
 			}	
 		}
 	}
-} else ui.notifications.warn("Please select a token.");
+} else ui.notifications.warn(errorSelectToken);
 // write to chat if needed:
 if (chatMsg !== '') {
 	let chatData = {
