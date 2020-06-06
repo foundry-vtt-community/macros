@@ -39,14 +39,37 @@
     let data = getData(targetActor);
 
     const $dispOptions = $(`<div id="show-action-dropdown-bar" style="display: flex; z-index: 70; position: fixed; top: ${y}px; height: auto; left: ${x}px; background-color: #bbb">${data}</div>`).appendTo(document.body);
+<<<<<<< HEAD
     
     $(document.body).on("click.showTokenActionBar", evt => {
+=======
+
+    $(document.body).on("click.showTokenActionBar", evt => {
+        clickMacroButton(evt);
+>>>>>>> develop
         let close = clickDropdownContent(evt);
         if (close)
             cancel();
     });
 })();
 
+<<<<<<< HEAD
+=======
+function rollAbilityMacro(event, payload) {
+    let checkDetails = JSON.parse(payload);    
+    game.actors.find(a => a._id == checkDetails.actorId).rollAbility(checkDetails.checkId, {event: event});
+}
+
+function rollSkillMacro(event, payload) {
+    let checkDetails = JSON.parse(payload);    
+    game.actors.find(a => a._id == checkDetails.actorId).rollSkill(checkDetails.checkId, {event: event});
+}
+
+function rollItemMacro(event, payload) {
+    game.dnd5e.rollItemMacro(payload);
+}
+
+>>>>>>> develop
 function getTargetActor() {
     const character = game.user.character;
     if (character != null)
@@ -249,7 +272,12 @@ function getData(targetActor) {
         let template = `<div class="show-action-dropdown-content-subtitle">${title}</div>
                         <div class="show-action-dropdown-content-actions">`;
         for (let i of items) {
+<<<<<<< HEAD
             template += `<input id="weapon-${i.name}" type="button" value="${i.name}" onclick="${getRollItemMacro(i.name)}"/>`;    
+=======
+            let encodedName = encodeURIComponent(i.name);
+            template += `<button value="item.${encodedName}">${i.name}</button>`;    
+>>>>>>> develop
         } 
 
         template += `</div>`;
@@ -271,7 +299,13 @@ function getData(targetActor) {
                             <div class="show-action-dropdown-content-actions">`;
 
             for (let s of entries) {
+<<<<<<< HEAD
                 template += `<input id="spell-${s.name}" type="button" value="${s.name}" onclick="${getRollItemMacro(s.name)}"/>`;    
+=======
+                let name = s.name;
+                let encodedName = encodeURIComponent(name);
+                template += `<button value="spell.${encodedName}">${name}</button>`;    
+>>>>>>> develop
             }
 
             template += `</div>`;
@@ -288,7 +322,13 @@ function getData(targetActor) {
                         <div class="show-action-dropdown-content-actions">`
                         
         for (let [index, f] of feats) {
+<<<<<<< HEAD
             template += `<input id="feat-${f.name}" type="button" value="${f.name}" onclick="${getRollItemMacro(f.name)}"/>`;    
+=======
+            let name = f.name;
+            let encodedName = encodeURIComponent(name);
+            template += `<button value="feat.${encodedName}">${name}</button>`;    
+>>>>>>> develop
         }
 
         template += `</div>`
@@ -302,12 +342,22 @@ function getData(targetActor) {
             return "";
 
         let template = `<div class="show-action-dropdown">
+<<<<<<< HEAD
                             <button value="showActionSaves" class="show-action-dropdown-button">Saves & Ability Checks</button>
                             <div id="showActionSaves" class="show-action-dropdown-content">
                                 <div class="show-action-dropdown-content-actions">`
 
                 for (let [checkId, check] of checks) {
                     template += `<input id="check-${check}" type="button" value="${check}" onclick="${getRollAbilityCheckMacro(actorId, checkId)}">`;    
+=======
+                            <button value="showActionAbilities" class="show-action-dropdown-button">Saves & Ability Checks</button>
+                            <div id="showActionAbilities" class="show-action-dropdown-content">
+                                <div class="show-action-dropdown-content-actions">`
+
+                for (let [checkId, check] of checks) {
+                    let buttonValue = encodeURIComponent(`abilityCheck.{"actorId": "${actorId}", "checkId": "${checkId}"}`);
+                    template += `<button value="${buttonValue}">${check}</button>`;    
+>>>>>>> develop
                 }            
         
         template += `           </div>
@@ -327,7 +377,12 @@ function getData(targetActor) {
                                 <div class="show-action-dropdown-content-actions">`
 
                 for (let [checkId, check] of checks) {
+<<<<<<< HEAD
                     template += `<input id="check-${check}" type="button" value="${check}" onclick="${getRollSkillCheckMacro(actorId, checkId)}">`;    
+=======
+                    let buttonValue = encodeURIComponent(`skillCheck.{"actorId": "${actorId}", "checkId": "${checkId}"}`);
+                    template += `<button value="${buttonValue}">${check}</button>`;      
+>>>>>>> develop
                 }            
         
         template += `           </div>
@@ -397,6 +452,24 @@ function getData(targetActor) {
             .show-action-dropdown-content input:hover {
                 background-color: #f1f1f1
             }
+<<<<<<< HEAD
+=======
+
+            /* Links inside the dropdown */
+            .show-action-dropdown-content-actions button {
+                width: auto;
+                height: auto;
+                padding: 3px 5px;
+                font-size: small;
+                text-decoration: none;
+                display: inline;
+            }
+            
+            /* Change color of dropdown links on hover */
+            .show-action-dropdown-content-actions button:hover {
+                background-color: #f1f1f1
+            }
+>>>>>>> develop
             
             /* Show the dropdown menu on hover */
             .show-action-dropdown:hover .show-action-dropdown-content {
@@ -406,6 +479,7 @@ function getData(targetActor) {
         </style>`
     }
 
+<<<<<<< HEAD
     function getRollItemMacro(itemName) {
         return `game.dnd5e.rollItemMacro(&quot;${itemName}&quot;)`;
     }
@@ -418,6 +492,8 @@ function getData(targetActor) {
         return `game.actors.find(a=> a._id == &quot;${actor.id}&quot;).rollSkill(&quot;${skillId}&quot;)`;
     }
 
+=======
+>>>>>>> develop
     let innerContent = "";
 
     if (targetActor != null || targetActor) {
@@ -445,4 +521,36 @@ function clickDropdownContent(event) {
         return true;       
 
     return false;
+<<<<<<< HEAD
+=======
+}
+
+/* 
+ * I have no idea if all this decoding and encoding is dangerous, but it was the only way
+ * I could think of to manage strange weapona, feat, and item strings, or passing
+ * skill and ability checks with the actorId. :dealwithit:
+*/
+function clickMacroButton(event) {
+    if (event.target.value == undefined || event.target.value == "")
+        return;
+
+    let value = event.target.value;
+    let macroType = value.substr(0, value.indexOf('.'));
+    let payload = decodeURIComponent(value.substr(value.indexOf(".") + 1, value.length));
+    switch (macroType) {
+        case "abilityCheck":
+            rollAbilityMacro(event, payload);
+            break;
+        case "skillCheck":
+            rollSkillMacro(event, payload);
+            break;
+        case "item":
+        case "spell":
+        case "feat":
+            rollItemMacro(event, payload);
+            break;
+        default:
+            break;
+    }
+>>>>>>> develop
 }
