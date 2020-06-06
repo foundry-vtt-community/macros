@@ -404,23 +404,6 @@ function getData(targetActor) {
             .show-action-dropdown-content-subtitle {
                 font-size: small;
             }
-            
-            /* Links inside the dropdown */
-            .show-action-dropdown-content-actions input {
-                width: auto;
-                height: auto;
-                padding: 3px 5px;
-                font-size: small;
-                text-decoration: none;
-                display: inline;
-            }
-            
-            /* Change color of dropdown links on hover */
-            .show-action-dropdown-content input:hover {
-                background-color: #f1f1f1
-            }
-<<<<<<< HEAD
-=======
 
             /* Links inside the dropdown */
             .show-action-dropdown-content-actions button {
@@ -436,7 +419,6 @@ function getData(targetActor) {
             .show-action-dropdown-content-actions button:hover {
                 background-color: #f1f1f1
             }
->>>>>>> develop
             
             /* Show the dropdown menu on hover */
             .show-action-dropdown:hover .show-action-dropdown-content {
