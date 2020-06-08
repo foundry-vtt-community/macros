@@ -77,13 +77,11 @@ async function generateBar () {
     });
 }
 
-function rollAbilityMacro(event, payload) {
-    let checkDetails = JSON.parse(payload);    
+function rollAbilityMacro(event, checkDetails) {  
     game.actors.find(a => a._id == checkDetails.actorId).rollAbility(checkDetails.checkId, {event: event});
 }
 
-function rollSkillMacro(event, payload) {
-    let checkDetails = JSON.parse(payload);    
+function rollSkillMacro(event, checkDetails) {   
     game.actors.find(a => a._id == checkDetails.actorId).rollSkill(checkDetails.checkId, {event: event});
 }
 
