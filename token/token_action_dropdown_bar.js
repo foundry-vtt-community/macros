@@ -495,13 +495,14 @@ function clickMacroButton(event) {
     let value = event.target.value;
     let macroType = value.substr(0, value.indexOf('.'));
     let payload = decodeURIComponent(value.substr(value.indexOf(".") + 1, value.length));
+    var checkDetails;
     switch (macroType) {
         case "abilityCheck":
-            let checkDetails = JSON.parse(payload);
+            checkDetails = JSON.parse(payload);
             rollAbilityMacro(event, checkDetails);
             break;
         case "skillCheck":
-            let checkDetails = JSON.parse(payload);
+            checkDetails = JSON.parse(payload);
             rollSkillMacro(event, checkDetails);
             break;
         case "item":
