@@ -6,5 +6,6 @@
  
 let packName = 'dnd5e.heroes';
 let pack = game.packs.get(packName);
-let type = pack.metadata.entity.toLowerCase() + 's'; //grab the type and pluralize it.
+let type = pack.metadata.entity.toLowerCase();
+type = game[type] ? type : type + 's'; //check if the type exists, otherwise pluralize it.
 pack.index.forEach(entry => game[type].importFromCollection(packName, entry._id));
