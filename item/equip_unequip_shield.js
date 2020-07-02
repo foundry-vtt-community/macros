@@ -1,9 +1,16 @@
 /**
  * Equips/unequips an item. Make sure you change the variables at the top (as required).
+ * This script will also error check to make sure items exist and tokens are select. 
+ * Chat and token icon display options can be set as desired.
+ * Author: Zapgun
  */
 
 let itemName = 'Shield'; // <--- Change this to the *exact* item name (capitals count!)
 let sendToChat = true; // <--- Change to 'true' or 'false' to display a chat message about equipping
+let displayIcon = true; // <--- Change to 'true' or 'false' to display an effect icon when equipped
+const effectIconPath = 'icons/svg/shield.svg'; // <--- Add the effect icon you want to appear when equipped
+
+let toggleResult = false;
 
 if (!actor) {
     ui.notifications.warn('You need to select a token before using this macro!');
@@ -23,6 +30,15 @@ if (!actor) {
 			}
 		}
 		item.update({[attr]: !getProperty(item.data, attr)});
+		
+		// mark/unmark character's token with an effect icon when displayToken is true
+		(async () => { 
+			if (displayIcon) {
+				toggleResult = await token.toggleEffect(effectIconPath);
+				if (toggleResult == equipped) token.toggleEffect(effectIconPath);  
+			}
+		})();
+		
 	} else {
 		ui.notifications.warn("No item named '" + itemName + "' found on character!");
 	}
