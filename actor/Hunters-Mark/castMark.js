@@ -1,7 +1,6 @@
-//This macro must be used by the GM unless the player has permission to update
-//NPC tokens, which normally is not the case.
-
 //This marco is designed to be used in conjunction with MarkAttackWrapper.json
+//and GMConditions.js.
+
 //It is designed to replace the standard rollItemMacro for either the Hex
 //spell or the hunter's mark Spell on either the warlock or ranger, but
 //it will work on any class with hex or hunter's mark by changing the Localization
@@ -13,10 +12,10 @@
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //This macro is designed to be used with the combat utility belt module.
-//Once you have it installed, you will have to enable enhanced conditions,
-//and create a condition called 'Marked' as the Localization parameter below.
-//You just need to update that parameter to match whatever condition name you
-// you want if you want to use a different name in condition lab.
+//and the furnace module. Once you have it installed, you will have to enable 
+//enhanced conditions, and create a condition called 'Marked' as the Localization 
+//parameter below. You just need to update that parameter to match whatever condition 
+//name you want if you want to use a different name in condition lab.
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //Localization
@@ -43,6 +42,7 @@ let className = "";
 let spellName = "";
 let gm_macro = null
 
+//Check to make sure that the GM has the GMConditions macro assigned.
 try{
     gm_macro = game.macros.entities.find(mb => mb.name === "GMConditions");
 }
