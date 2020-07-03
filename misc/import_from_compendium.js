@@ -42,8 +42,7 @@ function importCompendium(html) {
 
   let pack = game.packs.get(packName);
   let folder = game.folders.find(f => f.name === folderName && f.type === pack.entity)?.id;
-  let type = pack.metadata.entity.toLowerCase();
-  type = type === 'journalentry' ? 'journal' : type + 's';
+  let type = getEntityType(pack);
   let extra = folder ? { folder } : null
 
   if (folderName && !folder) {
@@ -54,4 +53,13 @@ function importCompendium(html) {
     game[type].filter(t => t.data.folder === folder)?.delete();
   }
   pack.getIndex().then(index => index.forEach(entry => game[type].importFromCollection(packName, entry._id, extra)));
+}
+    
+function getEntityType(pack) {
+  const entity = pack.metadata.entity;
+  switch (entity) {
+    case 'JournalEntry': return 'journal';
+    case 'RollTable': return 'tables';
+    default: return entity.toLowerCase() + 's';
+  }
 }
