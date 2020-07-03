@@ -41,18 +41,27 @@ const actorId = myToken.actor._id + "_mark";
 const bonuses = myToken.actor.data.data.bonuses;
 let className = "";
 let spellName = "";
+let gm_macro = null
+
+try{
+    gm_macro = game.macros.entities.find(mb => mb.name === "GMConditions");
+}
+catch(err)
+{
+    ui.notifications.error("GMConditions Macro was not found")
+}
 
 //If Move flag and condition to a new selected target
 function move() {
   let swapTarget = myToken.getFlag(flagScope, actorId);
   const remCon = canvas.tokens.get(swapTarget.targetId);
+  gm_macro.execute("remove", condition, swapTarget.targetId);
   swapTarget.targetId = target.data._id;
-  game.cub.removeCondition(condition, remCon, { warn: true });
   (async () => {
     await myToken.unsetFlag(flagScope, actorId);
     myToken.setFlag(flagScope, actorId, swapTarget);
   })();
-  game.cub.applyCondition(condition, target, { warn: true });
+  gm_macro.execute("apply", condition, target.id);
   console.log();
 }
 
@@ -73,7 +82,7 @@ function remove() {
   const remFlag = canvas.tokens.get(flagId.targetId);
 
   (async () => {
-    await game.cub.removeCondition(condition, remFlag, { warn: true });
+    await gm_macro.execute("remove", condition, flagId.targetId);
     await myToken.unsetFlag(flagScope, actorId);
   })();
 }
@@ -109,7 +118,7 @@ async function castSpell() {
   } catch (err) {
     return null;
   }
-  await game.cub.applyCondition(condition, target, { warn: true });
+  gm_macro.execute("apply", condition, target.id);
 
   let globalDmg = {
     targetId: target.data._id,
