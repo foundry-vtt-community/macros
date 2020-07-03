@@ -49,9 +49,7 @@ function importCompendium(html) {
     return ui.notifications.error(`Your world does not have any ${type} folders named '${folderName}'.`);
   }
 
-  if (remove) {
-    game[type].filter(t => t.data.folder === folder)?.delete();
-  }
+  if (remove) removeDataFirst(type, folder);
   pack.getIndex().then(index => index.forEach(entry => game[type].importFromCollection(packName, entry._id, extra)));
 }
     
@@ -61,5 +59,14 @@ function getEntityType(pack) {
     case 'JournalEntry': return 'journal';
     case 'RollTable': return 'tables';
     default: return entity.toLowerCase() + 's';
+  }
+}
+
+function removeDataFirst(type, folder) {
+  let removableData = game[type].filter(t => t.data.folder === folder);
+  if (typeof removableData.delete !== "undefined") {
+    removableData.delete();
+  } else {
+    removableData.map(d => d.delete());
   }
 }
