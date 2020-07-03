@@ -13,7 +13,7 @@ let messageHeader = "<b>Passive Perception</b><br>";
 for (let count of tokens) {
   // Extract the passive perception value.
   let pp = count.actor.data.data.skills.prc.passive;
-  if (typeof pp !== "number") {
+  if (typeof pp === "number") {
     // Create the output string.
     messageContent += `${count.name} <b>${pp}</b><br>`;
   } else {
