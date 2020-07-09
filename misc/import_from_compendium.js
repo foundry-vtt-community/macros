@@ -1,7 +1,6 @@
 /** 
- * Import all the actors from a compendium.
- * In order to find the packName, you can use the following in your console (F12): game.packs.map(p => p.collection);
- * Author: KrishMero#1702
+ * Import all the entries from a compendium into the desired folder.
+ * @Author: KrishMero#1702
  */
  
 let packOptions = game.packs.map(pack => `<option value="${pack.collection}">${pack.title}</option>`);
@@ -9,7 +8,7 @@ const form = `
   <div style="display: inline-block; width: 100px">Folder:</div>
   <input type="string" id="folderName">
   <br />
-  <div style="font-size: 80%">leave blank to put into root directory</div>
+  <div style="font-size: 80%">leave blank to create a folder after the compendium name</div>
   <br />
 
   <div style="display: inline-block; width: 100px">Compendium:</div>
@@ -35,38 +34,57 @@ const dialog = new Dialog({
   }
 }).render(true);
 
-function importCompendium(html) {
+async function importCompendium(html) {
   const folderName = html.find(`input#folderName`)[0].value;
   const packName = html.find(`select#destinationPack`)[0].value;
   const remove = html.find(`input#delete`)[0].checked;
 
-  let pack = game.packs.get(packName);
-  let folder = game.folders.find(f => f.name === folderName && f.type === pack.entity)?.id;
-  let type = getEntityType(pack);
-  let extra = folder ? { folder } : null
+  const pack = game.packs.get(packName);
+  const entity = pack.entity;
+  let folder = folderName ? findFolder(folderName, entity) : await createFolder(pack, entity);
+  
+  if (!folder) return ui.notifications.error(`Your world does not have any ${entity} folders named '${folderName}'.`);
 
-  if (folderName && !folder) {
-    return ui.notifications.error(`Your world does not have any ${type} folders named '${folderName}'.`);
-  }
-
-  if (remove) removeDataFirst(type, folder);
-  pack.getIndex().then(index => index.forEach(entry => game[type].importFromCollection(packName, entry._id, extra)));
+  if (remove) removeDataFirst(folder.id, entity);
+  if (folder) importPack(pack, entity, folder.id)
 }
-    
-function getEntityType(pack) {
-  const entity = pack.metadata.entity;
+
+async function importPack(pack, entity, folderId) {
+  const entityClass = CONFIG[entity].entityClass;
+  const content = await pack.getContent();
+
+  const createData = content.map(c => {
+    c.data.folder = folderId;
+    return c.data;
+  });
+  entityClass.create(createData);
+}
+
+function removeDataFirst(folderId, entity) {
+  let type = getEntityType(entity);
+  const removeableData = game[type].filter(t => t.data.folder === folderId);
+  if (typeof removeableData.delete !== "undefined") {
+    removeableData.delete();
+  } else {
+    removeableData.map(d => d.delete());
+  }
+}
+
+async function createFolder(pack, type) {
+  let name = pack.metadata.label;
+  let folder = await Folder.create({ name, type, parent: null});
+  return folder;
+}
+
+function findFolder(folderName, entity)
+{
+  return game.folders.find(f => f.name === folderName && f.type === entity)
+}
+
+function getEntityType(entity) {
   switch (entity) {
     case 'JournalEntry': return 'journal';
     case 'RollTable': return 'tables';
     default: return entity.toLowerCase() + 's';
-  }
-}
-
-function removeDataFirst(type, folder) {
-  let removableData = game[type].filter(t => t.data.folder === folder);
-  if (typeof removableData.delete !== "undefined") {
-    removableData.delete();
-  } else {
-    removableData.map(d => d.delete());
   }
 }
