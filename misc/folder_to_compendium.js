@@ -1,13 +1,22 @@
 /**
  * Import folder into writable compendium. Locked compendiums will not show as an option.
+ * Folder type is optional, however will help if you have the same folder name across multiple system types.
  * Also contains options to store subfolder contents, update existing records (or only add new), and delete duplicate records.
  * Author: KrishMero#1792
  */
 
 let packOptions = game.packs.filter(pack => !pack.locked).map(pack => `<option value="${pack.collection}">${pack.title}</option>`);
+let entityType = COMPENDIUM_ENTITY_TYPES.map(type => `<option value="${type}">${type}</option>`);
 const form = `
   <div style="display: inline-block; width: 100px">Folder:</div>
   <input type="string" id="folderName">
+  <br />
+
+  <div style="display: inline-block; width: 100px">Folder Type:</div>
+  <select id="entityType" />
+    <option value="">--</option>
+    ${entityType}
+  </select>
   <br />
 
   <div style="display: inline-block; width: 100px">Compendium:</div>
@@ -47,17 +56,21 @@ const dialog = new Dialog({
 
 function storeFolder(html) {
   const folderName = html.find(`input#folderName`)[0].value;
+  const folderType = html.find(`select#entityType`)[0].value;
   const destinationPack = html.find(`select#destinationPack`)[0].value;
   const recurse = html.find(`input#recurse`)[0].checked;
   const update = html.find(`input#update`)[0].checked;
   const deleteRecords = html.find(`input#delete`)[0].checked;
   
-  const folders = game.folders.filter(f => f.name === folderName);
+  let folders = game.folders.filter(f => f.name === folderName);
+  if (folderType) {
+    folders = folders.filter(f => f.type === folderType);
+  }
   if (folders.length === 0) {
     ui.notifications.error(`Your world does not have any folders named '${folderName}'.`);
   }
   else if(folders.length > 1) {
-   ui.notifications.error(`Your world has more than one folder named ${folderName}`) 
+    ui.notifications.error(`Your world has more than one folder named ${folderName}`) 
   }
   else {
     console.log(`storing in ${destinationPack}`);
