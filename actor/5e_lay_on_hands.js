@@ -7,7 +7,7 @@
  */
 
 let confirmed = false;
-let actorData = actor ? actor : canvas.tokens.controlled[0];
+let actorData = actor || canvas.tokens.controlled[0] || game.user.character;
 let featData = actorData ? actorData.items.find(i => i.name==="Lay on Hands") : null;
 
 if(actorData == null || featData == null) 
