@@ -18,11 +18,7 @@
  let optionsText = `<p>Spell Slot level to use Divine Smite with.</p><form>
  <div class="form-group"><label>Spell Slot Level:</label><select id="slot-level" name="slot-level">`
  
- let s_actor = canvas.tokens.controlled[0].actor;
- 
- if (s_actor === undefined){
-    s_actor = game.user.character;     
- }
+let s_actor = canvas.tokens.controlled[0]?.actor || game.user.character;
  
  
  if (s_actor.data.items.find(i => i.name === "Divine Smite") === undefined || s_actor === undefined){
