@@ -96,5 +96,7 @@ function smite(slotLevel) {
         new Roll(`${numDice}d8`).roll().toMessage({ flavor: "Macro Divine Smite - Damage Roll (Radiant)", speaker })
     })
 
-    chosenSpellSlots.value -= 1;
+    let objUpdate = new Object();
+    objUpdate['data.spells.spell' + slotLevel + '.value'] = chosenSpellSlots.value - 1;
+    controlledActor.update(objUpdate);
 }
