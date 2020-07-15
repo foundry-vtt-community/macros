@@ -55,7 +55,8 @@ else
                         // We need help applying the healing, so make a roll message for right-click convenience.
                         new Roll(`${number}`).roll().toMessage({
                             speaker: ChatMessage.getSpeaker(),
-                            flavor: `${actorData.name} lays hands on ${targetActor.data.name}.<br>${flavor}` });
+                            flavor: `${actorData.name} lays hands on ${targetActor.data.name}.<br>${flavor}
+                            <p><em>Manually apply ${number} HP of healing to ${targetActor.data.name}</em></p>` });
                     else {
                         // We can apply healing automatically, so just show a normal chat message.
                         ChatMessage.create({
