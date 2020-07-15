@@ -21,7 +21,7 @@
 let s_actor = canvas.tokens.controlled[0]?.actor || game.user.character;
  
  
- if (s_actor.data.items.find(i => i.name === "Divine Smite") === undefined || s_actor === undefined){
+ if (s_actor?.data.items.find(i => i.name === "Divine Smite") === undefined){
      return ui.notifications.error(`No valid actor selected that can use this macro.`);
  }
  
