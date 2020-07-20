@@ -5,8 +5,11 @@
 */
 
 let targetActors = getTargetActors().filter(a => a != null);
-if (!targetActors.length > 0)
-    return;
+function checkForActors(){
+    if (!targetActors.length > 0)
+        throw new Error('You must designate at least one token as the roll target');
+};
+checkForActors();
 
 // Choose roll type dialog
 let rollTypeTemplate = `
