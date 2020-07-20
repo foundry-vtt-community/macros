@@ -13,17 +13,21 @@ let confirmed = false;
 new Dialog({
     title: "Divine Smite Damage",
     content: `
-     <p>Spell Slot level to use Divine Smite with.</p>
      <form>
+     <p>Spell Slot level to use Divine Smite with.</p>
       <div class="form-group">
        <label>Spell Slot Level:</label>
-       <select id="slot-level" name="slot-level">
+       <select name="slot-level">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
        </select>
+       </div>
+       <div class="form-group">
+       <label>Critical Hit:</label>
+       <input type="checkbox" name="criticalCheckbox">
       </div>
      </form>
      `,
@@ -43,7 +47,8 @@ new Dialog({
     close: html => {
         if (confirmed) {
             let slotLevel = parseInt(html.find('[name=slot-level]')[0].value);
-            smite(slotLevel);
+            let criticalHit = html.find('[name=criticalCheckbox]')[0].checked;
+            smite(slotLevel, criticalHit);
         }
     }
 }).render(true);
@@ -73,8 +78,9 @@ function getSpellSlots(actor, level) {
 /**
  * Use the controlled token to smite the targeted token.
  * @param {integer} slotLevel - the spell slot level to use when smiting.
+ * @param {boolean} criticalHit - whether the hit is a critical hit.
  */
-function smite(slotLevel) {
+function smite(slotLevel, criticalHit) {
     let targets = game.user.targets;
     let suseptible = ["fiend", "undead"];
     let controlledActor = canvas.tokens.controlled[0].actor;
@@ -91,8 +97,9 @@ function smite(slotLevel) {
 
     targets.forEach(target => {
         let numDice = slotLevel + 1;
-        let type = target.actor.data.data.details.type.toLocaleLowerCase();
+        let type = target.actor.data.data.details.type?.toLocaleLowerCase();
         if (suseptible.includes(type)) numDice += 1;
+        if (criticalHit) numDice *= 2;
         new Roll(`${numDice}d8`).roll().toMessage({ flavor: "Macro Divine Smite - Damage Roll (Radiant)", speaker })
     })
 
