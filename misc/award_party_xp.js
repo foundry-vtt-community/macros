@@ -2,7 +2,7 @@
 {
   function award_xp(type, amount)
   {
-    let actors = game.actors.entities.filter(e => e.data.type === 'character');
+    let actors = game.actors.entities.filter(e => e.data.type === 'character' && e.isPC);
     let isShared = type == "shared";
     console.log(type + ' ' + amount);
     if (Number.isInteger(amount) && actors.length > 0)
