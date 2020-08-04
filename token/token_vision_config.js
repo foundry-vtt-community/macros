@@ -17,7 +17,6 @@ new Dialog({
           <option value="dim150">Darkvision (150 ft)</option>
           <option value="dim180">Darkvision (180 ft)</option>
           <option value="bright120">Devil's Sight (Warlock)</option>
-		  <option value="moon-touched">Moon-Touched</option>
         </select>
       </div>
       <div class="form-group">
@@ -32,7 +31,7 @@ new Dialog({
           <option value="hooded-bright">Lantern (Hooded - Bright)</option>
           <option value="light">Light (Cantrip)</option>
           <option value="torch">Torch</option>
-		  <option value="moon-touched>Moon-Touched</option>
+		  <option value="moon-touched">Moon-Touched</option>
         </select>
       </div>
     </form>
@@ -135,7 +134,7 @@ new Dialog({
             dimLight = 40;
             brightLight = 20;
             break;
-		  case "moon-touched"
+		  case "moon-touched":
 			dimLight = 30;
 			brightLight = 15;
 			break;
