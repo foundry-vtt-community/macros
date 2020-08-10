@@ -5,7 +5,7 @@ let dialogEditor = new Dialog({
     none: {
       label: `None`,
       callback: () => {
-        token.update({"dimLight": 0, "brightLight": 0, "lightAngle": 360,});
+        token.update({"dimLight": null, "brightLight": null, "lightAngle": 360,});
         dialogEditor.render(true);
       }
     },
