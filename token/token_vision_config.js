@@ -31,6 +31,7 @@ new Dialog({
           <option value="hooded-bright">Lantern (Hooded - Bright)</option>
           <option value="light">Light (Cantrip)</option>
           <option value="torch">Torch</option>
+          <option value="moon-touched">Moon-Touched</option>
         </select>
       </div>
     </form>
@@ -132,6 +133,10 @@ new Dialog({
           case "torch":
             dimLight = 40;
             brightLight = 20;
+            break;
+          case "moon-touched":
+            dimLight = 30;
+            brightLight = 15;
             break;
           case "nochange":
           default:
