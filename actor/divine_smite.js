@@ -10,6 +10,8 @@
  * Make your regular attack and then if you choose to use Divine Smite, run this macro.
  */
 
+(() => {
+
 //Configurable variables
 let maxSpellSlot = 5; //  Highest spell-slot level that may be used.
 let affectedCreatureTypes = ["fiend", "undead", "undead (shapechanger)"]; //  Creature types that take extra damage.
@@ -131,3 +133,5 @@ function smite(actor, slotLevel, criticalHit) {
     objUpdate['data.spells.spell' + slotLevel + '.value'] = chosenSpellSlots.value - 1;
     actor.update(objUpdate);
 }
+
+})();
