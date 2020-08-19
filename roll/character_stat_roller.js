@@ -6,12 +6,14 @@
 // Formula for rolling 
 const statString = '4d6kh3';
 
-// times to roll those stats (currently set to 6)
-const stats = Array(6).fill(0).map(e=>new Roll(statString).roll());
+// times to roll those stats
+const numRolls = 6;
+
 
 //////////////////////////////////////////
 // Don't touch anything below this line //
 //////////////////////////////////////////
+const stats = Array(numRolls).fill(0).map(e=>new Roll(statString).roll());
 
 const {faces, rolls} = stats[0].parts[0];
 const totalAverage = (faces/2 + 0.5) * rolls.filter(i=> i?.discarded !== true).length;
@@ -37,7 +39,7 @@ let content = `
   <table>
     <tr>
       <td ${colspan}><h2 style="margin-bottom:0; ${center}">New Ability Scores</h2>
-      <div style="margin-bottom: 0.5rem; ${center}">New ability scores are rolled as ${statString}</div></td>
+      <div style="margin-bottom: 0.5rem; ${center}">${statString} was rolled ${numRolls} times.</div></td>
     </tr>
     <tr style="${center} border-bottom:1px solid #000">
       ${header}
