@@ -21,4 +21,4 @@
   
   if (updates.length)
     canvas.scene.updateEmbeddedEntity("Token", updates);
-});
+})();
