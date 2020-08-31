@@ -17,13 +17,15 @@ let tokens = canvas.tokens.placeables.filter((token) => token.data);
 for (let count of tokens) {
   let tokenType = count.actor.data.type;
   let tokenName = count.data.name;
-  let tokenPassive = count.actor.data.data.skills.prc.passive;
-  
-  if(tokenType === "character") {
-    pcArray.push({ name: tokenName, passive: tokenPassive });
-  } 
-  if(tokenType === "npc") {
-    npcArray.push({ name: tokenName, passive: tokenPassive });
+    if (count.actor.data.data.hasOwnProperty('skills')) {
+        let tokenPassive = count.actor.data.data.skills.prc.passive;
+    
+    if(tokenType === "character") {
+      pcArray.push({ name: tokenName, passive: tokenPassive });
+    } 
+    if(tokenType === "npc") {
+      npcArray.push({ name: tokenName, passive: tokenPassive });
+    }
   }
 }
 
