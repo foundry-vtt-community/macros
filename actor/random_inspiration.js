@@ -3,7 +3,7 @@
 // You can find a table called inspirations in the community tables module
 
 // Setup variables
-let tableName = "inspirations";
+let tableName = "Inspirations";
 
 let bardicInspiration = () => {
   if (!actor) {
