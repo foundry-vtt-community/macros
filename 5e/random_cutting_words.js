@@ -4,7 +4,7 @@
 
 let cuttingWords = () => {
   // Setup variables
-  let tableName = "mockeries";
+  let tableName = "Mockeries";
   let mockery = "Now go away or I shall taunt you a second time-a!"; // if table can't be found, use this.
 
   if (!actor) {
