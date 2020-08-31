@@ -50,7 +50,7 @@
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
     "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/master/module.json",
-    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.20.zip",
+    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.22.zip",
     "socket": true,
     "minimumCoreVersion": "0.6.5",
     "compatibleCoreVersion": "0.6.6"
