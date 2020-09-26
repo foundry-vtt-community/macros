@@ -2,27 +2,41 @@
     "name": "foundry_community_macros",
     "title": "Foundry Community Macros",
     "description": "<p>This is a collection of Macros added by the FoundryVTT Community!<br><br>You can add your own macros by making a pull request here: https://github.com/foundry-vtt-community/macros</p>",
-    "version": "0.9",
+    "version": "0.25",
     "author": "CyberPathogen",
     "packs": [
         {
-            "name": "community-macros-actor",
-            "label": "FVTT Community Macros - Actor",
-            "path": "packs/macros-actor.db",
+            "name": "community-macros-5e",
+            "label": "FVTT Community Macros - D&D 5e",
+            "path": "packs/macros-5e.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
         },
         {
-            "name": "community-macros-item",
-            "label": "FVTT Community Macros - Item",
-            "path": "packs/macros-item.db",
+            "name": "community-macros-pf1e",
+            "label": "FVTT Community Macros - Pathfinder 1e",
+            "path": "packs/macros-pf1e.db",
+            "module": "foundry_community_macros",
+            "entity": "Macro"
+        },
+        {
+            "name": "community-macros-pf2e",
+            "label": "FVTT Community Macros - Pathfinder 2e",
+            "path": "packs/macros-pf2e.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
         },
         {
             "name": "community-macros-misc",
-            "label": "FVTT Community Macros - MISC",
+            "label": "FVTT Community Macros - Misc",
             "path": "packs/macros-misc.db",
+            "module": "foundry_community_macros",
+            "entity": "Macro"
+        },
+        {
+            "name": "community-macros-module-specific",
+            "label": "FVTT Community Macros - Module Specific",
+            "path": "packs/macros-module-specific.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
         },
@@ -42,9 +56,9 @@
         }
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
-    "manifest": "https://github.com/foundry-vtt-community/macros/master/module.json",
-    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.9.zip",
+    "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/master/module.json",
+    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.25.zip",
     "socket": true,
-    "minimumCoreVersion": "0.5.7",
-    "compatibleCoreVersion": "0.6.0"
+    "minimumCoreVersion": "0.6.5",
+    "compatibleCoreVersion": "0.6.6"
 }
