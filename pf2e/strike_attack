@@ -1,0 +1,7 @@
+//Macro to rol the attack of a "strike" on a character
+//Character (with the corresponding "strike" in their character sheet) must be selected for script to work
+//This rolls the strike for the 'Throwing Knife' weapon
+    //Change the name of the weapon to any in your strikes (ex. 'Dagger' or 'Fist') to roll that attack again
+let weapon = 'Throwing Knife';
+let bonusdice = '';
+(actor.data.data.actions ?? []).filter(action => action.type === 'strike').find(strike => strike.name === weapon)?.damage(event, [bonusdice]);
