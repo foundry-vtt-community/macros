@@ -41,7 +41,7 @@ if (canvas.tiles.controlled.length) {
   ui.notifications.notify("Please select at least one tile.");
 }
 
-// Move Left
+// Move Right
 // By @cole$9640
 
 let amount = event.ctrlKey ? 0.5 : 1;
@@ -58,7 +58,7 @@ if (canvas.tiles.controlled.length) {
   ui.notifications.notify("Please select at least one tile.");
 }
 
-// Move Right
+// Move Left
 // By @cole$9640
 
 let amount = event.ctrlKey ? -0.5 : -1;
