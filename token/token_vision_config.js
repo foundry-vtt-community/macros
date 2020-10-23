@@ -59,6 +59,12 @@ new Dialog({
         let brightLight = 0;
         let lightAngle = 360;
         let lockRotation = token.data.lockRotation;
+        let lightAnimation = token.data.lightAnimation;
+        let lightAlpha = token.data.lightAlpha;
+        let lightColor = token.data.lightColor;
+        const colorFire = "#f8c377";
+        const colorWhite = "#ffffff";
+        const colorMoonGlow = "#f4f1c9";
         // Get Vision Type Values
         switch (visionType) {
           case "dim0":
@@ -103,40 +109,63 @@ new Dialog({
           case "none":
             dimLight = 0;
             brightLight = 0;
+            lightAnimation = {type: "none"};
             break;
           case "candle":
             dimLight = 10;
             brightLight = 5;
+            lightAnimation = {type: "torch", speed: 2, intensity: 2};
+            lightColor = colorFire;
+            lightAlpha = 0.15;
             break;
           case "lamp":
             dimLight = 45;
             brightLight = 15;
+            lightAnimation = {type: "torch", speed: 2, intensity: 2};
+            lightColor = colorFire;
+            lightAlpha = 0.15;
             break;
           case "bullseye":
             dimLight = 120;
             brightLight = 60;
             lockRotation = false;
             lightAngle = 52.5;
+            lightAnimation = {type: "torch", speed: 2, intensity: 2};
+            lightColor = colorFire;
+            lightAlpha = 0.15;
             break;
           case "hooded-dim":
             dimLight = 5;
             brightLight = 0;
+            lightAnimation = {type: "torch", speed: 2, intensity: 2};
+            lightColor = colorFire;
+            lightAlpha = 0.15;
             break;
           case "hooded-bright":
             dimLight = 60;
             brightLight = 30;
+            lightAnimation = {type: "torch", speed: 2, intensity: 2};
+            lightColor = colorFire;
+            lightAlpha = 0.15;
             break;
           case "light":
             dimLight = 40;
             brightLight = 20;
+            lightAnimation = {type: "none"};
+            lightColor = colorWhite;
             break;
           case "torch":
             dimLight = 40;
             brightLight = 20;
+            lightAnimation = {type: "torch", speed: 2, intensity: 2};
+            lightColor = colorFire;
+            lightAlpha = 0.15;
             break;
           case "moon-touched":
             dimLight = 30;
             brightLight = 15;
+            lightAnimation = {type: "none"};
+            lightColor = colorMoonGlow;
             break;
           case "nochange":
           default:
@@ -144,6 +173,9 @@ new Dialog({
             brightLight = token.data.brightLight;
             lightAngle = token.data.lightAngle;
             lockRotation = token.data.lockRotation;
+            lightAnimation = token.data.lightAnimation;
+            lightAlpha = token.data.lightAlpha;
+            lightColor = token.data.lightColor;
         }
         // Update Token
         console.log(token);
@@ -154,7 +186,10 @@ new Dialog({
           dimLight: dimLight,
           brightLight:  brightLight,
           lightAngle: lightAngle,
-          lockRotation: lockRotation
+          lockRotation: lockRotation,
+          lightAnimation: lightAnimation,
+          lightAlpha: lightAlpha,
+          lightColor: lightColor
         });
       }
     }
