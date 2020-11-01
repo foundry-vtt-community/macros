@@ -63,9 +63,7 @@ else
                             speaker: ChatMessage.getSpeaker(),
                             content: `${actorData.name} lays hands on ${targetActor.data.name} for ${number} HP.<br>${flavor}`
                         });
-                        game.actors.find(a => a._id===targetActor._id).update( {
-                            "data.attributes.hp.value" : targetActor.data.data.attributes.hp.value + number
-                        });
+                        targetActor.update({"data.attributes.hp.value" : targetActor.data.data.attributes.hp.value + number});
                     }
 
                     featUpdate.data.uses.value = featUpdate.data.uses.value - number;
