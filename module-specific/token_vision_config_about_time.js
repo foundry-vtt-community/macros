@@ -128,6 +128,11 @@ new Dialog({
         let brightLight = lightSources[lightIndex].bright ?? token.data.brightLight;
         let lightAngle = lightSources[lightIndex].angle ?? token.data.lightAngle;
         let lockRotation = lightSources[lightIndex].lockRotation ?? token.data.lockRotation;
+        // Common settings for all 'torch-like' options
+        // Feel free to change the values to your liking
+        let lightAnimation = {type: "torch", speed: 2, intensity: 2};
+        let lightColor = "#f8c377"; // Fire coloring.
+        let lightAlpha = 0.15;
 
         // Update Token
         console.log(token);
@@ -138,7 +143,10 @@ new Dialog({
           dimLight: dimLight,
           brightLight:  brightLight,
           lightAngle: lightAngle,
-          lockRotation: lockRotation
+          lockRotation: lockRotation,
+          lightAnimation: lightAnimation,
+          lightColor: lightColor,
+          lightAlpha: lightAlpha
         });
       }
     }
