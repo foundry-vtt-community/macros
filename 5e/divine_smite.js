@@ -142,11 +142,11 @@ function smite(actor, slotLevel, criticalHit, consume) {
         new Roll(`${numDice}d8`).roll().toMessage({ flavor: flavor, speaker });
     })
 
-	if (consume){
+    if (consume){
         let objUpdate = new Object();
         objUpdate['data.spells.spell' + slotLevel + '.value'] = chosenSpellSlots.value - 1;
         actor.update(objUpdate);
-	}
+    }
 }
 
 })();
