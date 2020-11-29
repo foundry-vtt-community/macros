@@ -8,7 +8,13 @@
 const damageTypes = ["Acid", "Bludgeoning", "Cold", "Fire", "Force", "Lightning", "Necrotic", "Piercing", "Poison", "Psychic", "Radiant", "Slashing", "Thunder"];
 
 let msg = "";
-let previousMessage = game.messages.entries[game.messages.entries.length-1].data.content;
+let previousMessage;
+try { 
+    previousMessage = game.messages.entries[game.messages.entries.length-1].data.content;
+} catch (e) {
+    // No previous message in log. Default to an empty string.
+    previousMessage = "";
+}
 
 // Enable case-insensitive replacements
 // Source: https://stackoverflow.com/a/7313467
