@@ -57,6 +57,13 @@ let dialogEditor = new Dialog({
         dialogEditor.render(true);
       }
     },
+    darkness: {
+      label: `Darkness spell`,
+      callback: () => {
+        tokenUpdate({"dimLight": 0, "brightLight": -15, "lightAngle": 360, "lightAnimation": {"type": "none"}});
+        dialogEditor.render(true);
+      }
+    },
     close: {
       icon: "<i class='fas fa-tick'></i>",
       label: `Close`
