@@ -68,7 +68,7 @@ errorReason = `${errorSelectToken}`;
 }
 
 //check to ensure token is a rogue
-if (errorReason == '' && macroActor.items.find(i => i.name == `${rogueClassName}`) !== undefined) {
+if (errorReason == '' && macroActor.items.find(i => i.name == `${rogueClassName}`) !== null) {
 	rogue = macroActor.items.find(i => i.name == `${rogueClassName}`);
 } else {
 	errorReason = `${errorSelectRogue}`;
