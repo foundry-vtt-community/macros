@@ -3,7 +3,7 @@
 // You can find a table called mockeries in the community tables module.
 
 
-let tableName = "Mockeries";
+let tableName = "mockeries";
 // default mockery if no table found.
 let mockery = "Now go away or I shall taunt you a second time-a!";
 
