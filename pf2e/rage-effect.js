@@ -1,6 +1,6 @@
 // starts rage using the rage effect.  With the new effect system in place other rage macros should be obsolete (including the one included in the core system
 
-const ITEM_UUID = 'Compendium.pf2e.spell-effects.z3uyCMBddrPK5umr'; // Effect: Rage
+const ITEM_UUID = 'Compendium.pf2e.feature-effects.z3uyCMBddrPK5umr'; // Effect: Rage
 
 (async () => {
   const item = await fromUuid(ITEM_UUID);
