@@ -153,6 +153,7 @@ new Dialog({
             brightLight = 20;
             lightAnimation = {type: "none"};
             lightColor = colorWhite;
+            lightAlpha = 0.15;
             break;
           case "torch":
             dimLight = 40;
