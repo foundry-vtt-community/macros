@@ -24,7 +24,6 @@ if (macroToken === undefined || macroToken === null) {
 } else {
 // grab curent global states
 	let abilities = JSON.parse(JSON.stringify(macroActor.data.data.bonuses.abilities.check));
-	let skills = JSON.parse(JSON.stringify(macroActor.data.data.bonuses.abilities.skill));
 	if(abilities.includes(Guidd4)){
 		guided = true;
 	}
@@ -38,7 +37,6 @@ if (macroToken === undefined || macroToken === null) {
 		console.log('adding guidance modifiers to global bonuses');
 		let obj = {};
 		obj['data.bonuses.abilities.check'] = abilities + Guidd4;
-		obj['data.bonuses.abilities.skill'] = skills + Guidd4;
 		macroActor.update(obj);
 // if already guided	
 	}	else if (guided == true) {
@@ -53,10 +51,6 @@ if (macroToken === undefined || macroToken === null) {
 		var tmpLength = tmp.indexOf(Guidd4);
         tmp = tmp.substring(0, tmpLength) + tmp.substring(tmpLength+4, tmp.length);
 		obj['data.bonuses.abilities.check'] = tmp;
-		var tmp = JSON.parse(JSON.stringify(macroActor.data.data.bonuses.abilities.skill));
-		var tmpLength = tmp.indexOf(Guidd4);
-        tmp = tmp.substring(0, tmpLength) + tmp.substring(tmpLength+4, tmp.length);
-		obj['data.bonuses.abilities.skill'] = tmp;
 		macroActor.update(obj);
 	}
 }
