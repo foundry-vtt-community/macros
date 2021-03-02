@@ -17,7 +17,7 @@ users.forEach(user => {
   let checked = !!user.character && selectedPlayerIds.includes(user.character.id) && 'checked';
   checkOptions+=`
     <br>
-    <input type="checkbox" name="${user.id}" value="${user.name}" ${checked}>\n
+    <input type="checkbox" name="${user.id}" id="${user.id}" value="${user.name}" ${checked}>\n
     <label for="${user.id}">${user.name}</label>
   `
 });
