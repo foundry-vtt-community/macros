@@ -40,11 +40,12 @@ function createMessage(html) {
   // build list of selected players ids for whispers target
   for ( let user of users ) {
     if (html.find('[name="'+user.id+'"]')[0].checked){
+      applyChanges=true;
       targets.push(user.id);
     }
     var messageText = html.find('[name="message"]')[0].value
   }
-
+if(!applyChanges)
   ChatMessage.create({
     content: messageText,
     whisper: targets
