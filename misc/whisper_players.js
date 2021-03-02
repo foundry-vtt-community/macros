@@ -45,7 +45,7 @@ function createMessage(html) {
     }
     var messageText = html.find('[name="message"]')[0].value
   }
-if(!applyChanges)
+if(!applyChanges)return;
   ChatMessage.create({
     content: messageText,
     whisper: targets
