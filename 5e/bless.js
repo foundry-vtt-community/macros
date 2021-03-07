@@ -11,7 +11,7 @@ let blessMsg = ' is Blessed!';
 let endblessMsg = ' is no longer Blessed';
 
 //fixed declarations DO NOT MODIFY
-let macroActor = actor;
+let macroActor = token.actor;
 let chatMsg = '';
 let Blessd = macroActor.effects.find(i => i.data.label === "Blessed")
 let bless = {
