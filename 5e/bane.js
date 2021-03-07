@@ -11,7 +11,7 @@ let baneMsg = ' is Fucked!';
 let endbaneMsg = ' is no longer Fucked.';
 
 //fixed declarations DO NOT MODIFY
-let macroActor = actor;
+let macroActor = token.actor;
 let chatMsg = '';
 let Baned = macroActor.effects.find(i => i.data.label === "Baned")
 let bane = {
