@@ -133,7 +133,6 @@ if (macroActor !== undefined && macroActor !== null) {
 		ui.notifications.warn(`${errorSelectBarbarian}`);
 	}
 	if (barb !== undefined && barb !== null) {
-		chatMsg = `${macroActor.name} + rageMsg`;
 		let enabled = false;
 		// Store the state of the rage toggle flags that indicate if rage is active or not
 		if (macroActor.data.flags.rageMacro !== null && macroActor.data.flags.rageMacro !== undefined) {
