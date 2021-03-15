@@ -2,7 +2,7 @@
     "name": "foundry_community_macros",
     "title": "Foundry Community Macros",
     "description": "<p>This is a collection of Macros added by the FoundryVTT Community!<br><br>You can add your own macros by making a pull request here: https://github.com/foundry-vtt-community/macros</p>",
-    "version": "0.35",
+    "version": "0.36",
     "author": "CyberPathogen",
     "packs": [
         {
@@ -57,7 +57,7 @@
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
     "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/master/module.json",
-    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.35.zip",
+    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.36.zip",
     "socket": true,
     "minimumCoreVersion": "0.7.5",
     "compatibleCoreVersion": "0.7.9"
