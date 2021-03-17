@@ -24,6 +24,12 @@ const errorSelectFighter = "Please select a single fighter token";
 const errorNoSecondWind =
   "does not have any second wind left, time for a rest!";
 
+/**
+ * Optional Resource Reduction
+ */
+const resourceDeduction = true;
+const preventNegative = true;
+
 if (macroActor !== undefined && macroActor !== null) {
   fighter = macroActor.items.find((i) => i.name === `${fighterClassName}`);
   // Early error if not a fighter
@@ -65,23 +71,26 @@ function updateHP(actor, amt) {
 }
 
 function checkResource(actor) {
-  const { resources } = actor.data.data;
-  let hasResource = false;
-  let newResources = duplicate(resources);
-  let obj = {};
-  // Look for resources under core actor data
-  let resourceKey = Object.keys(resources)
-    .filter((key) => resources[key].label === `${secondWindResourceName}`)
-    .shift();
-  if (resourceKey && resources[resourceKey].value > 0) {
-    hasResource = true;
-    newResources[resourceKey].value--;
-    obj["data.resources"] = newResources;
-    actor.update(obj);
-    return true;
+  if (resourceDeduction) {
+    const { resources } = actor.data.data;
+    let hasResource = false;
+    let newResources = duplicate(resources);
+    let obj = {};
+    // Look for resources under core actor data
+    let resourceKey = Object.keys(resources)
+      .filter((key) => resources[key].label === `${secondWindResourceName}`)
+      .shift();
+    if ((resourceKey && resources[resourceKey].value > 0) || !preventNegative) {
+      hasResource = true;
+      newResources[resourceKey].value--;
+      obj["data.resources"] = newResources;
+      actor.update(obj);
+      return true;
+    }
+    if (!hasResource) {
+      ui.notifications.error(`${actor.name} ${errorNoSecondWind}`);
+      return false;
+    }
   }
-  if (!hasResource) {
-    ui.notifications.error(`${actor.name} ${errorNoSecondWind}`);
-    return false;
-  }
+  return true;
 }
