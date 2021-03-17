@@ -56,6 +56,13 @@ if (macroActor !== undefined && macroActor !== null) {
   }
 }
 
+/**
+ * Updates the hp value of the actor sheet
+ *
+ * @param {Actor} actor active actor calling the macro
+ * @param {Number} amt amount to add to current hp
+ * @return {Number} actor sheet current hp value
+ */
 function updateHP(actor, amt) {
   let { attributes } = actor.data.data;
   let cur_hp = attributes.hp.value;
@@ -70,6 +77,12 @@ function updateHP(actor, amt) {
   return cur_hp;
 }
 
+/**
+ * Checks the resource of the actor sheet
+ *
+ * @param {Actor} actor active actor calling the macro
+ * @return {Boolean} true if resource available or deduction disabled, false otherwise
+ */
 function checkResource(actor) {
   if (resourceDeduction) {
     const { resources } = actor.data.data;
