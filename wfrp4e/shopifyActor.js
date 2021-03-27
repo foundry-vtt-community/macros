@@ -4,7 +4,7 @@
  * Updated: 24-03-2021
  * Description: Adds WFRP trappings to a selected actor. The actor, compendium and availability types added are freely selectable. Quantities can also be set as per WFRP availability test rules.
  * Note: Shopify WFRP4E actor is based on previous work by Lars and Geekdad
- * Tip: The actor selectpr will default to 'Shop' if a character, npc or vihicle is available with that name
+ * Tip: The actor selector will default to 'Shop' if a character, npc or vehicle with that name is available
  */
 
 function getPackNames() {
