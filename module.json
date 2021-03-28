@@ -53,6 +53,13 @@
             "path": "packs/macros-token.db",
             "module": "foundry_community_macros",
             "entity": "Macro"
+        },
+        {
+            "name": "community-macros-wfrp4e",
+            "label": "FVTT Community Macros - Warhammer 4e",
+            "path": "packs/macros-wfrp4e.db",
+            "module": "foundry_community_macros",
+            "entity": "Macro"
         }
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
