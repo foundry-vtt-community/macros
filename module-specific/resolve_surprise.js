@@ -17,7 +17,7 @@ if (!isSuccessful) {
   return ui.notifications.warn(warnMsg);
 }
 
-function checkSurprise(playerActors, enemyActors) {
+async function checkSurprise(playerActors, enemyActors) {
   if (!game.user.isGM) {
     warnMsg = "You do not have permission to run this macro.";
     return false;
@@ -70,14 +70,14 @@ function checkSurprise(playerActors, enemyActors) {
     close: (html) => {
       if (calculateSurprise) {
         // Determine which group is sneaking based on the user's selection
-        const sneakyOptions = html.find('[name="sneaking-group"]'); 
+        const sneakyOptions = html.find('[name="sneaking-group"]');
         let sneakingGroup;
         for (const option of sneakyOptions) {
-          if(option.checked) {
+          if (option.checked) {
             sneakingGroup = option.value;
             break;
           }
-        }      
+        }
 
         let results = ``;
         let lowestStealthCheck = 0;
@@ -94,7 +94,7 @@ function checkSurprise(playerActors, enemyActors) {
           case "party":
             lowestStealthCheck = rollStealth(playerActors);
             results = calculateSurpriseResults(
-              lowestStealthCheck, 
+              lowestStealthCheck,
               enemyActors);
             break;
         }
@@ -107,9 +107,10 @@ function checkSurprise(playerActors, enemyActors) {
   return true; // no issues and we're done here!
 }
 
-function handleChatMessage(results, lowestStealth) {
+async function handleChatMessage(results, lowestStealth) {
   let messageContent = ``;
-  messageContent += `<b>Lowest Stealth: </b> [[${lowestStealth}]] <br><br>`;
+  let rendered = await lowestStealth.render();
+  messageContent += `<b>Lowest Stealth: </b> ${rendered} <br><br>`;
   messageContent += results;
 
   const surpriseRules =
@@ -121,9 +122,8 @@ function handleChatMessage(results, lowestStealth) {
 
   let chatData = {
     user: game.user._id,
-    speaker: game.user.name,
     content: messageContent,
-    whisper: game.users.entities.filter((u) => u.isGM).map((u) => u._id),
+    whisper: ChatMessage.getWhisperRecipients("GM")
   };
 
   ChatMessage.create(chatData, {});
@@ -166,12 +166,18 @@ function rollStealth(sneakyGroup) {
   let stealthResults = [];
   for (let actor of sneakyGroup) {
     let stealth =
-      new Roll("1d20").roll().total + actor.data.data.skills.ste.mod;
+      new Roll("1d20 + @steMod", { steMod: actor.data.data.skills.ste.total }).roll();
     stealthResults.push(stealth);
   }
 
   // Return the lowest stealth roll, it's all we need
-  return Math.min(...stealthResults);
+  let lowest = stealthResults[0];
+  for (let roll of stealthResults) {
+    if (roll.total < lowest.total) {
+      lowest = roll;
+    }
+  }
+  return lowest;
 }
 
 function calculateSurpriseResults(lowestStealth, perceptiveGroup) {
