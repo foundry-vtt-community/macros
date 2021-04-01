@@ -1,4 +1,4 @@
-// Credit for helping me with this macro goes to  @cole & @Kandashi on the Founddry Discord
+// Credit for helping me with this macro goes to  @cole & @Kandashi on the Foundry Discord
 
 //Selects all actors of the same name on the scene.
 // eg: if you have a group of goblins mixed in with kobolds and you want to move all goblins
