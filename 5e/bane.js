@@ -7,8 +7,8 @@
 
 //user modifiable declarations CHANGE AT YOUR OWN RISK
 const baneIconPath = 'icons/svg/degen.svg';
-let baneMsg = ' is Fucked!';
-let endbaneMsg = ' is no longer Fucked.';
+let baneMsg = ' is Baned!';
+let endbaneMsg = ' is no longer Baned.';
 
 //fixed declarations DO NOT MODIFY
 let macroActor = token.actor;
