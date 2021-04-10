@@ -8,8 +8,9 @@
  *  NOTE: you need to add paths to the icons representing the curse conditions, as this is the hacky way
  *  in which this macro tracks the curse progression!
  *
- *  ALSO NOTE: you might want to fill in the curse specifics yourself to make things easier in the heady
- *  rush of an battle.
+ *  ALSO NOTE: We try to extract the relevant pieces of information from the actor's Mystery feat. 
+ *  This might not work, so if not, you might want to fill in the curse specifics yourself
+ *  to make things easier in the heat of battle.
  */
 
 let messageContent = "";
