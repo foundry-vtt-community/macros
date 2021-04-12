@@ -20,9 +20,10 @@
 
 //Localization
 const rangerName = "Ranger";
+const paladinName = "Paladin";
 const warlockName = "Warlock";
-const rangerSpell = "Hunter's Mark";
-const warlockSpell = "Hex";
+const markSpell = "Hunter's Mark";
+const hexSpell = "Hex";
 const condition = "Marked";
 const flagScope = "world";
 
@@ -136,14 +137,31 @@ async function castSpell() {
 
 function setRangerSpell() {
   className = rangerName;
-  if (actor.items.find(i => i.name === `${rangerSpell}`)) {
-    spellName = rangerSpell;
+  if (actor.items.find(i => i.name === `${markSpell}`)) {
+    spellName = markSpell;
     castSpell();
   } else {
     ui.notifications.error(
-      "Selected actor does not have the " + rangerSpell + " spell."
+      "Selected actor does not have the " + markSpell + " spell."
     );
-    console.log("Selected actor does not have the " + rangerSpell + " spell.");
+    console.log("Selected actor does not have the " + markSpell + " spell.");
+    return null;
+  }
+}
+
+//If the class is paladin and has the hunter's mark spell, set the spell name
+//or say the spell doesn't exist.
+
+function setPaladinSpell() {
+  className = paladinName;
+  if (actor.items.find(i => i.name === `${markSpell}`)) {
+    spellName = markSpell;
+    castSpell();
+  } else {
+    ui.notifications.error(
+      "Selected actor does not have the " + markSpell + " spell."
+    );
+    console.log("Selected actor does not have the " + markSpell + " spell.");
     return null;
   }
 }
@@ -153,14 +171,14 @@ function setRangerSpell() {
 
 function setWarlockSpell() {
   className = warlockName;
-  if (actor.items.find(i => i.name === `${warlockSpell}`)) {
-    spellName = warlockSpell;
+  if (actor.items.find(i => i.name === `${hexSpell}`)) {
+    spellName = hexSpell;
     castSpell();
   } else {
     ui.notifications.error(
-      "Selected actor does not have the " + warlockSpell + " spell."
+      "Selected actor does not have the " + hexSpell + " spell."
     );
-    console.log("Selected actor does not have the " + warlockSpell + " spell.");
+    console.log("Selected actor does not have the " + hexSpell + " spell.");
     return null;
   }
 }
@@ -170,14 +188,16 @@ function setWarlockSpell() {
 function checkSpell() {
   if (actor.items.find(i => i.name === `${rangerName}`)) {
     setRangerSpell();
+  } else if (actor.items.find(i => i.name === `${paladinName}`)) {
+    setPaladinSpell();
   } else if (actor.items.find(i => i.name === `${warlockName}`)) {
     setWarlockSpell();
   } else {
     ui.notifications.error(
-      "Please select a " + rangerName + " or " + warlockName + " token."
+      "Please select a " + rangerName + ", " + paladinName + ", or " + warlockName + " token."
     );
     console.log(
-      "Please select a " + rangerName + " or " + warlockName + " token."
+      "Please select a " + rangerName + ", " + paladinName + ", or " + warlockName + " token."
     );
   }
 }
