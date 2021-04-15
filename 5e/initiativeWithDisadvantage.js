@@ -1,5 +1,5 @@
 // Initiative with Disadvantage by Nulmas#9462
-// Thanks to Freeze#2689 and vance#1935 for the help.
+// Thanks to Freeze#2689, vance#1935 and u/Azzu for the help.
 
 // This macro allows GMs and players to roll for Initiative with disadvantage when playing D&D 5e. Hopefully it won't be needed for long and the option for it will be added 
 // to the system in a future release.
