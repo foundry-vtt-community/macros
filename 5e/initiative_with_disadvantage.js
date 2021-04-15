@@ -28,7 +28,12 @@ else
         let chosenActor =t.actor;
         let init = chosenActor.data.data.attributes.init.total;
         let tieBreaker = chosenActor.data.data.abilities.dex.value/100;
-        let roll = new Roll(`2d20kl + ${init} + ${tieBreaker}`).roll();
+        let advFlag = false;
+        try{advFlag = t.actor.overrides.flags.dnd5e.initiativeAdv;}
+        catch{}
+        let roll = null;
+        if (advFlag) {roll = new Roll(`1d20 + ${init} + ${tieBreaker}`).roll();} //Character normally has advantage
+        else {roll = new Roll(`2d20kl + ${init} + ${tieBreaker}`).roll();} //Character doesn't have advantage
         roll.toMessage({speaker: ChatMessage.getSpeaker({token:t})});
         let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
         
@@ -44,7 +49,12 @@ else
         initiatives = chosenTokens.map(t => {
         let chosenActor =t.actor;
         let init = chosenActor.data.data.attributes.init.total;
-        let roll = new Roll(`2d20kl + ${init}`).roll();
+        let advFlag = false;
+        try{advFlag = t.actor.overrides.flags.dnd5e.initiativeAdv;}
+        catch{}
+        let roll = null;
+        if (advFlag) roll = new Roll(`1d20 + ${init}`).roll(); //Character normally has advantage
+        else roll = new Roll(`2d20kl + ${init}`).roll(); //Character doesn't have advantage
         roll.toMessage({speaker: ChatMessage.getSpeaker({token:t})});
         let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
         
