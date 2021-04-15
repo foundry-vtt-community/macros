@@ -10,7 +10,7 @@
 // BEWARE: If a token has already rolled for initiative and you use this macro with it selected, the new initiative will replace the old one. I considered changing this, but
 // decided it's worth keeping it this way in case a player or GM rolls for initiative without disadvantage by mistake.
 
-async function main()
+(async function ()
 {
 if (canvas.tokens.controlled.length === 0)
     ui.notifications.error("Choose tokens to roll for");
@@ -56,5 +56,4 @@ else
     }
     initiatives.forEach(i => game.combat.updateCombatant(i));
     }
-}
-main();
+})();
