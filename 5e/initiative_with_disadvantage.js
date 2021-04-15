@@ -29,8 +29,8 @@ else
         let init = chosenActor.data.data.attributes.init.total;
         let tieBreaker = chosenActor.data.data.abilities.dex.value/100;
         let roll = new Roll(`2d20kl + ${init} + ${tieBreaker}`).roll();
-        roll.toMessage({speaker: ChatMessage.getSpeaker({actor:chosenActor})});
-        let combatantId = game.combat.combatants.find(c => c.name === chosenActor.name)._id;
+        roll.toMessage({speaker: ChatMessage.getSpeaker({token:t})});
+        let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
         
         return {
             _id: combatantId,
@@ -45,8 +45,8 @@ else
         let chosenActor =t.actor;
         let init = chosenActor.data.data.attributes.init.total;
         let roll = new Roll(`2d20kl + ${init}`).roll();
-        roll.toMessage({speaker: ChatMessage.getSpeaker({actor:chosenActor})});
-        let combatantId = game.combat.combatants.find(c => c.name === chosenActor.name)._id;
+        roll.toMessage({speaker: ChatMessage.getSpeaker({token:t})});
+        let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
         
         return {
             _id: combatantId,
@@ -54,6 +54,6 @@ else
         };
     }) ;
     }
-    initiatives.forEach(i => game.combat.updateCombatant(i));
+    await game.combat.updateCombatant(initiatives);
     }
 })();
