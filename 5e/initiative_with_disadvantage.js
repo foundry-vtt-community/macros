@@ -21,7 +21,7 @@
         let init = chosenActor.data.data.attributes.init.total;
         let tieBreaker = chosenActor.data.data.abilities.dex.value/100;
         let roll = new Roll(`${2 - advantage}d20kl + ${init} + ${tieBreaker * tieBreakerCheck}`).roll();
-        roll.toMessage({speaker: ChatMessage.getSpeaker({actor: chosenActor})});
+        roll.toMessage({speaker: ChatMessage.getSpeaker({token: t})});
         let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
         return{
             _id: combatantId,
