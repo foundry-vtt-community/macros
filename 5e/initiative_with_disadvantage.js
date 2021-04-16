@@ -10,50 +10,23 @@
 // BEWARE: If a token has already rolled for initiative and you use this macro with it selected, the new initiative will replace the old one. I considered changing this, but
 // decided it's worth keeping it this way in case a player or GM rolls for initiative without disadvantage by mistake.
 
-(async function ()
-{
-if (canvas.tokens.controlled.length === 0)
-    ui.notifications.error("Choose tokens to roll for");
-
-else
-    {
+(async () => {
+    if (canvas.tokens.controlled.length === 0) return ui.notifications.error("Choose tokens to roll for");
     await canvas.tokens.toggleCombat();
     let chosenTokens = canvas.tokens.controlled;
-    let initiatives = null;
-    let tieBreakerCheck = game.settings.get("dnd5e", "initiativeDexTiebreaker"); //Checks if Dex tiebreaker is being used
-    
-    if(tieBreakerCheck) //If tiebreaker is used
-    {
-        initiatives = chosenTokens.map(t => {
-        let chosenActor =t.actor;
+    let tieBreakerCheck = game.settings.get("dnd5e", "initiativeDexTiebreaker") ? 1 : 0; //Checks if Dex tiebreaker is being used
+    let initiatives = chosenTokens.map(t => {
+        let chosenActor = t.actor;
+        let advantage = chosenActor.getFlag("dnd5e", "initiativeAdv") ? 1 : 0;
         let init = chosenActor.data.data.attributes.init.total;
         let tieBreaker = chosenActor.data.data.abilities.dex.value/100;
-        let roll = new Roll(`2d20kl + ${init} + ${tieBreaker}`).roll();
-        roll.toMessage({speaker: ChatMessage.getSpeaker({token:t})});
+        let roll = new Roll(`${2 - advantage}d20kl + ${init} + ${tieBreaker * tieBreakerCheck}`).roll();
+        roll.toMessage({speaker: ChatMessage.getSpeaker({token: t})});
         let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
-        
-        return {
+        return{
             _id: combatantId,
             initiative: roll.total,
         };
-    }) ;
-    }
-    
-    else //if tiibreaker isn't used
-    {
-        initiatives = chosenTokens.map(t => {
-        let chosenActor =t.actor;
-        let init = chosenActor.data.data.attributes.init.total;
-        let roll = new Roll(`2d20kl + ${init}`).roll();
-        roll.toMessage({speaker: ChatMessage.getSpeaker({token:t})});
-        let combatantId = game.combat.combatants.find(c => c.name === t.name)._id;
-        
-        return {
-            _id: combatantId,
-            initiative: roll.total,
-        };
-    }) ;
-    }
+    });
     await game.combat.updateCombatant(initiatives);
-    }
 })();
