@@ -106,7 +106,7 @@ else {
         callback: html => {
           let checkedArray = html.find('input[class="awardedPC"]:checked');
           let checkedCount = checkedArray.length;
-          let xp = parseInt(html.find('input[name="xp"]').val());
+          let xp = parseInt(html.find('span[id="xpAwardTotal"]')[0].innerHTML);
           _action(xp, checkedArray, false, checkedCount, xp);
         },
       },
@@ -115,7 +115,7 @@ else {
         callback: html => {
           let checkedArray = html.find('input[class="awardedPC"]:checked');
           let checkedCount = checkedArray.length;
-          let originalXp = parseInt(html.find('input[name="xp"]').val());
+          let originalXp = parseInt(html.find('span[id="xpAwardTotal"]')[0].innerHTML);
           let xp = Math.floor(originalXp / checkedCount);
           _action(xp, checkedArray, true, checkedCount, originalXp);
         }
