@@ -35,7 +35,7 @@ let bless = {
             value: "+1d4",
         },
 		{
-            key: "mdata.bonuses.rsak.attack",
+            key: "data.bonuses.rsak.attack",
             mode: 2,
             priority: 20,
             value: "+1d4",
