@@ -68,8 +68,10 @@ else {
       if (hasNPCs) {
           combatNPCs.forEach(combatant => {
             npcChecklist += `
-                <input type="checkbox" name="${combatant.actor.name}" value="${combatant.actor.data.data.details.xp.value}" checked class="npcXPCheckbox">\n
-                <label for="${combatant.actor.name}">${combatant.actor.name} (CR ${combatant.actor.data.data.details.cr.total}, ${combatant.actor.data.data.details.xp.value} xp)</label><br>`
+                <div class="form-group">
+                    <input type="checkbox" id="check${combatant.actor.name}" name="${combatant.actor.name}" value="${combatant.actor.data.data.details.xp.value}" checked class="npcXPCheckbox">
+                    <label for="check${combatant.actor.name}">${combatant.actor.name} (CR ${combatant.actor.data.data.details.cr.total}, ${combatant.actor.data.data.details.xp.value} xp)</label>
+                </div>`;
             npcXpTotal += combatant.actor.data.data.details.xp.value;
           });
       }
@@ -83,23 +85,28 @@ else {
     if (actor.hasPlayerOwner) checked = 'checked';
     if (actorsSelected.length && !actorsSelected.includes(actor)) checked = '';
     checkPlayerOptions+=`
-        <br>
-        <input type="checkbox" class="awardedPC" name="${actor.name}" value="${actor.name}" ${checked}>\n
-        <label for="${actor.name}">${actor.name}</label>
-    `
+        <div class="form-group">
+            <input type="checkbox" class="awardedPC" id="check${actor.name}" name="${actor.name}" value="${actor.name}" ${checked}><label for="check${actor.name}">${actor.name}</label>
+        </div>`;
   });
   
   const msg = `
     Award XP to the following actors: ${checkPlayerOptions}
-    <br>
-    ${hasNPCs ? `<br>Award XP for the following: <br>${npcChecklist}` : ``}
+    <hr>Award XP for the following: 
+    ${hasNPCs ? `${npcChecklist}` : ``}
     `;
-  const field = `<input type="text" id="xpAwardEntry" name="xp" placeholder="XP amount" style="margin-bottom: 8px;" />`;
+  const field = `
+    <div class="form-group">
+        <label for="crSelect">Award for CR: </label><select id="crSelect"><option value="0">Select CR</option>` + CONFIG.PF1.CR_EXP_LEVELS.map((o, index) => `<option value='${o}'>${index + 1}: ${o} XP</option>`) + `</select>
+    </div>
+    <div class="form-group">
+        <label for="xpAwardEntry">Award Static XP:</label><input type="text" id="xpAwardEntry" name="xp" placeholder="XP amount" style="margin-bottom: 8px;" />
+    </div>`;
   const xpDisplay = `<h3>Total XP: <span id="xpAwardTotal">${npcXpTotal}</span></h3>`;
 
   new Dialog({
     title: "Roll saving throw",
-    content: `<p>${msg}</p>${field}${xpDisplay}`,
+    content: `<form class="flexcol">${msg}${field}${xpDisplay}</form>`,
     buttons: {
       ok: {
         label: "Give All",
@@ -123,7 +130,8 @@ else {
     },
     render: (htm) => {
           htm.find('.npcXPCheckbox').click(updateChecked.bind(this, htm.find('span[id="xpAwardTotal"]'), htm.find('input[id="xpAwardEntry"]')));
-          htm.find('#xpAwardEntry').on('input', updateValue.bind(this, htm.find('span[id="xpAwardTotal"]'), htm.find('input[id="xpAwardEntry"]')))
+          htm.find('#xpAwardEntry').on('input', updateValue.bind(this, htm.find('span[id="xpAwardTotal"]'), htm.find('input[id="xpAwardEntry"]')));
+          htm.find('#crSelect').on('change', updateValue.bind(this, htm.find('span[id="xpAwardTotal"]'), htm.find('select[id="crSelect"]')));
       },
   }).render(true);
 
@@ -135,13 +143,14 @@ else {
     if (isNaN(inputXP)) inputXP = 0;
     let newXP = npcXpTotal + inputXP;
     xpSpan[0].innerHTML = newXP;
-  }
+  };
   
   let updateValue = function(xpSpan, xpInput, event) {
+      console.log(xpInput.val());
     let inputXP = parseInt(xpInput.val());
     if (isNaN(inputXP)) inputXP = 0;
     let newXP = npcXpTotal + inputXP;
     xpSpan[0].innerHTML = newXP;
-  }
+  };
   
 }
