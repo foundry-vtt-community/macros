@@ -95,9 +95,19 @@ else {
     <hr>Award XP for the following: 
     ${hasNPCs ? `${npcChecklist}` : ``}
     `;
+  
+   let xpLevels = CONFIG.PF1.CR_EXP_LEVELS.slice(1).map((o, index) => {
+      let object = {xp: "", cr: 0};
+      object.cr = index + 1;
+      object.xp = o;
+      return object;
+  });
+  
+  xpLevels = [{cr: "1/8", xp: 50}, {cr: "1/6", xp: 65}, {cr: "1/4", xp: 100}, {cr: "1/3", xp: 135}, {cr: "1/2", xp: 200}].concat(xpLevels);
+  
   const field = `
     <div class="form-group">
-        <label for="crSelect">Award for CR: </label><select id="crSelect"><option value="0">Select CR</option>` + CONFIG.PF1.CR_EXP_LEVELS.map((o, index) => `<option value='${o}'>${index + 1}: ${o} XP</option>`) + `</select>
+        <label for="crSelect">Award for CR: </label><select id="crSelect"><option value="0">Select CR</option>` + xpLevels.map(o => `<option value='${o.xp}'>${o.cr}: ${o.xp} XP</option>`) + `</select>
     </div>
     <div class="form-group">
         <label for="xpAwardEntry">Award Static XP:</label><input type="text" id="xpAwardEntry" name="xp" placeholder="XP amount" style="margin-bottom: 8px;" />
