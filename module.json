@@ -70,7 +70,7 @@
         }
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
-    "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/master/module.json",
+    "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/module.json",
     "download": "https://github.com/foundry-vtt-community/macros/archive/v0.40.zip",
     "socket": true,
     "minimumCoreVersion": "0.7.8",
