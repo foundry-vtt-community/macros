@@ -135,7 +135,7 @@ function smite(actor, slotLevel, criticalHit, consume) {
 
     targets.forEach(target => {
         let numDice = slotLevel + 1;
-        let type = target.actor.data.data.details.type?.toLocaleLowerCase();
+        let type = target.actor.data.data.details.type.value?.toLocaleLowerCase();
         if (affectedCreatureTypes.includes(type)) numDice += 1;
         if (criticalHit) numDice *= 2;
         const flavor = `Macro Divine Smite - ${game.i18n.localize("DND5E.DamageRoll")} (${game.i18n.localize("DND5E.DamageRadiant")})`;
