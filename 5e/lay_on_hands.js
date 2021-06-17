@@ -6,12 +6,15 @@
  * otherwise, a 'roll' message appears allowing the target character to right-click to apply healing.
  */
 
+(async () => {
+
+const layName = "Lay on Hands";
 let confirmed = false;
 let actorData = actor || canvas.tokens.controlled[0] || game.user.character;
-let featData = actorData ? actorData.items.find(i => i.name==="Lay on Hands") : null;
+let featData = actorData ? actorData.items.find(i => i.name===layName) : null;
 
 if(actorData == null || featData == null) 
-    ui.notifications.warn(`Selected hero must have "Lay on Hands" feat.`);
+    ui.notifications.warn(`Selected hero must have ${layName} feat.`);
 else if (game.user.targets.size !== 1)
     ui.notifications.warn(`Please target one token.`);
 else
@@ -43,6 +46,7 @@ else
         default: "heal",
 
         close: html => {
+            (async () => {
             if (confirmed) 
             {
                 let number = Math.floor(Number(html.find('#num')[0].value));
@@ -63,13 +67,29 @@ else
                             speaker: ChatMessage.getSpeaker(),
                             content: `${actorData.name} lays hands on ${targetActor.data.name} for ${number} HP.<br>${flavor}`
                         });
-                        targetActor.update({"data.attributes.hp.value" : targetActor.data.data.attributes.hp.value + number});
+                        await targetActor.update({"data.attributes.hp.value" : targetActor.data.data.attributes.hp.value + number});
+                    }
+                     
+                    //Update the value under "Features"
+                    featUpdate.data.uses.value = featUpdate.data.uses.value - number;
+                    await actorData.items.getName(layName).update({ "data.uses.value" : featUpdate.data.uses.value });
+
+                    //Update resource counter only if the "Lay on Hands" feature is set to consume it
+                    let resString = featUpdate.data.consume.target;
+                    if(resString.indexOf('resources') >= 0) {
+                       await actorData.update({
+                           data: { [featUpdate.data.consume.target] : featUpdate.data.uses.value }
+                       });
                     }
 
-                    featUpdate.data.uses.value = featUpdate.data.uses.value - number;
-                    actorData.updateEmbeddedEntity("OwnedItem", featUpdate);
+                    if (actorData.sheet.rendered) {
+                       // Update the actor sheet if it is currently open
+                       await actorData.render(true);
+                    }
                 };
             }
+            })();
         }
     }).render(true);
 }
+})();
