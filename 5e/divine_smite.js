@@ -19,6 +19,9 @@ let affectedCreatureTypes = ["fiend", "undead", "undead (shapechanger)"]; //  Cr
 // Use token selected, or default character for the Actor if none is.
 let s_actor = canvas.tokens.controlled[0]?.actor || game.user.character;     
 
+// Flag for selected slot type
+let pactSlot = false;
+
 // Verifies if the actor can smite.
 if (s_actor?.data.items.find(i => i.name === "Divine Smite") === undefined){
     return ui.notifications.error(`No valid actor selected that can use this macro.`);
@@ -29,13 +32,23 @@ if (hasAvailableSlot(s_actor)) {
 
     // Get options for available slots
     let optionsText = "";
-    for (let i = 1; i < maxSpellSlot; i++) {
-        const slots = getSpellSlots(s_actor, i);
+    let i = 1;
+    for (; i < maxSpellSlot; i++) {
+        const slots = getSpellSlots(s_actor, i, false);
         if (slots.value > 0) {
             const level = CONFIG.DND5E.spellLevels[i];
             const label = game.i18n.format('DND5E.SpellLevelSlot', {level: level, n: slots.value});
             optionsText += `<option value="${i}">${label}</option>`;
         }
+    }
+
+    // Check for Pact slot
+    const slots = getSpellSlots(s_actor, 0, true);
+    if(slots.value > 0) {
+        i++;
+        const level = CONFIG.DND5E.spellLevels[slots.level];
+        const label = 'Pact: ' + game.i18n.format('DND5E.SpellLevelSlot', {level: level, n: slots.value});
+        optionsText += `<option value="${i}">${label}</option>`;
     }
 
     // Create a dialogue box to select spell slot level to use when smiting.
@@ -77,10 +90,14 @@ if (hasAvailableSlot(s_actor)) {
         default: "Cancel",
         close: html => {
             if (confirmed) {
-                const slotLevel = parseInt(html.find('[name=slot-level]')[0].value);
+                let slotLevel = parseInt(html.find('[name=slot-level]')[0].value);
+                if(slotLevel > maxSpellSlot) {
+                    slotLevel = actor.data.data.spells.pact.level;
+                    pactSlot = true;
+                }
                 const criticalHit = html.find('[name=criticalCheckbox]')[0].checked;				
                 const consumeSlot = html.find('[name=consumeCheckbox]')[0].checked;
-                smite(s_actor, slotLevel, criticalHit, consumeSlot);
+                smite(s_actor, slotLevel, criticalHit, consumeSlot, pactSlot);
             }
         }
     }).render(true);
@@ -93,10 +110,16 @@ if (hasAvailableSlot(s_actor)) {
  * Gives the spell slot information for a particular actor and spell slot level.
  * @param {Actor5e} actor - the actor to get slot information from.
  * @param {integer} level - the spell slot level to get information about. level 0 is deprecated.
+ * @param {boolean} isPact - whether the spell slot is obtained through pact.
  * @returns {object} contains value (number of slots remaining), max, and override.
  */
-function getSpellSlots(actor, level) {
-    return actor.data.data.spells[`spell${level}`];
+function getSpellSlots(actor, level, isPact) {
+    if(isPact == false) {
+        return actor.data.data.spells[`spell${level}`];
+    }
+    else {
+        return actor.data.data.spells.pact;
+    }
 }
 
 /**
@@ -119,10 +142,12 @@ function getSpellSlots(actor, level) {
  * @param {integer} slotLevel - the spell slot level to use when smiting.
  * @param {boolean} criticalHit - whether the hit is a critical hit.
  * @param {boolean} consume - whether to consume the spell slot.
+ * @param {boolean} isPact - whether the spell slot used is obtained through pact.
  */
-function smite(actor, slotLevel, criticalHit, consume) {
+function smite(actor, slotLevel, criticalHit, consume, isPact) {
     let targets = game.user.targets;
-    let chosenSpellSlots = getSpellSlots(actor, slotLevel);
+
+    let chosenSpellSlots = getSpellSlots(actor, slotLevel, isPact);
 
     if (chosenSpellSlots.value < 1) {
         ui.notifications.error("No spell slots of the required level available.");
@@ -139,12 +164,36 @@ function smite(actor, slotLevel, criticalHit, consume) {
         if (affectedCreatureTypes.includes(type)) numDice += 1;
         if (criticalHit) numDice *= 2;
         const flavor = `Macro Divine Smite - ${game.i18n.localize("DND5E.DamageRoll")} (${game.i18n.localize("DND5E.DamageRadiant")})`;
-        new Roll(`${numDice}d8`).roll().toMessage({ flavor: flavor, speaker });
+        let damageRoll = new Roll(`${numDice}d8`);
+
+        let targetActor = game.user.targets.values().next().value.actor;
+        
+        if (targetActor.permission !== CONST.ENTITY_PERMISSIONS.OWNER) {
+            // We need help applying the damage, so make a roll message for right-click convenience.
+            damageRoll.roll().toMessage({
+                speaker: ChatMessage.getSpeaker(),
+                flavor: `${actor.name} smited ${targetActor.data.name}.<br>${flavor}
+                <p><em>Manually apply (or right-click) ${damageRoll.result} HP of damage to ${targetActor.data.name}</em></p>` });
+        }
+        else {
+            // We can apply damage automatically, so just show a normal chat message.
+            damageRoll.roll().toMessage({
+                speaker: ChatMessage.getSpeaker(),
+                flavor: `${actor.name} smited ${targetActor.data.name}.<br>${flavor}
+                <p><em>${targetActor.data.name} has taken ${damageRoll.result} HP of damage.</em></p>` });
+            targetActor.update({"data.attributes.hp.value" : targetActor.data.data.attributes.hp.value - damageRoll.result});
+        }
     })
 
     if (consume){
         let objUpdate = new Object();
-        objUpdate['data.spells.spell' + slotLevel + '.value'] = chosenSpellSlots.value - 1;
+        if(isPact == false) {
+            objUpdate['data.spells.spell' + slotLevel + '.value'] = chosenSpellSlots.value - 1;
+        }
+        else {
+            objUpdate['data.spells.pact.value'] = chosenSpellSlots.value - 1;
+        }
+        
         actor.update(objUpdate);
     }
 }
