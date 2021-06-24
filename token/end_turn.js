@@ -11,7 +11,6 @@ the turn when the current actor in the turn order is owned by you.
 Based on the work of reddit user serrag97: https://www.reddit.com/r/FoundryVTT/comments/j1b8gs/next_turn_shortcut/
 */
 
-
 main()
 
 async function main() {
@@ -21,20 +20,19 @@ async function main() {
         const isGM = game.users.get(game.userId).hasRole(4);
         if (isGM) {
             game.combats.active.nextTurn();
-            return;
+        }
+        else {
+            for(let token of canvas.tokens.controlled) {
+                if(token.id === game.combats.active.current.tokenId) {
+                    game.combats.active.nextTurn();
+                    return;
+                }
+            }
+
+            ui.notifications.info('As a player you can only advance your turn');
         }
 
-        // Otherwise, we check that the user owns the current token
-        // in the turn order
-        const currTokenId = game.combats.active.current.tokenId;
-        const combatant = game.combats.active.data.combatants.find(c => c.tokenId === currTokenId);
-        const player = combatant.players.find(p => p._id === game.userId);
-        if (player) {
-            game.combats.active.nextTurn();
-            return;
-        } else {
-            ui.notifications.info('You can only advance the turn on your turn');
-        }
+        return;
     } catch(e) {
         ui.notifications.error(e);
         return;
