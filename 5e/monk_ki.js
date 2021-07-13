@@ -102,7 +102,7 @@
         }
     }
 
-   const openHand = !!actor.items.find(o => o.data.name === 'Open Hand Technique') ? `<br />In addition, you can impose one of the following: <ul><li>It must succeed on a <b>Dexterity</b> saving throw or be knocked prone.</li><li>It must make a <b>Strength</b> saving throw. If it fails, you can push it up to 15 feet away from you.</li><li>It can’t take reactions until the end of your next turn.</li></ul> Saving throw <b>DC ${10 + actor.data.data.abilities.wis.mod}</b>` : "";
+    const openHand = !!actor.items.find(o => o.data.name === 'Open Hand Technique') ? `<br />In addition, you can impose one of the following: <ul><li>It must succeed on a <b>Dexterity</b> saving throw or be knocked prone.</li><li>It must make a <b>Strength</b> saving throw. If it fails, you can push it up to 15 feet away from you.</li><li>It can’t take reactions until the end of your next turn.</li></ul> Saving throw <b>DC ${10 + actor.data.data.abilities.wis.mod}</b>` : "";
 
     const features = [
         new KiFeature("Ki: Flurry of Blows",
@@ -110,7 +110,7 @@
             2,
             function () {
                 // Automatically roll two Unarmed Strike attacks
-                let strike = actor.items.find(o => o.data.name === 'Unarmed Strike' && o.data.labels.activation === '1 Action')
+                let strike = actor.items.find(o => o.data.name === 'Unarmed Strike' && o.labels.activation === '1 Action')
                 if (strike) {
                     strike.roll();
                     strike.roll();
@@ -169,7 +169,7 @@
         }
 
         // Look for Ki Points Feat that has uses
-        actor.items.filter(i => i.data.name === kiName && i.data.hasUses && (i.data.data.uses.value >= kiCost || allowNegative)).forEach(i => {
+        actor.items.filter(i => i.data.name === kiName && i.hasLimitedUses && (i.data.data.uses.value >= kiCost || allowNegative)).forEach(i => {
             hasAvailableResource = true;
             i.data.data.uses.value -= kiCost
         })
