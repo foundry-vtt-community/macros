@@ -1,6 +1,6 @@
 for (let scene of game.scenes){
   //Goes through the array of scenes and finds the active one.
-    if(scene.active == true){
+    if (scene._view) {
         //Height, Width, and Padding offsets. 
         //scene data.height and scene.data.width give image size.
         //canvas dimensions give size including padding
