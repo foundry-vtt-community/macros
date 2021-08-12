@@ -1,3 +1,7 @@
+/**
+ * Reads the chat log for a specific type of die rolled and returns the average of that die type. If no input is provided, it will check all d20 rolls.
+ */
+
 let dialogue = new Dialog({
     title: `Dice rolls to check`,
     content: `<p>Enter the type of dice to check: <input type="number" id="diceFacesToCheck"></p>`,
@@ -5,34 +9,24 @@ let dialogue = new Dialog({
         one: {
             icon: '',
             label: 'Submit',
-            callback: () => {
-                const diceToCheck = parseInt($('#diceFacesToCheck').val()) ?? 20
-                const chatLog = game.messages.entries
-                let rolls = 0
-                let total = 0
-
-                for (let i = 0; i < chatLog.length; i++) {
-                    const entry = chatLog[i]
-                    const data = entry.data
-
-                    if (data.roll !== undefined) {
-                        const roll = JSON.parse(data.roll)
-                        let entryTotal = 0
-
-                        if (typeof roll.terms === 'object') {
-                            for (let j = 0; j < roll.terms.length; j++) {
-                                if (typeof roll.terms[j] === 'object' && roll.terms[j].faces === diceToCheck) {
-                                    if (Number.isInteger(roll.terms[j].results[0].result)) {
-                                        entryTotal += roll.terms[j].results[0].result
-                                        rolls++
-                                    }
-                                }
-                            }
-
-                            total += entryTotal
-                        }
-                    }
-                }
+            callback: (html) => {
+                const input = html.find('#diceFacesToCheck').val();
+                const diceToCheck = input ? parseInt(input) : 20;
+                const chatLog = game.messages;
+                let rolls = 0;
+                let total = 0;
+                
+                chatLog.forEach(entry => {
+                    const {terms} = entry._roll;
+                    terms
+                        .filter(die => die.faces === diceToCheck)
+                        .forEach(die => {
+                            rolls = rolls + die.number;
+                            total = total + die.total;
+                        })
+                });
+                
+                console.log(rolls, total);
 
                 let dialogue = new Dialog({
                     title: `Average d${diceToCheck} rolls`,

@@ -15,8 +15,9 @@ const numRolls = 6;
 //////////////////////////////////////////
 const stats = Array(numRolls).fill(0).map(e=>new Roll(statString).roll());
 
-const {faces, rolls} = stats[0].parts[0];
-const totalAverage = (faces/2 + 0.5) * rolls.filter(i=> i?.discarded !== true).length;
+const rollData = stats[0].dice[0];
+const {faces, values: keptRolls, results: rolls} = rollData;
+const totalAverage = (faces/2 + 1) * keptRolls.length;
 const totalDeviation = faces/2;
 const totalLow = Math.ceil(totalAverage - totalDeviation);
 const totalHigh = Math.ceil(totalAverage + totalDeviation);
@@ -25,9 +26,9 @@ const header = rolls.map((roll, index) => `<th>D${index + 1}</th>`).join('');
 
 let tableRows = '';
 let finalSum = 0;
-for(let {parts, total} of stats) {
+for(let {terms, total} of stats) {
   tableRows += `<tr style="text-align:center">`;
-  tableRows += parts[0].rolls.map(({result}) => `<td ${colorSetter(result, 1, faces)}>${result}</td>`).join('');
+  tableRows += terms[0].results.map(({result}) => `<td ${colorSetter(result, 1, faces)}>${result}</td>`).join('');
   tableRows += `<td style="border-left:1px solid #000; ${colorSetter(total, totalLow, totalHigh)}">${total}</td></tr>`;
   finalSum += total;
 }
