@@ -28,7 +28,7 @@ let tableRows = '';
 let finalSum = 0;
 for(let {terms, total} of stats) {
   tableRows += `<tr style="text-align:center">`;
-  tableRows += terms[0].results.map(({result}) => `<td ${colorSetter(result, 1, faces)}>${result}</td>`).join('');
+  tableRows += terms[0].results.map(({result, discarded}) => `<td style="${colorSetter(result, 1, faces, discarded)}">${result}</td>`).join('');
   tableRows += `<td style="border-left:1px solid #000; ${colorSetter(total, totalLow, totalHigh)}">${total}</td></tr>`;
   finalSum += total;
 }
@@ -57,8 +57,9 @@ let content = `
 
 ChatMessage.create({content});
 
-function colorSetter(number,low,high)
+function colorSetter(number,low,high, discarded)
 {
+  if(discarded === true) return 'text-decoration:line-through;color:gray';
   if(number <= low) return 'color:red';
   if(number >= high) return 'color:green';
   return '';
