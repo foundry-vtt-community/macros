@@ -1,4 +1,4 @@
-// A simple macro for maximizing creature HP
+// A simple macro for maximizing NPC HP
 
 const dir = new ActorDirectory();
 const regEx = /(\d+d\d+)/;
