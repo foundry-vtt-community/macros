@@ -17,5 +17,5 @@ dir.documents.forEach(function(obj){
     solution = eval(formula);
     obj.data.data.attr.hp.value = solution;
     obj.data.data.attr.hp.max = solution;
-    console.log(obj.data.name);
+    await obj.update();
   });
