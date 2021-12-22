@@ -2,7 +2,7 @@
     "name": "foundry_community_macros",
     "title": "Foundry Community Macros",
     "description": "<p>This is a collection of Macros added by the FoundryVTT Community!<br><br>You can add your own macros by making a pull request here: https://github.com/foundry-vtt-community/macros</p>",
-    "version": "0.50.0",
+    "version": "9.1",
     "author": "FoundryVTTCommunity",
     "packs": [
         {
@@ -71,8 +71,8 @@
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
     "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/module.json",
-    "download": "https://github.com/foundry-vtt-community/macros/archive/v0.50.0.zip",
+    "download": "https://github.com/foundry-vtt-community/macros/archive/v9.1.zip",
     "socket": true,
-    "minimumCoreVersion": "0.7.10",
-    "compatibleCoreVersion": "0.8.9"
+    "minimumCoreVersion": "9",
+    "compatibleCoreVersion": "9"
 }
