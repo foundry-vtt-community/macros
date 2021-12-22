@@ -1,13 +1,14 @@
 /**
+ * D&D5e biased, paths may be wrong in other systems!
  * Equips/unequips an item. Make sure you change the variables at the top (as required).
  * This script will also error check to make sure items exist and tokens are select. 
  * Chat and token icon display options can be set as desired.
- * Author: Zapgun
+ * Author: Zapgun, Freeze#2689 (fix for v9)
  */
 
-let itemName = 'Shield'; // <--- Change this to the *exact* item name (capitals count!)
-let sendToChat = true; // <--- Change to 'true' or 'false' to display a chat message about equipping
-let displayIcon = true; // <--- Change to 'true' or 'false' to display an effect icon when equipped
+const itemName = 'Shield'; // <--- Change this to the *exact* item name (capitals count!)
+const sendToChat = true; // <--- Change to 'true' or 'false' to display a chat message about equipping
+const displayIcon = true; // <--- Change to 'true' or 'false' to display an effect icon when equipped
 const effectIconPath = 'icons/svg/shield.svg'; // <--- Add the effect icon you want to appear when equipped
 
 let toggleResult = false;
@@ -16,10 +17,10 @@ if (!actor) {
     ui.notifications.warn('You need to select a token before using this macro!');
 } else {
 
-	let myItem = actor.items.find(i => i.name == itemName);
-	if (myItem != null)
+	const myItem = actor.items.getName(itemName);
+	if (myItem)
 	{
-		let item = actor.getOwnedItem(myItem._id);
+		let item = actor.items.get(myItem.id);
 		let attr = "data.equipped";
 		let equipped = getProperty(item.data, attr);
 		if (sendToChat) {			
@@ -48,7 +49,7 @@ function chatMessage(messageContent) {
 	// create the message
 	if (messageContent !== '') {
 		let chatData = {
-			user: game.user._id,
+			user: game.user.id,
 			speaker: ChatMessage.getSpeaker(),
 			content: messageContent,
 		};
