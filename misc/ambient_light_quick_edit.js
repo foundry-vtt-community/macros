@@ -18,7 +18,7 @@ console.log("---------------------------------------------");
 console.log(`${macroName} | Start`);
 
 const drawingDetails = {
-      author: game.user._id,
+      author: game.userId,
       fillAlpha: 0,
       fillColor: "#808080",
       fillType: 1,
@@ -70,12 +70,12 @@ let dialogSelector = new Dialog({
       label: `Confirm`,
       callback: htmlLightSelection => { 
         lightSelected = (htmlLightSelection.find('[name="light-selector"]')[0].value)
-        lightSelectedAngle = lights[lightSelected].data.angle;
-        lightSelectedBright = lights[lightSelected].data.bright;
-        lightSelectedDim = lights[lightSelected].data.dim;
+        lightSelectedAngle = lights[lightSelected].data.config.angle;
+        lightSelectedBright = lights[lightSelected].data.config.bright;
+        lightSelectedDim = lights[lightSelected].data.config.dim;
         lightSelectedRotation = lights[lightSelected].data.rotation;
-        lightSelectedTintAlpha = lights[lightSelected].data.tintAlpha;
-        lightSelectedTintColor = lights[lightSelected].data.tintColor;
+        lightSelectedTintAlpha = lights[lightSelected].data.config.alpha;
+        lightSelectedTintColor = lights[lightSelected].data.config.color;
         //console.log(`${macroName} | lightSelected = ${lightSelected}`);
         //console.log(`${macroName} | lightSelectedBright = ${lightSelectedBright}`);
         dialogEditor.render(true);
@@ -109,7 +109,7 @@ let dialogEditor = new Dialog({
       label: `Rotate 5* CW`,
       callback: () => { 
         let rot = lights[lightSelected].data.rotation;
-        lights[lightSelected].update({"rotation":rot+5});
+        lights[lightSelected].document.update({"rotation":rot+5});
         dialogEditor.render(true);
       }
     },
@@ -118,7 +118,7 @@ let dialogEditor = new Dialog({
       label: `Rotate 15* CW`,
       callback: () => { 
         let rot = lights[lightSelected].data.rotation;
-        lights[lightSelected].update({"rotation":rot+15});
+        lights[lightSelected].document.update({"rotation":rot+15});
         dialogEditor.render(true);
       }
     },
@@ -127,7 +127,7 @@ let dialogEditor = new Dialog({
       label: `Rotate 45* CW`,
       callback: () => { 
         let rot = lights[lightSelected].data.rotation;
-        lights[lightSelected].update({"rotation":rot+45});
+        lights[lightSelected].document.update({"rotation":rot+45});
         dialogEditor.render(true);
       }
     },
@@ -136,7 +136,7 @@ let dialogEditor = new Dialog({
       label: `Rotate 5* CCW`,
       callback: () => { 
         let rot = lights[lightSelected].data.rotation;
-        lights[lightSelected].update({"rotation":rot-5});
+        lights[lightSelected].document.update({"rotation":rot-5});
         dialogEditor.render(true);
       }
     },
@@ -145,7 +145,7 @@ let dialogEditor = new Dialog({
       label: `Rotate 15* CCW`,
       callback: () => { 
         let rot = lights[lightSelected].data.rotation;
-        lights[lightSelected].update({"rotation":rot-15});
+        lights[lightSelected].document.update({"rotation":rot-15});
         dialogEditor.render(true);
       }
     },
@@ -154,7 +154,7 @@ let dialogEditor = new Dialog({
       label: `Rotate 45* CCW`,
       callback: () => { 
         let rot = lights[lightSelected].data.rotation;
-        lights[lightSelected].update({"rotation":rot-45});
+        lights[lightSelected].document.update({"rotation":rot-45});
         dialogEditor.render(true);
       }
     },
@@ -162,8 +162,8 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-circle'></i>",
       label: `Increase Bright by 5`,
       callback: () => { 
-        let bright = lights[lightSelected].data.bright;
-        lights[lightSelected].update({"bright":bright+5});
+        let bright = lights[lightSelected].data.config.bright;
+        lights[lightSelected].document.update({"config.bright":bright+5});
         dialogEditor.render(true);
       }
     },
@@ -171,8 +171,8 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-circle'></i>",
       label: `Decrease Bright by 5`,
       callback: () => { 
-        let bright = lights[lightSelected].data.bright;
-        lights[lightSelected].update({"bright":bright-5});
+        let bright = lights[lightSelected].data.config.bright;
+        lights[lightSelected].document.update({"bright":bright-5});
         dialogEditor.render(true);
       }
     },
@@ -180,7 +180,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-circle'></i>",
       label: `Remove Bright Light`,
       callback: () => { 
-        lights[lightSelected].update({"bright":0});
+        lights[lightSelected].document.update({"config.bright":0});
         dialogEditor.render(true);
       }
     },
@@ -188,8 +188,8 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-dot-circle'></i>",
       label: `Increase Dim by 5`,
       callback: () => { 
-        let dim = lights[lightSelected].data.dim;
-        lights[lightSelected].update({"dim":dim+5});
+        let dim = lights[lightSelected].data.config.dim;
+        lights[lightSelected].document.update({"config.dim":dim+5});
         dialogEditor.render(true);
       }
     },
@@ -197,8 +197,8 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-dot-circle'></i>",
       label: `Decrease Dim by 5`,
       callback: () => { 
-        let dim = lights[lightSelected].data.dim;
-        lights[lightSelected].update({"dim":dim-5});
+        let dim = lights[lightSelected].data.config.dim;
+        lights[lightSelected].document.update({"config.dim":dim-5});
         dialogEditor.render(true);
       }
     },
@@ -206,7 +206,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-dot-circle'></i>",
       label: `Remove Dim Light`,
       callback: () => { 
-        lights[lightSelected].update({"dim":0});
+        lights[lightSelected].document.update({"config.dim":0});
         dialogEditor.render(true);
       }
     },
@@ -214,7 +214,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-rss'></i>",
       label: `Emission Angle 15*`,
       callback: () => { 
-        lights[lightSelected].update({"angle":15});
+        lights[lightSelected].document.update({"config.angle":15});
         dialogEditor.render(true);
       }
     },
@@ -222,7 +222,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-rss'></i>",
       label: `Emission Angle 45*`,
       callback: () => { 
-        lights[lightSelected].update({"angle":45});
+        lights[lightSelected].document.update({"config.angle":45});
         dialogEditor.render(true);
       }
     },
@@ -230,7 +230,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-rss'></i>",
       label: `Emission Angle 90*`,
       callback: () => { 
-        lights[lightSelected].update({"angle":90});
+        lights[lightSelected].document.update({"config.angle":90});
         dialogEditor.render(true);
       }
     },
@@ -238,7 +238,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-rss'></i>",
       label: `Emission Angle 180*`,
       callback: () => { 
-        lights[lightSelected].update({"angle":180});
+        lights[lightSelected].document.update({"config.angle":180});
         dialogEditor.render(true);
       }
     },
@@ -246,7 +246,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-rss'></i>",
       label: `Emission Angle 270*`,
       callback: () => { 
-        lights[lightSelected].update({"angle":270});
+        lights[lightSelected].document.update({"config.angle":270});
         dialogEditor.render(true);
       }
     },
@@ -254,7 +254,7 @@ let dialogEditor = new Dialog({
       icon: "<i class='fas fa-rss'></i>",
       label: `Emission Angle 360*`,
       callback: () => { 
-        lights[lightSelected].update({"angle":360});
+        lights[lightSelected].document.update({"config.angle":360});
         dialogEditor.render(true);
       }
     },
