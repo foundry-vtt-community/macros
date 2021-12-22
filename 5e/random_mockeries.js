@@ -7,14 +7,14 @@ let tableName = "mockeries";
 // default mockery if no table found.
 let mockery = "Now go away or I shall taunt you a second time-a!";
 
-let viciousMockeries = async () => {
+let viciousMockeries = () => {
   if (!actor) {
     ui.notifications.warn("You must have an actor selected.");
     return
   }
 
   let actorLevels = actor.data.data.levels || 1;
-  let table = game.tables.contents.find(t => t.name == tableName);
+  let table = game.tables.entities.find(t => t.name == tableName);
 
   // Get Targets name
   const targetId = game.user.targets.ids[0];
@@ -28,13 +28,13 @@ let viciousMockeries = async () => {
   // Roll the result, and mark it drawn
   if (table) {
     if (checkTable(table)) {
-      let roll = await table.roll();
+      let roll = table.roll();
       let result = roll.results[0];
-      mockery = result.data.text;
-      await table.updateEmbeddedDocuments("TableResult", [{
-        _id: result.id,
+      mockery = result.text;
+      table.updateEmbeddedEntity("TableResult", {
+        _id: result._id,
         drawn: true
-      }]);
+      });
     }
   }
 
@@ -71,7 +71,7 @@ let viciousMockeries = async () => {
   // create the message
   if (messageContent !== '') {
     let chatData = {
-      user: game.user.id,
+      user: game.user._id,
       speaker: ChatMessage.getSpeaker(),
       content: messageContent,
     };

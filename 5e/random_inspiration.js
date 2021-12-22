@@ -5,7 +5,7 @@
 // Setup variables
 let tableName = "Inspirations";
 
-let bardicInspiration = async() => {
+let bardicInspiration = () => {
   if (!actor) {
     ui.notifications.warn("You must have an actor selected.");
     return
@@ -22,7 +22,7 @@ let bardicInspiration = async() => {
   const targetName = targetToken.name;
 
 
-  let table = game.tables.contents.find(t => t.name == tableName);
+  let table = game.tables.entities.find(t => t.name == tableName);
 
   //default inspiration if no table is found.
   //let inspiration = "Cowards die many times before their deaths; the valiant never taste death but once.";
@@ -32,13 +32,13 @@ let bardicInspiration = async() => {
   if (table) {
     if (checkTable(table)) {
       // let result = table.roll()[1];
-      let roll = await table.roll();
+      let roll = table.roll();
       let result = roll.results[0];
-      inspiration = result.data.text;
-      await table.updateEmbeddedDocuments("TableResult", [{
-        _id: result.id,
+      inspiration = result.text;
+      table.updateEmbeddedEntity("TableResult", {
+        _id: result._id,
         drawn: true
-      }]);
+      });
     }
   }
 
@@ -74,7 +74,7 @@ let bardicInspiration = async() => {
   // create the message
   if (messageContent !== '') {
     let chatData = {
-      user: game.user.id,
+      user: game.user._id,
       speaker: ChatMessage.getSpeaker(),
       content: messageContent,
     };

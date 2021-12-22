@@ -1,52 +1,42 @@
-// Get all playlists from contents and prepare choices
-let optionsText = "";
-for (let index = 0; index < game.playlists.size; ++index) {
-    console.log(game.playlists.contents[index]);
-    const label = game.playlists.contents[index].name;
-    optionsText += `<option value="${index}">${label}</option>`;
-}
-
+// get actual pl data from entries
+let _playlistArray = game.playlists.entries;
 let _applyChanges = false;
+let _raw = `
 
+<form>
+    <div class="form-group">
+        <label>Select Playlist:</label>
+        <select id="playlist-selection" name="playlist-selection">
+        {{#each this}}
+            <option> {{this.data.name}} </option>
+        {{/each}}
+        </select>
+    </div>
+</form>
+`
+let _html = Handlebars.compile(_raw)
 let d = new Dialog({
     title: "Playlist Toggle",
-    content: `
-        <form>
-            <div class="form-group">
-                <label>Select Playlist:</label>
-                <select id="playlist-selection" name="playlist-selection">` + optionsText + `</select>
-            </div>
-        </form>
-        `,
+    content: _html(_playlistArray),
     buttons: {
-        one: {
+        toggle: {
             icon: '<i class="fas fa-check"></i>',
-            label: "Playlist Toggle",
+            label: "Toggle Selected Playlist",
             callback: () => _applyChanges = true
         },
-        two: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
-            callback: () => _applyChanges = false
-        }
     },
-    default: "Cancel",
+    default: "toggle",
     close: html => {
         if (_applyChanges) {
-            let _plName = parseInt(html.find('[name=playlist-selection]')[0].value) || "none";
-            let _pl = game.playlists.getName(game.playlists.contents[_plName].name);
-            if(_pl) {
-                if (_pl.playing) {
-                    // turn off
-                    _pl.stopAll();
-                } else {
-                    // turn on
-                    _pl.playAll();
-                }
+            let _plName = html.find('[name="playlist-selection"]')[0].value || "none";
+            let _pl = game.playlists.getName(_plName);
+            if (_pl.playing) {
+                // turn off
+                _pl.stopAll();
+            } else {
+                // turn on
+                _pl.playAll();
             }
-            else {
-                ui.notifications.error(`No valid playlist selected.`);
-            }            
         }
     }
 }).render(true);

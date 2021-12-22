@@ -48,7 +48,7 @@ function getLights() {
             label: light.label,
             callback: (html) => {
                 const newColor = html.find("#color").val();
-                const newAlpha = Number(html.find("#alpha").val());
+                const newAlpha = html.find("#alpha").val();
                 var data = light.data;
                 tokenUpdate(Object.assign(data, {lightColor: newColor, lightAlpha: newAlpha}));
             }

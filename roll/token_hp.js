@@ -12,7 +12,7 @@ if (tokens.length > 0){
 	printMessage("No Tokens were selected");
 }
 
-async function rollHP(token, index){
+function rollHP(token, index){
 	let actor = token.actor;
 	let formula = actor.data.data.attributes.hp.formula;
 		
@@ -20,7 +20,8 @@ async function rollHP(token, index){
 	
 	let hp = new Roll(formula).roll().total;
 	
-	await actor.update({"data.attributes.hp.value": hp, "data.attributes.hp.max": hp});
+	actor.data.data.attributes.hp.value = hp;
+	actor.data.data.attributes.hp.max = hp;
 	
 	printMessage('<h2>' + actor.data.name + '</h2><strong>HP:</strong> ' + actor.data.data.attributes.hp.value + '/' + actor.data.data.attributes.hp.max + '<span style="float:right"><em>(' + token.data._id + ')</em></span>');
 }

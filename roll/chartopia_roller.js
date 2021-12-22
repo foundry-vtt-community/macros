@@ -22,12 +22,10 @@ function roll(id) {
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
       // Success!
-      let whisper = !!gmOnly ? game.users.map(u => {
-          if (u.isGM) return u.id;
-      }) : [];
-      console.log('whisper',whisper);
+      let whisper = !!gmOnly ? game.users.entities.filter(u => u.isGM).map(u => u._id) : '';
+
       let chatData = {
-        user: game.userId,
+        user: game.user._id,
         speaker: ChatMessage.getSpeaker(),
         content: request.responseText,
         whisper
