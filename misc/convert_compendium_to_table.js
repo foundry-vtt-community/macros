@@ -1,7 +1,7 @@
 /* 
  * Macro: GeekDad's Compendium to Table Script
- * Version: 1
- * Updated: 02-12-2020
+ * Version: 1 for v9
+ * Updated: 22-12-2021 by Freeze#2689
  * Description: A nice friendly UI that takes a compendium and appends it to a table.
 */
 
@@ -14,7 +14,7 @@ function getPackNames() {
   done = key.done;
   if (!done) {
    let pack = game.packs.get(key.value);
-   if (pack.metadata.entity === "Item") {
+   if (pack.documentName === "Item") {
     packs.push({ key: key.value, name: pack.metadata.label });
    }
   }
@@ -23,10 +23,10 @@ function getPackNames() {
 }
 
 function getTableNames() {
- let tables = [];
- game.tables.entities.forEach(table => {
-  tables.push({ key: table.id, name: table.name });
- });
+ let tables = game.tables.reduce((acc,table) => {
+  acc.push({ key: table.id, name: table.name });
+  return acc;
+ },[]);
 
  return tables;
 }
@@ -35,7 +35,6 @@ async function convertToTable(packKey, tableKey) {
   let pack = game.packs.get(packKey);
   let table = game.tables.get(tableKey);
 
-  const entityType = "Compendium";
   await pack.getIndex();
   let range = 0;
   
@@ -53,7 +52,7 @@ async function convertToTable(packKey, tableKey) {
    }
   });
 
-  await table.createEmbeddedEntity("TableResult", results);
+  await table.createEmbeddedDocuments("TableResult", results);
 
   await table.update({formula: "1d" + results.length});
 }
