@@ -5,30 +5,23 @@ let atkModifier = -5;
 let dmgModifier = 10;
 const isEnabled = Boolean(actor.data.flags.ssMacro?.isEnabled);
 
-const disableSharpshooter = (item) => item.update({
-    'data.damage.parts': item.data.flags.ssMacro.oldDmg,
-    'data.attackBonus': item.data.flags.ssMacro.oldAtk ?? 0,
-    'flags.ssMacro': null
-});
+const toggleSharpshooter = async (item) => {
+    const atk = isEnabled ? (+item.data.data.attackBonus || 0) - atkModifier : (+item.data.data.attackBonus || 0) + atkModifier;
+    const damage = JSON.parse(JSON.stringify(item.data.data.damage.parts));
+    damage[0][0] = isEnabled ? damage[0][0].replace(` + ${dmgModifier}`,'') : `${damage[0][0]} + ${dmgModifier}`;
 
-const enableSharpshooter = (item) => {
-    let oldDmg = JSON.parse(JSON.stringify(item.data.data.damage.parts));
-    item.data.data.damage.parts[0][0] = `${item.data.data.damage.parts[0][0]} + ${dmgModifier}`;
-
-    item.update({
-        'flags.ssMacro.oldDmg': oldDmg,
-        'flags.ssMacro.oldAtk': JSON.parse(JSON.stringify(item.data.data.attackBonus ?? 0)),
-        'data.damage.parts': item.data.data.damage.parts,
-        'data.attackBonus': `${+(item.data.data.attackBonus || 0) + atkModifier}`
+    await item.update({
+        'data.damage.parts': damage,
+        'data.attackBonus': `${atk}`
     });
 }
 
-actor.update({ 'flags.ssMacro.isEnabled': !isEnabled });
+await actor.update({ 'flags.ssMacro.isEnabled': !isEnabled });
 for (let item of actor.items) {
     let isRangedWeapon = getProperty(item, 'data.data.actionType') === 'rwak' && getProperty(item, 'data.type') === 'weapon';
 
     if (isRangedWeapon && item.data.data.damage.parts.length > 0)
-        isEnabled ? disableSharpshooter(item) : enableSharpshooter(item);
+        await toggleSharpshooter(item);
 }
 
 ChatMessage.create({
