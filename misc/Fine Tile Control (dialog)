@@ -1,0 +1,68 @@
+// replaced the old 6 macro in one with a single dialog controlled 
+async function MoveX(direction, type) {
+    let distance = type == "fine" ? 1 : 10;
+    distance = direction == "left" ? (distance * (-1)) : distance;
+    let tilesToMove = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+    if(tilesToMove.length === 0) return ui.notifications.info("No tile selected");
+    let updates = tilesToMove.map(tile => {return {
+            _id: tile.id,
+            x: (tile.data.x + distance)
+        };
+    });
+    await canvas.scene.updateEmbeddedDocuments("Tile", updates);
+}
+
+async function MoveY(direction, type) {
+    let distance = type == "fine" ? 1 : 10;
+    distance = direction == "up" ? (distance * (-1)) : distance;
+    let tilesToMove = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+    if(tilesToMove.length === 0) return ui.notifications.info("No tile selected");
+    let updates = tilesToMove.map(tile => {return {
+            _id: tile.id,
+            y: (tile.data.y + distance)
+        };
+    });
+    await canvas.scene.updateEmbeddedDocuments("Tile", updates);
+}
+let d = new Dialog({
+    title: "Tile mover",
+    content: `Move your tile
+             <div>fine control?<input name="control" type="checkbox" checked/></div>
+             `,
+    buttons: {
+        left: {
+            label: `<i class="fas fa-angle-left"></i>`,
+            callback: async (html) => {
+                let control = html.find("[name=control")[0].checked == true ? "fine" : "coarse"
+                d.render(true);
+                await MoveX("left", control);
+            }
+        },
+        right: {
+            label: `<i class="fas fa-angle-right"></i>`,
+            callback: async (html) =>  {
+                let control = html.find("[name=control")[0].checked == true ? "fine" : "coarse"
+                d.render(true);
+                await MoveX("right", control);
+            }
+        },
+        up: {
+            label: `<i class="fas fa-angle-up"></i>`,
+            callback: async (html) => {
+                let control = html.find("[name=control")[0].checked == true ? "fine" : "coarse"
+                d.render(true);
+                await MoveY("up", control);
+            }
+        },
+        down: {
+            label: `<i class="fas fa-angle-down"></i>`,
+            callback: async (html) => {
+                let control = html.find("[name=control")[0].checked == true ? "fine" : "coarse"
+                d.render(true);
+                await MoveY("down", control);
+               }
+        },
+    },
+})
+
+d.render(true);
