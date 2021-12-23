@@ -1,11 +1,8 @@
 /**
- * Clears the actors entity of any entries not in a folder.
- * Change 'actors' to another game entity such as tables, items, macros, etc... to clear items not in directory for those places.
- * Author: KrishMero#1792
+ * Clears the actor Documents of any entries not in a folder.
+ * Change 'actors' in game.actors.filter to items, macros, tables, journal etc. to get the entry not in a folder.
+ * Change 'Actor' to another game Document such as RollTable, Item, Macro, JournalEntry, etc... to delete the correct Document type.
+ * Author: Freeze#2689
  */
- 
- game.actors.forEach(t => {
-  if (!t.data.folder) {
-    t.delete();
-  }
-});
+ const deleteIds = game.actors.filter(e => e.folder === null).map(e => e.id);
+ Actor.deleteDocuments(deleteIds);
