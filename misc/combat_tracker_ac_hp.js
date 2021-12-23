@@ -7,4 +7,4 @@ if (game.combat.settings.resource == a) {
 } else {
   game.settings.set('core', 'combatTrackerConfig', {resource: a, skipDefeated: true});
 }
-ui.combat.updateTrackedResources();
+game.combat.update({active: true}, {diff: false});
