@@ -3,6 +3,4 @@
  * Author: orcnog
  */
  
-canvas.walls.updateMany(canvas.scene.data.walls.map(w => {
-  return {_id: w._id, ds: w.ds === 0 ? 2 : w.ds};
-}));
+ await canvas.walls.updateAll(w => ({ds: w.data.ds === CONST.WALL_DOOR_STATES.CLOSED ? CONST.WALL_DOOR_STATES.LOCKED : CONST.WALL_DOOR_STATES.CLOSED}), w => w.data.door === CONST.WALL_DOOR_TYPES.DOOR && (w.data.ds ===  CONST.WALL_DOOR_STATES.LOCKED || w.data.ds ===  CONST.WALL_DOOR_STATES.CLOSED));

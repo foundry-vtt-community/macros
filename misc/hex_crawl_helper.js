@@ -37,7 +37,7 @@ This will move if the players are "Lost". If the players are not lost it will no
 
 // Macro requires selecting a token to roll the survival check
 
-let hexCrawl() => {
+function hexCrawl() {
     if (canvas.tokens.controlled.length === 0)
         return ui.notifications.error("Please select the token of the Navigator!");
 
@@ -108,24 +108,24 @@ let hexCrawl() => {
             }
         },
         default: "average",
-        close: html => {
+        close: async (html) => {
             // set variables
             let hexType = html.find('[name="hex-type"]')[0].value;
             let travelType = html.find('[name="travel-type"]')[0].value;
             let playerDirection = html.find('[name="travel-direction"]')[0].value;
-            const weatherTable = game.tables.entities.find(t => t.name === "weather");
-            const directionTable = game.tables.entities.find(t => t.name === "directions");
-            const cacheTable = game.tables.entities.find(t => t.name === "cache");
-            const deadExplorerTable = game.tables.entities.find(t => t.name === "deadexplorers");
-            const encounterTable = game.tables.entities.find(t => t.name === hexType);
-            let weatherRoll = weatherTable.roll()[1].text;
-            let lostDirection = directionTable.roll()[1].text;
+            const weatherTable = game.tables.getName("weather");
+            const directionTable = game.tables.getName("directions");
+            const cacheTable = game.tables.getName("cache");
+            const deadExplorerTable = game.tables.getName("deadexplorers");
+            const encounterTable = game.tables.getName(hexType);
+            let weatherRoll = (await weatherTable.roll()).results[0].data.text;
+            let lostDirection = (await directionTable.roll()).results[0].data.text;
             let msgContent = '<strong>Weather</strong> ' + weatherRoll + '<br/><br/>';
             let navigator = Actors.instance.get(canvas.tokens.controlled[0].data.actorId);
             let wis = navigator.data.data.abilities.wis.mod;
-            let survival = new Roll(`1d20`).roll().total + wis;
-            let slowPace = new Roll(`1d4`).roll().total;
-            let fastPace = new Roll(`1d2`).roll().total;
+            let survival = (await new Roll(`1d20`).roll({async: true})).total + wis;
+            let slowPace = (await new Roll(`1d4`).roll({async: true})).total;
+            let fastPace = (await new Roll(`1d2`).roll({async: true})).total;
             let hexesMoved = 1;
             let encounter = '';
             let hexText = 'hexes';
@@ -161,45 +161,45 @@ let hexCrawl() => {
             if (((hexType === 'coast' || hexType === 'ruins') && survival < 10) || ((hexType === 'jungle1' || hexType === 'jungle2' || hexType === 'jungle3' || hexType === 'mountains' || hexType === 'rivers' || hexType === 'swamp' || hexType === 'wasteland') && survival < 15)) {
                 msgContent += '<strong>Party is Lost:</strong> Move actual location ' + hexesMoved + ' ' + hexText + ' to the ' + lostDirection + '<br/><br/>';
                 if (locationMarker) {
-                    const locToken = canvas.tokens.get(locationMarker._id);
+                    const locToken = canvas.tokens.get(locationMarker.id);
                     switch (lostDirection) {
                         case 'South':
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x,
                                 y: locToken.y + (vertical * hexesMoved)
                             });
                             break;
 
                         case 'Southwest':
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x - (diagHorizontal * hexesMoved),
                                 y: locToken.y + (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'Southeast':
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x + (diagHorizontal * hexesMoved),
                                 y: locToken.y + (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'North':
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x,
                                 y: locToken.y - (vertical * hexesMoved)
                             });
                             break;
 
                         case 'Northwest':
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x - (diagHorizontal * hexesMoved),
                                 y: locToken.y - (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'Northeast':
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x + (diagHorizontal * hexesMoved),
                                 y: locToken.y - (diagVertical * hexesMoved)
                             });
@@ -210,45 +210,45 @@ let hexCrawl() => {
                     }
                 }
                 if (playerMarker) {
-                    const playerToken = canvas.tokens.get(playerMarker._id);
+                    const playerToken = canvas.tokens.get(playerMarker.id);
                     switch (playerDirection) {
                         case 'South':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: playerToken.x,
                                 y: playerToken.y + (vertical * hexesMoved)
                             });
                             break;
 
                         case 'Southwest':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: playerToken.x - (diagHorizontal * hexesMoved),
                                 y: playerToken.y + (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'Southeast':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: playerToken.x + (diagHorizontal * hexesMoved),
                                 y: playerToken.y + (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'North':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: playerToken.x,
                                 y: playerToken.y - (vertical * hexesMoved)
                             });
                             break;
 
                         case 'Northwest':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: playerToken.x - (diagHorizontal * hexesMoved),
                                 y: playerToken.y - (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'Northeast':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: playerToken.x + (diagHorizontal * hexesMoved),
                                 y: playerToken.y - (diagVertical * hexesMoved)
                             });
@@ -260,71 +260,71 @@ let hexCrawl() => {
                 }
             } else {
                 if (playerMarker && locationMarker) {
-                    const locToken = canvas.tokens.get(locationMarker._id);
-                    const playerToken = canvas.tokens.get(playerMarker._id);
+                    const locToken = canvas.tokens.get(locationMarker.id);
+                    const playerToken = canvas.tokens.get(playerMarker.id);
 
                     switch (playerDirection) {
                         case 'South':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: locToken.x,
                                 y: locToken.y + (vertical * hexesMoved)
                             });
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x,
                                 y: locToken.y + (vertical * hexesMoved)
                             });
                             break;
 
                         case 'Southwest':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: locToken.x - (diagHorizontal * hexesMoved),
                                 y: locToken.y + (diagVertical * hexesMoved)
                             });
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x - (diagHorizontal * hexesMoved),
                                 y: locToken.y + (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'Southeast':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: locToken.x + (diagHorizontal * hexesMoved),
                                 y: locToken.y + (diagVertical * hexesMoved)
                             });
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x + (diagHorizontal * hexesMoved),
                                 y: locToken.y + (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'North':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: locToken.x,
                                 y: locToken.y - (vertical * hexesMoved)
                             });
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x,
                                 y: locToken.y - (vertical * hexesMoved)
                             });
                             break;
 
                         case 'Northwest':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: locToken.x - (diagHorizontal * hexesMoved),
                                 y: locToken.y - (diagVertical * hexesMoved)
                             });
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x - (diagHorizontal * hexesMoved),
                                 y: locToken.y - (diagVertical * hexesMoved)
                             });
                             break;
 
                         case 'Northeast':
-                            playerToken.update({
+                            playerToken.document.update({
                                 x: locToken.x + (diagHorizontal * hexesMoved),
                                 y: locToken.y - (diagVertical * hexesMoved)
                             });
-                            locToken.update({
+                            locToken.document.update({
                                 x: locToken.x + (diagHorizontal * hexesMoved),
                                 y: locToken.y - (diagVertical * hexesMoved)
                             });
@@ -338,43 +338,43 @@ let hexCrawl() => {
 
             msgContent += '<strong>Morning Encounter:</strong> ';
 
-            if (new Roll(`1d20`).roll().total > 15) {
-                encounter = encounterTable.roll()[1].text;
+            if ((await new Roll(`1d20`).roll({async: true})).total > 15) {
+                encounter = (await encounterTable.roll()).results[0].data.text;
                 msgContent += encounter;
                 // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
                 if (encounter.indexOf('cache') > -1)
-                    msgContent += cacheTable.roll()[1].text + '<br/><br/>';
+                    msgContent += (await cacheTable.roll()).results[0].data.text + '<br/><br/>';
                 // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
                 if (encounter.indexOf('DeadExplorers') > -1)
-                    msgContent += deadExplorerTable.roll()[1].text + '<br/><br/>';
+                    msgContent += (await deadExplorerTable.roll()).results[0].data.text + '<br/><br/>';
                 msgContent += '<strong>Afternoon Encounter:</strong> ';
             } else {
                 msgContent += 'None.<br/><br/><strong>Afternoon Encounter:</strong> ';
             }
 
-            if (new Roll(`1d20`).roll().total > 15) {
-                encounter = encounterTable.roll()[1].text;
+            if ((await new Roll(`1d20`).roll({async: true})).total > 15) {
+                encounter = (await encounterTable.roll()).results[0].data.text;
                 msgContent += encounter;
                 // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
                 if (encounter.indexOf('cache') > -1)
-                    msgContent += cacheTable.roll()[1].text + '<br/><br/>';
+                    msgContent += (await cacheTable.roll()).results[0].data.text + '<br/><br/>';
                 // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
                 if (encounter.indexOf('DeadExplorers') > -1)
-                    msgContent += deadExplorerTable.roll()[1].text + '<br/><br/>';
+                    msgContent += (await deadExplorerTable.roll()).results[0].data.text + '<br/><br/>';
                 msgContent += '<strong>Evening Encounter:</strong> ';
             } else {
                 msgContent += 'None.<br/><br/><strong>Evening Encounter:</strong> ';
             }
 
             if (new Roll(`1d20`).roll().total > 15) {
-                encounter = encounterTable.roll()[1].text;
+                encounter = (await encounterTable.roll()).results[0].data.text;
                 msgContent += encounter;
                 // CACHE LINES comment out the next 2 lines if you don't want to use a cache table!
                 if (encounter.indexOf('cache') > -1)
-                    msgContent += cacheTable.roll()[1].text + '<br/><br/>';
+                    msgContent += (await cacheTable.roll()).results[0].data.text + '<br/><br/>';
                 // DEAD EXPLORER LINES comment out the next 2 lines if you don't want to use a dead explorer table!
                 if (encounter.indexOf('DeadExplorers') > -1)
-                    msgContent += deadExplorerTable.roll()[1].text + '<br/><br/>';
+                    msgContent += (await deadExplorerTable.roll()).results[0].data.text + '<br/><br/>';
             } else {
                 msgContent += 'None.';
             }
@@ -382,7 +382,7 @@ let hexCrawl() => {
             // create the message
             let chatData = {
                 content: msgContent,
-                whisper: game.users.entities.filter(u => u.isGM).map(u => u._id)
+                whisper: ChatMessage.getWhisperRecipients("GM")
             };
             ChatMessage.create(chatData, {});
         }

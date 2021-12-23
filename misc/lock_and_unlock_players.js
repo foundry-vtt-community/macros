@@ -1,5 +1,6 @@
-async function updateRoles(from, to) {
-    game.users.entities.filter(u => u.role === from).forEach(u => u.update({role:to}))
+async function updateRoles(fromRole, toRole) {
+    const updates = game.users.filter(u => u.role === fromRole).map(u => ({_id: u.id, role: toRole}))
+    await User.updateDocuments(updates)
 }
 new Dialog({
     title: `Lock or unlock all players?`,

@@ -1,11 +1,6 @@
 // Get all playlists from contents and prepare choices
-let optionsText = "";
-for (let index = 0; index < game.playlists.size; ++index) {
-    console.log(game.playlists.contents[index]);
-    const label = game.playlists.contents[index].name;
-    optionsText += `<option value="${index}">${label}</option>`;
-}
 
+let optionsText = game.playlists.reduce((acc, e) => acc += `<option value="${e.id}">${e.name}</option>`, ``);
 let _applyChanges = false;
 
 let d = new Dialog({
@@ -33,8 +28,8 @@ let d = new Dialog({
     default: "Cancel",
     close: html => {
         if (_applyChanges) {
-            let _plName = parseInt(html.find('[name=playlist-selection]')[0].value) || "none";
-            let _pl = game.playlists.getName(game.playlists.contents[_plName].name);
+            let _plId = html.find('[name=playlist-selection]')[0].value;
+            let _pl = game.playlists.get(_plId);
             if(_pl) {
                 if (_pl.playing) {
                     // turn off

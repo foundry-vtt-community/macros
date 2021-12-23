@@ -6,10 +6,10 @@ const gl = canvas.app.renderer.context.gl;
 
 console.log(
 `=== Start of troubleshooting ===
-Background image: ${canvas.background.img.width}x${canvas.background.img.height}
-Number of walls: ${canvas.scene.data.walls.length}
-Number of selected vision sources: ${canvas.sight.sources.vision.size}
-Number of light sources: ${canvas.sight.sources.lights.size}
+Background image: ${canvas.dimensions.width}x${canvas.dimensions.height}
+Number of walls: ${canvas.scene.walls.size}
+Number of selected vision sources: ${canvas.sight.sources.size}
+Number of light sources: ${canvas.lighting.sources.size}
 WebGL MAX_TEXTURE_SIZE: ${gl.getParameter(gl.MAX_TEXTURE_SIZE)}
 `
 );

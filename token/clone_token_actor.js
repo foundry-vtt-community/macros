@@ -3,8 +3,10 @@
 //  updated Actor for later use or into a Compendium.
 // Created Actor will default to the name of the token with the actorNameSuffix (default: '_cloned')
 
+// WORKS ONLY FOR LINKED ACTORS
+
 const actorNameSuffix = "_cloned";
 
 canvas.tokens.controlled.forEach(o => {
-  o.actor.clone({ name: o.name + actorNameSuffix });
+  o.actor.clone({ name: o.name + actorNameSuffix }, {save: true});
 });

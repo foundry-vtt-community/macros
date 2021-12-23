@@ -10,16 +10,16 @@
 // Move Up
 // By @cole$9640
 
-let amount = event.ctrlKey ? -0.5 : -1;
-
-if (canvas.tiles.controlled.length) {
-  const updates = canvas.tiles.controlled
+const amount = event.ctrlKey ? -0.5 : -1;
+const tiles = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+if (tiles.length) {
+  const updates = tiles
     .filter((tile) => !tile.data.locked)
     .map((tile) => ({
       _id: tile.id,
       y: tile.y + amount,
     }));
-  canvas.tiles.updateMany(updates);
+  canvas.scene.updateEmbeddedDocuments("Tile", updates);
 } else {
   ui.notifications.notify("Please select at least one tile.");
 }
@@ -27,16 +27,16 @@ if (canvas.tiles.controlled.length) {
 // Move Down
 // By @cole$9640
 
-let amount = event.ctrlKey ? 0.5 : 1;
-
-if (canvas.tiles.controlled.length) {
-  const updates = canvas.tiles.controlled
+const amount = event.ctrlKey ? 0.5 : 1;
+const tiles = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+if (tiles.length) {
+  const updates = tiles
     .filter((tile) => !tile.data.locked)
     .map((tile) => ({
       _id: tile.id,
       y: tile.y + amount,
     }));
-  canvas.tiles.updateMany(updates);
+  canvas.scene.updateEmbeddedDocuments("Tile", updates);
 } else {
   ui.notifications.notify("Please select at least one tile.");
 }
@@ -44,16 +44,16 @@ if (canvas.tiles.controlled.length) {
 // Move Right
 // By @cole$9640
 
-let amount = event.ctrlKey ? 0.5 : 1;
-
-if (canvas.tiles.controlled.length) {
-  const updates = canvas.tiles.controlled
+const amount = event.ctrlKey ? 0.5 : 1;
+const tiles = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+if (tiles.length) {
+  const updates = tiles
     .filter((tile) => !tile.data.locked)
     .map((tile) => ({
       _id: tile.id,
       x: tile.x + amount,
     }));
-  canvas.tiles.updateMany(updates);
+  canvas.scene.updateEmbeddedDocuments("Tile", updates);
 } else {
   ui.notifications.notify("Please select at least one tile.");
 }
@@ -61,16 +61,16 @@ if (canvas.tiles.controlled.length) {
 // Move Left
 // By @cole$9640
 
-let amount = event.ctrlKey ? -0.5 : -1;
-
-if (canvas.tiles.controlled.length) {
-  const updates = canvas.tiles.controlled
+const amount = event.ctrlKey ? -0.5 : -1;
+const tiles = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+if (tiles.length) {
+  const updates = tiles
     .filter((tile) => !tile.data.locked)
     .map((tile) => ({
       _id: tile.id,
       x: tile.x + amount,
     }));
-  canvas.tiles.updateMany(updates);
+  canvas.scene.updateEmbeddedDocuments("Tile", updates);
 } else {
   ui.notifications.notify("Please select at least one tile.");
 }
@@ -78,14 +78,16 @@ if (canvas.tiles.controlled.length) {
 // Rotate Left
 // Original by @Norc$5108, updated and refined by @cole$9640 & @Drunemeton$7955
 
-let amount = event.ctrlKey ? -0.5 : -1;
-
-if (canvas.tiles.controlled[0]) {
-  canvas.tiles.controlled.forEach((ti) => {
-    if (ti.data.locked) return;
-    let r = ti.data.rotation;
-    ti.update({ rotation: r + amount });
-  });
+const amount = event.ctrlKey ? -0.5 : -1;
+const tiles = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+if (tiles.length) {
+  const updates = tiles
+  .filter((tile) => !tile.data.locked)
+  .map((tile) => ({
+    _id: tile.id, 
+    rotation: tile.data.rotation + amount 
+  }));
+  canvas.scene.updateEmbeddedDocuments("Tile", updates);
 } else {
   ui.notifications.notify("Please select at least one tile.");
 }
@@ -93,14 +95,16 @@ if (canvas.tiles.controlled[0]) {
 // Rotate Right
 // Original by @Norc$5108, updated and refined by @cole$9640 & @Drunemeton$7955
 
-let amount = event.ctrlKey ? 0.5 : 1;
-
-if (canvas.tiles.controlled[0]) {
-  canvas.tiles.controlled.forEach((ti) => {
-    if (ti.data.locked) return;
-    let r = ti.data.rotation;
-    ti.update({ rotation: r + amount });
-  });
+const amount = event.ctrlKey ? 0.5 : 1;
+const tiles = canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+if (tiles.length) {
+  const updates = tiles
+  .filter((tile) => !tile.data.locked)
+  .map((tile) => ({
+    _id: tile.id, 
+    rotation: tile.data.rotation + amount 
+  }));
+  canvas.scene.updateEmbeddedDocuments("Tile", updates);
 } else {
   ui.notifications.notify("Please select at least one tile.");
 }

@@ -3,10 +3,6 @@
     //If an individual tile is unlocked, this macro will lock it.
     //If an individual tile is locked, this macro will unlock it.
 
-if (canvas.tiles.controlled[0]) {
-    canvas.tiles.controlled.forEach(tile => {
-        tile.update({ locked: !tile.data.locked});
-    });
-} else {
-    ui.notifications.notify("Please select at least one tile.");
-}
+    const tiles = canvas.background.controlled.length ? canvas.background.controlled : canvas.foreground.controlled;
+    const updates = tiles.map(tile => ({ _id: tile.id, locked: !tile.data.locked }));
+    canvas.scene.updateEmbeddedDocuments("Tile", updates);

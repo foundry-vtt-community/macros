@@ -28,22 +28,10 @@ new Dialog({
   default: "yes",
   close: html => {
     if (applyChanges) {
-      for ( let token of canvas.tokens.controlled ) {
-        let dispoType = html.find('[name="dispo-type"]')[0].value || "none";
-        switch (dispoType) {
-          case "hostile":
-            token.update({"disposition": -1});
-            break;
-          case "friendly":
-            token.update({"disposition": 1});
-            break;
-          case "neutral":
-            token.update({"disposition": 0});
-            break;
-          case "nochange":
-          default:
-        }
-      }
+      const dispoType = html.find('[name="dispo-type"]')[0].value.toUpperCase();
+      if(dispoType === "NOCHANGE") return;
+      const updates = canvas.tokens.controlled.map(t => ({_id: t.id, disposition: CONST.TOKEN_DISPOSITIONS[dispoType]}));
+      canvas.scene.updateEmbeddedDocuments("Token", updates)
     }
   }
 }).render(true);
