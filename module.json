@@ -72,6 +72,10 @@
     "url": "https://github.com/foundry-vtt-community/macros",
     "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/module.json",
     "download": "https://github.com/foundry-vtt-community/macros/archive/v9.1.zip",
+    "bugs": "https://github.com/foundry-vtt-community/macros/issues",
+    "readme": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/README.md",
+    "changelog": "https://github.com/foundry-vtt-community/macros/releases",
+    "license": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/LICENSE.md",
     "socket": true,
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9"
