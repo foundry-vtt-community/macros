@@ -119,7 +119,7 @@ if (args[0] == "on"){
 						  duration: {startTime: game.time.worldTime},
 						  icon: args[0].item.img,
 						  label: args[0].item.name,
-						  flags: {"dnd5e-helpers" : {"rest-effect" : "Long Rest"}}
+						  flags: {"dnd5e-helpers" : {"rest-effect" : "Short Rest"}}
 						}
 						await act.createEmbeddedDocuments("ActiveEffect", [effectData]);						
 					}
