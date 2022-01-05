@@ -8,7 +8,7 @@ Foundry community-contributed macros are noted here and merged into the Foundry 
 
 ### Usage as a Module
 
-You can now install this module automatically by specifying the following public module URL : 
+You can now install this module by searching for it in the `Install Module` screen within Foundry Setup or paste this URL into the `Manifest URL` field and click install:
 
 `https://raw.githubusercontent.com/foundry-vtt-community/macros/main/module.json`
 
@@ -19,10 +19,12 @@ This module adds all of the community macros as a Compendium Packs called **FVTT
 You can open these packs, right click and click on import the macros you want. You can then add these macros to the **Macro Toolbar** at the bottom of the screen.
 
 ### Usage without the Module:
-1. Download the `.js` file to your machine
+1. Download the `.js` file/s to your machine
 2. Create a new macro in Foundry
-3. Right click the macro in the **Macro Toolbar** and click import
-4. Import your `.js` file and celebrate
+3. Use a text editor such as Notepad or vscode to open the `.js` file and copy the contents
+4. Paste the contents into your macro in Foundry
+5. Save
+6. Celebrate 🎉
 
 ## Development/Contributing
 
