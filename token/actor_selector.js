@@ -4,6 +4,10 @@
 // eg: if you have a group of goblins mixed in with kobolds and you want to move all goblins
 // select 1 goblin and run this macro
 // all Goblins will now be selected
+let selectedId = canvas.tokens.controlled[0].document.actor.id
 
-let tokens = canvas.tokens.placeables.filter(i => i.data.name === token.data.name)
-tokens.forEach(i => i.control({ releaseOthers: false }))
+canvas.tokens.ownedTokens.forEach(i => {
+  if(i.data.actorId == selectedId) {
+    i.control({releaseOthers: false})
+  }
+})
