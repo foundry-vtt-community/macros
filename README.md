@@ -20,6 +20,7 @@ You can open these packs, right click and click on import the macros you want. Y
 
 ### Usage without the Module:
 1. Download the `.js` file/s to your machine
+<<<<<<< HEAD
 2. Click on the folder icon to the left of the macro hotbar
 3. Click "Create Macro"
 4. Give the macro a name and type (this will be updated with the imported macro's name/type) then click "Create New Macro"
@@ -27,6 +28,13 @@ You can open these packs, right click and click on import the macros you want. Y
 7. Click "Browse" and navigate to the location of the macro you would like to import and click "Open"
 8. Click "Import"
 9. Celebrate 🎉
+=======
+2. Create a new macro in Foundry
+3. Use a text editor such as Notepad or vscode to open the `.js` file and copy the contents
+4. Paste the contents into your macro in Foundry
+5. Save
+6. Celebrate 🎉
+>>>>>>> parent of 3ac7639 (Update README.md)
 
 ## Development/Contributing
 
