@@ -26,7 +26,7 @@ You can open these packs, right click and click on import the macros you want. Y
 6. Right click on the newly created macro in the Macros Directory and click "Import Data"
 7. Click "Browse" and navigate to the location of the macro you would like to import and click "Open"
 8. Click "Import"
-10. Celebrate 🎉
+9. Celebrate 🎉
 
 ## Development/Contributing
 
