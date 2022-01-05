@@ -20,7 +20,7 @@ You can open these packs, right click and click on import the macros you want. Y
 
 ### Usage without the Module:
 1. Download the `.js` file/s to your machine
-2. Create a new macro in Foundry
+2. Create a new script macro in Foundry
 3. Use a text editor such as Notepad or vscode to open the `.js` file and copy the contents
 4. Paste the contents into your macro in Foundry
 5. Save
