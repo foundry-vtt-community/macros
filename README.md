@@ -19,14 +19,13 @@ This module adds all of the community macros as a Compendium Packs called **FVTT
 You can open these packs, right click and click on import the macros you want. You can then add these macros to the **Macro Toolbar** at the bottom of the screen.
 
 ### Usage without the Module:
-1. Download the `.js` file/s to your machine
-2. Click on the folder icon to the left of the macro hotbar
-3. Click "Create Macro"
-4. Give the macro a name and type (this will be updated with the imported macro's name/type) then click "Create New Macro"
-6. Right click on the newly created macro in the Macros Directory and click "Import Data"
-7. Click "Browse" and navigate to the location of the macro you would like to import and click "Open"
-8. Click "Import"
-9. Celebrate 🎉
+1. Download the `.js` file to your machine
+2. Create a new macro in Foundry VTT
+3. Give it a name and set the **Type** to "Script"
+4. Use a text editor, such as Notepad or vscode, to open the download `.js` file and copy the contents
+5. Paste the contents into the **Command** section of the new macro
+6. Click "Save Macro"
+7. Celebrate 🎉
 
 ## Development/Contributing
 
