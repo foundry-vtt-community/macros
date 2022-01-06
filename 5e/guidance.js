@@ -24,35 +24,35 @@ let Guide = {
         },
     ],
     duration: {
-        "seconds": 6,
+        seconds: 60,
     },
     icon: GuidIconPath,
     label: "Guided"
 }
 //identify token
 if (macroActor === undefined || macroActor === null) {
-  ui.notifications.warn("Please select a token first.");
+    ui.notifications.warn("Please select a token first.");
 }
 else {
-// If  already guided	
-if (Guided) {
-    macroActor.deleteEmbeddedEntity("ActiveEffect", Guided.id)
-// anounce to chat
-	chatMsg = `${macroActor.name} ${endGuideMsg}`;
-}
-// if not already guided	
-else {
-    macroActor.createEmbeddedEntity("ActiveEffect", Guide)	
-// anounce to chat
-		chatMsg = `${macroActor.name} ${GuideMsg}`;
-}
-// write to chat if needed:
-if (chatMsg !== '') {
-	let chatData = {
-		user: game.user._id,
-		speaker: ChatMessage.getSpeaker(),
-		content: chatMsg
-	};
-	ChatMessage.create(chatData, {});
-}
+// If already guided	
+    if (Guided) {
+        macroActor.deleteEmbeddedDocuments("ActiveEffect", [Guided.id]);
+        // anounce to chat
+        chatMsg = `${macroActor.name} ${endGuideMsg}`;
+    }
+    // if not already guided	
+    else {
+        macroActor.createEmbeddedDocuments("ActiveEffect", [Guide]);
+        // anounce to chat
+        chatMsg = `${macroActor.name} ${GuideMsg}`;
+    }
+    // write to chat if needed:
+    if (chatMsg !== '') {
+        let chatData = {
+            user: game.user._id,
+            speaker: ChatMessage.getSpeaker(),
+            content: chatMsg
+        };
+        ChatMessage.create(chatData, {});
+    }
 }

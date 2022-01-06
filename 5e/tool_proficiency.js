@@ -68,7 +68,7 @@ const abilityDialog = (async () => {
                         speaker: ChatMessage.getSpeaker(),
                         content: messageContent,
                         // uncomment the line below to always whisper the roll to the GM
-                        // whisper: game.users.entities.filter(u => u.isGM).map(u => u._id)
+                        // whisper: game.users.filter(u => u.isGM).map(u => u._id)
                     };
                     ChatMessage.create(chatData, {});
                }

@@ -4,27 +4,29 @@
 let actors = canvas.tokens.controlled.map(({ actor }) => actor);
 
 // if there are no selected tokens, roll for the player's character.
-if (actors.length < 1) {
-  actors = game.users.entities.map(entity => {
-    if (entity.active && entity.character !== null) {
-      return entity.character;
-    }
-  });
+if (actors.length < 1 && game.user.character) {
+  actors = [game.user.character];
 }
 const validActors = actors.filter(actor => actor != null);
 
-let messageContent = 'pp = passive perception<br>';
-
+let messageContent;
+if (validActors.length) {
+  messageContent = 'pp = passive perception<br>';
+} else {
+  messageContent = 'No tokens selected, please select at least one.';
+}
 // roll for every actor
 for (const selectedActor of validActors) {
   const stealthMod = selectedActor.data.data.skills.ste.total; // stealth roll
-  const stealth = new Roll(`1d20+${stealthMod}`).roll().total; // rolling the formula
-  messageContent += `<hr><h3>${selectedActor.name} stealth roll was a <b>${stealth}</b>.</h3>`; // creating the output string
+  const result = await new Roll(`1d20+${stealthMod}`).roll({async: true});
+  const stealth = result.total; // rolling the formula
+  messageContent += `<hr><h3>${selectedActor.name} stealth roll was a <b>${stealth}</b> (1d20 + ${stealthMod}).</h3>`; // creating the output string
 
   // grab a list of unique tokens then check their passive perception against the rolled stealth.
   const uniqueActor = {};
   const caughtBy = canvas.tokens.placeables
     .filter(token => !!token.actor)
+    .filter(({ actor }) => actor.data.data.attributes.hp.value > 0) // filter out dead creatures.
     .filter(({ actor }) => { // filter out duplicate token names. ie: we assume all goblins have the same passive perception
       if (uniqueActor[actor.name]) {
         return false;
@@ -52,6 +54,6 @@ const chatData = {
   user: game.user._id,
   speaker: game.user,
   content: messageContent,
-  whisper: game.users.entities.filter((u) => u.isGM).map((u) => u._id),
+  whisper: game.users.filter((u) => u.isGM).map((u) => u._id),
 };
 ChatMessage.create(chatData, {});

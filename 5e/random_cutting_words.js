@@ -29,7 +29,7 @@ let cuttingWords = async () => {
       let roll = await table.roll();
       let result = roll.results[0];
       mockery = result.data.text;
-      await table.updateEmbeddedEntity("TableResult", [{
+      await table.updateEmbeddedDocuments("TableResult", [{
         _id: result.id,
         drawn: true
       }]);
