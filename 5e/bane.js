@@ -48,7 +48,7 @@ let bane = {
         },
     ],
     duration: {
-        "seconds": 6,
+        seconds: 60,
     },
     icon: baneIconPath,
     label: "Baned"
@@ -60,13 +60,13 @@ if (macroActor === undefined || macroActor === null) {
 else {
 // If already bless	
 if (Baned) {
-    macroActor.deleteEmbeddedEntity("ActiveEffect", Baned.id)
+    macroActor.deleteEmbeddedDocuments("ActiveEffect", [Baned.id])
 // anounce to chat
 	chatMsg = `${macroActor.name} ${endbaneMsg}`;
 }
 // if not already bless	
 else {
-    macroActor.createEmbeddedEntity("ActiveEffect", bane)	
+    macroActor.createEmbeddedDocuments("ActiveEffect", [bane])	
 // anounce to chat
 		chatMsg = `${macroActor.name} ${baneMsg}`;
 }

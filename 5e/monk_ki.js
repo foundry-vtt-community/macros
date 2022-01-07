@@ -77,7 +77,7 @@
             }
 
             if (entry) {
-                pack.getEntity(entry._id).then(o => {
+                pack.getDocument(entry._id).then(o => {
                     let template = `@Compendium[dnd5e.classfeatures.${entry._id}]{${this.name}}
                     ${o.data.data.description.value}`;
                     if (this.appendTemplate) {

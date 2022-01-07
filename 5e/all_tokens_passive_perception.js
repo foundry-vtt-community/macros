@@ -11,7 +11,7 @@ let messageHeaderPC = "<b>PC Passive Perception</b><br>";
 let messageHeaderNPC = "<b>NPC Passive Perception</b><br>";
 
 // Gather tokens in the current scene into an array.
-let tokens = canvas.tokens.placeables.filter((token) => token.data);
+let tokens = canvas.tokens.placeables.filter((token) => token.data && token.actor);
 
 // From the tokens array sort into PC and NPC arrays.
 for (let count of tokens) {
@@ -45,7 +45,7 @@ let chatData = {
   user: game.user._id,
   speaker: ChatMessage.getSpeaker(),
   content: chatMessage,
-  whisper: game.users.entities.filter((u) => u.isGM).map((u) => u._id),
+  whisper: game.users.filter((u) => u.isGM).map((u) => u._id),
 };
 
 // Display chat message.

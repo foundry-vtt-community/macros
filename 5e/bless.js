@@ -48,7 +48,7 @@ let bless = {
         },
     ],
     duration: {
-        "seconds": 6,
+        seconds: 60,
     },
     icon: blessIconPath,
     label: "Blessed"
@@ -60,13 +60,13 @@ if (macroActor === undefined || macroActor === null) {
 else {
 // If already bless	
 if (Blessd) {
-    macroActor.deleteEmbeddedEntity("ActiveEffect", Blessd.id)
+    macroActor.deleteEmbeddedDocuments("ActiveEffect", [Blessd.id])
 // anounce to chat
 	chatMsg = `${macroActor.name} ${endblessMsg}`;
 }
 // if not already bless	
 else {
-    macroActor.createEmbeddedEntity("ActiveEffect", bless)	
+    macroActor.createEmbeddedDocuments("ActiveEffect", [bless])	
 // anounce to chat
 		chatMsg = `${macroActor.name} ${blessMsg}`;
 }
