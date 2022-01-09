@@ -88,7 +88,7 @@ function selectedCheckDialog(checkType) {
                         speaker: game.user,
                         content: messageContent,
                         // Uncomment the following line if you want the results whispered to the GM.
-                        // whisper: game.users.entities.filter(u => u.isGM).map(u => u._id)
+                        // whisper: game.users.filter(u => u.isGM).map(u => u._id)
                     };
                     ChatMessage.create(chatData, {});
                 }
