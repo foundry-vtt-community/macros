@@ -141,15 +141,7 @@ new Dialog({
         }
         // Update Token
         console.log(token);
-        token.update({
-          vision: true,
-          dimSight: dimSight,
-          brightSight: brightSight,
-          dimLight: dimLight,
-          brightLight:  brightLight,
-          lightAngle: lightAngle,
-          lockRotation: lockRotation
-        });
+        token.document.update({light:{bright: brightLight, dim: dimLight, angle: lightAngle}});
       }
     }
   }
