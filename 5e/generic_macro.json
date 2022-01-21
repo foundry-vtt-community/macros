@@ -1,0 +1,11 @@
+{
+  "name": "",
+  "permission":{"default":0 },
+  "type":"script",
+  "flags":{},
+  "scope":"global",
+  "command":"",
+  "author":"",
+  "img":"icons/svg/dice-target.svg",
+  "actorIds":[]
+}

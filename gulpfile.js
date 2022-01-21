@@ -15,32 +15,41 @@ const eslint = require('gulp-eslint');
 const replace = require('gulp-replace');
 const del = require('del');
 
+const rename = require("gulp-rename");
 const gulpConcat = require('gulp-concat');
 const gulpJsonminify = require('gulp-jsonminify');
 const through = require('through2');
 const Datastore = require('@seald-io/nedb');
 
 const gulpPackContent = () => {
-  // console.log('[1] vinylFile = ' + vinylFile);
   return through.obj((vinylFile, _, callback) => {
+    console.log('[1] vinylFile = ' + JSON.stringify(vinylFile));
     const transformedFile = vinylFile.clone();
-    // console.log('[1] transformedFile = ' + JSON.stringify(JSON.parse(transformedFile.contents)));
     const fileName = transformedFile.path.substring(
       transformedFile.path.lastIndexOf('/'),
       transformedFile.path.lastIndexOf('.'),
     );
+    console.log('[1] fileName = ' + fileName);
+    //let jsonFilePath = `${transformedFile.base}/${fileName}.json`;
+    let jsonFilePath = `${fileName}.json`;
+    console.log('[2] jsonFilePath = ' + jsonFilePath);
+    const javascriptContent = new String(transformedFile.contents);
+    console.log('[2] javascriptContent = ' + javascriptContent);
 
-    //const jsFilePath = `${transformedFile.base}/${fileName}.js`;
-    const jsFilePath = `${fileName}.js`;
-    // console.log('[2] jsFilePath = ' + jsFilePath);
-    if (fs.existsSync(jsFilePath)) {
-      // console.log('[3] Read jsFilePath = ' + jsFilePath);
-      const file = fs.readFileSync(jsFilePath);
-
-      const jsonContent = JSON.parse(transformedFile.contents);
-      jsonContent.command = file.toString();
-      transformedFile.contents = Buffer.from(JSON.stringify(jsonContent));
+    if (!fs.existsSync(jsonFilePath)) {
+      jsonFilePath = `${transformedFile.base}/generic_macro.json`;
     }
+
+    console.log('[3] Read jsonFilePath = ' + jsonFilePath);
+    const file = fs.readFileSync(jsonFilePath);
+    const jsonContent = JSON.parse(file);
+    console.log('[4] Read jsonContent = ' + JSON.stringify(jsonContent));
+    jsonContent.command = javascriptContent;
+    console.log('[5] Read jsonContent = ' + JSON.stringify(jsonContent));
+    transformedFile.contents = Buffer.from(JSON.stringify(jsonContent));
+    console.log('[6] transformedFile.contents = ' + transformedFile.contents);
+    // vinylFile.history = jsonFilePath;
+
     // console.log('[4] transformedFile = ' + transformedFile);
     callback(null, transformedFile);
   });
@@ -61,8 +70,8 @@ const importDocumentsToDb = async function(){
       }
       console.log('INFO: local database loaded successfully.');
 
-      console.log(`./dist/packs/${comp}/*.json`);
-      glob(`./dist/packs/${comp}/*.json`, function(err, files) { // read the folder or folders if you want: example json/**/*.json
+      console.log(`./dist/packs/${comp}/*.js`);
+      glob(`./dist/packs/${comp}/*.js`, function(err, files) { // read the folder or folders if you want: example json/**/*.json
         console.log('Files : ' + files.length);
         if(err) {
           console.error("cannot read the folder, something goes wrong with glob", err);
@@ -111,12 +120,15 @@ async function foundryCompilePack(done) {
   const compendiums = ['5e'];
   for(const comp of compendiums){
     // glob(`${config.src}/packs/*[!\.md]`, (err, packs) => {
-    glob(`./${comp}/*.json`, (err, packs) => {
+    glob(`./${comp}/*.js`, (err, packs) => {
       for (const pack of packs) {
         console.log(pack);
         gulp.src(`${pack}`)
           .pipe(gulpPackContent())
-          //.pipe(gulpJsonminify())
+          // .pipe(rename(function (path) {
+          //   path.extname = ".json";
+          // }))
+          .pipe(gulpJsonminify())
           .pipe(gulpConcat(pack.substring(pack.lastIndexOf('/'))))
           .pipe(gulp.dest(`./dist/packs/${comp}`));
       }
@@ -125,43 +137,6 @@ async function foundryCompilePack(done) {
   }
 }
 exports.foundryCompilePack = foundryCompilePack;
-
-// const gulpPackBabele = () => {
-//   return through.obj((vinylFile, _, callback) => {
-//     const transformedFile = vinylFile.clone();
-
-//     const packName = transformedFile.path
-//       .substring(
-//         transformedFile.path.lastIndexOf('/'),
-//         transformedFile.path.length,
-//       )
-//       .split('.')[1];
-
-//     const translations = JSON.parse(transformedFile.contents.toString());
-
-//     for (const entry of translations.entries) {
-//       // TODO OTHERS LANGUAGE ????
-//       // const jsFilePath = `./packs/${packName}.db/${entry.id}_fr.js`;
-//       const jsFilePath = `./${packName}/${entry.id}_fr.js`;
-//       if (fs.existsSync(jsFilePath)) {
-//         const file = fs.readFileSync(jsFilePath);
-//         entry.description = file.toString();
-//       }
-//     }
-
-//     transformedFile.contents = Buffer.from(JSON.stringify(translations));
-
-//     callback(null, transformedFile);
-//   });
-// };
-// exports.gulpPackBabele = gulpPackBabele;
-
-// function compileBabeleLang() {
-//   return gulp.src(`${config.src}/lang/compendium/*`)
-//     .pipe(gulpPackBabele())
-//     .pipe(gulp.dest(`${config.dist}/lang/compendium`));
-// }
-// exports.compileBabeleLang = compileBabeleLang;
 
 function getConfig() {
   const configPath = path.resolve(process.cwd(), 'foundryconfig.json');
