@@ -23,31 +23,45 @@ const Datastore = require('@seald-io/nedb');
 
 const gulpPackContent = () => {
   return through.obj((vinylFile, _, callback) => {
-    console.log('[1] vinylFile = ' + JSON.stringify(vinylFile));
+    //console.log('[1] vinylFile = ' + JSON.stringify(vinylFile));
     const transformedFile = vinylFile.clone();
-    const fileName = transformedFile.path.substring(
+    let fileName = transformedFile.path.substring(
       transformedFile.path.lastIndexOf('/'),
       transformedFile.path.lastIndexOf('.'),
     );
-    console.log('[1] fileName = ' + fileName);
+    //console.log('[1] fileName = ' + fileName);
     //let jsonFilePath = `${transformedFile.base}/${fileName}.json`;
     let jsonFilePath = `${fileName}.json`;
-    console.log('[2] jsonFilePath = ' + jsonFilePath);
+    //console.log('[2] jsonFilePath = ' + jsonFilePath);
     const javascriptContent = new String(transformedFile.contents);
-    console.log('[2] javascriptContent = ' + javascriptContent);
+    //console.log('[2] javascriptContent = ' + javascriptContent);
 
     if (!fs.existsSync(jsonFilePath)) {
       jsonFilePath = `${transformedFile.base}/generic_macro.json`;
     }
-
-    console.log('[3] Read jsonFilePath = ' + jsonFilePath);
+    let fileNameTmp = fileName;
+    if(fileNameTmp.includes('\\')){
+      fileNameTmp = transformedFile.path.substring(
+        transformedFile.path.lastIndexOf('\\') + 1,
+        fileNameTmp.length,
+      );
+    }
+    if(fileNameTmp.includes('/')){
+      fileNameTmp = transformedFile.path.substring(
+        transformedFile.path.lastIndexOf('/') + 1,
+        fileNameTmp.length,
+      );
+    }
+    //console.log('[3] fileNameTmp = ' + fileNameTmp);
+    //console.log('[3] Read jsonFilePath = ' + jsonFilePath);
     const file = fs.readFileSync(jsonFilePath);
     const jsonContent = JSON.parse(file);
-    console.log('[4] Read jsonContent = ' + JSON.stringify(jsonContent));
+    //console.log('[4] Read jsonContent = ' + JSON.stringify(jsonContent));
     jsonContent.command = javascriptContent;
-    console.log('[5] Read jsonContent = ' + JSON.stringify(jsonContent));
+    jsonContent.name = fileNameTmp;
+    //console.log('[5] Read jsonContent = ' + JSON.stringify(jsonContent));
     transformedFile.contents = Buffer.from(JSON.stringify(jsonContent));
-    console.log('[6] transformedFile.contents = ' + transformedFile.contents);
+    //console.log('[6] transformedFile.contents = ' + transformedFile.contents);
     // vinylFile.history = jsonFilePath;
 
     // console.log('[4] transformedFile = ' + transformedFile);
