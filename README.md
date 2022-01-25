@@ -1,5 +1,10 @@
 # Foundry VTT Macros Repository
 
+![Latest Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffoundry-vtt-community%2Fmacros%2Fmaster%2Fmodule.json&label=Latest%20Release&prefix=v&query=$.version&colorB=red&style=for-the-badge)
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffoundry-vtt-community%2Fmacros%2Fmaster%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge)
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ffoundry_community_macros&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=foundry_community_macros) 
+[![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ffoundry_community_macros%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/foundry_community_macros/)
+
 Foundry community-contributed macros are noted here and merged into the Foundry Community Macros module for ease of use.
 
 > Macros may cause unintended side effects, such as issues with performance. Please read the comments in each macro to understand how it works before running!
