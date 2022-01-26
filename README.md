@@ -78,11 +78,11 @@ Here a json example:
   "type":"script",
   "flags":{},
   "scope":"global",
-  "command":"", // HERE IS WHERE WE PUT THE TEXT OF THE MACRO
+  "command":"", // HERE IS WHERE THE ACTION PROCESS WILL PUT THE TEXT OF THE MACRO
   "author":"",
   "img":"icons/svg/dice-target.svg",
   "actorIds":[],
-  "_id":"2RitOkKtnQe9pbuF"  // THIS IS OPTIONAL BUT ESSENTIAL IF YOU WANT TO MAINTAIN THE REFERENCE
+  "_id":"2RitOkKtnQe9pbuF"  // THIS IS OPTIONAL BUT ESSENTIAL IF YOU WANT TO MAINTAIN THE REFERENCE OR NEDB WILL CREATE A NEW ONE
 }
 ```
 
@@ -95,7 +95,7 @@ Here a json example:
   "type":"script",
   "flags":{},
   "scope":"global",
-  "command":"", // HERE IS WHERE WE PUT THE TEXT OF THE MACRO
+  "command":"", // HERE IS WHERE THE ACTION PROCESS WILL PUT THE TEXT OF THE MACRO
   "author":"",
   "img":"icons/svg/dice-target.svg",
   "actorIds":[]
