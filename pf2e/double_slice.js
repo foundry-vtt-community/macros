@@ -1,34 +1,61 @@
-//Created by Drental, based on a macro by u/Griff4218 
+// Heavily Refactored by willvk, based on macro by Drental, u/Griff4218 
 
 // ------------------ damage output ------------------
+const DoubleSliceDamage = (roll, strike, dos) => {
+	dos.value = roll.data.degreeOfSuccess;
 
-const handleCrits = (roll) => roll.terms[0].results[0] === 1 ? -1 : (roll.terms[0].results[0] === 20 ? 1 : 0);
-
-const DoubleSliceDamage = (roll, strike, dos, targetAC) => {
-    const crit = handleCrits(roll);
-    var success = 1;
-
-    if (roll._total >= targetAC + 10) {
-        success = 3;
-    } else if (roll._total >= targetAC) {
-        success = 2;
-    } else if (roll._total <= targetAC - 10) {
-        success = 0;
-    }
-    dos.value =Math.max(3,Math.min(success+crit,0));
-    if(dos.value === 2) {
+    if(roll.data.degreeOfSuccess === 2) {
         strike.damage({event: event});
     }
-    if(dos.value === 3) {
+    if(roll.data.degreeOfSuccess === 3) {
         strike.critical({event: event});
     }
+	pusher(dos);
 }
 
+// ------------------- result q ------------------------
+function pusher(dos){
+	resultQ.push(dos);
+	if (resultQ.length == 2) {
+		resulter();
+	}
+}	
+	
+// ------------------- check for followups -------------
+function resulter(){
+
+	if(CheckFeat('dual-onslaught', false)) {
+		if (Math.max(resultQ[0].value, resultQ[1].value) === 1) {
+			getContent('dual-onslaught');
+		}
+	}
+	if(CheckFeat('flensing-slice', false)) {
+		if (resultQ[0].value > 1 && resultQ[1].value > 1) {
+			getContent('flensing-slice');
+		}
+	}
+}
+
+// ------------------ hide the filthy chat card ---------
+function getContent(slug){
+	let stuff = token.actor.items.find(i => i.data.data.slug === slug && i.type === 'feat').data
+	let content = 
+	`<div class="pf2e chat-card" style="text-align: center"><header class="card-header flexrow"><img width=75% height=50% src="${stuff.img}"</img>
+	<h3 class="item-name">${stuff.name}</h3></div><div style="text-align: center">${stuff.data.description.value}`
+
+	let chatData = {
+		user: game.user.id,
+		content,
+		speaker: ChatMessage.getSpeaker(),
+	}
+	ChatMessage.create(chatData, {})
+}
+	
 // ------------------ hit calculation ------------------
-function DoubleSliceStrike(weapon1, weapon2) {
+async function DoubleSliceStrike(weapon1, weapon2) {
     let targetAC = 0;
-    var strike1 = actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon1.data._id);
-    var strike2 = actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon2.data._id);
+    var strike1 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item === weapon1.data._id);
+    var strike2 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item === weapon2.data._id);
     if(targetSelected) {
         targetAC = target.data.attributes.ac.value;
     }
@@ -43,65 +70,34 @@ function DoubleSliceStrike(weapon1, weapon2) {
 
     if (useAgile) {
         if (targetSelected) {
-            strike1.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike1, dosFirst, targetAC)}});
-            strike2.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike2, dosSecond, targetAC)}});
+            strike1.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike1, dosFirst)}, dc: dc});
+            strike2.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike2, dosSecond)}, dc: dc});
         } else {
             strike1.attack({event: event, options: options});
             strike2.attack({event: event, options: options});
         }
     } else {
-        (async () => {
-            if (targetSelected) {
-                strike1.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike1, dosFirst, targetAC)}});
-            } else {
-                strike1.attack({event: event, options: options});
-            }
-            await actor.addCustomModifier(
-                "attack",
-                "Double Slice",
-                -2,
-                "untyped"
-            );
-            // get a new strike with the modifier
-            if (targetSelected) {
-                actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon2._id)
-                    .attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike2, dosSecond, targetAC)}});
-            } else {
-                actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon2._id)
-                    .attack({event: event, options: options});
-            }
-            await actor.removeCustomModifier(
-                "attack",
-                "Double Slice"
-            );
-
-            // apply special feats
-            if(CheckFeat('dual-onslaught', false)) {
-                if (Math.max(dosFirst.value, dosSecond.value) === 1) {
-                    let content = 'Dual Onslaught Damage'
-                    let chatData = {
-                        user: game.user.id,
-                        content,
-                        speaker: ChatMessage.getSpeaker(),
-                    }
-                    ChatMessage.create(chatData, {})
-                    strike1.damage({event: event})
-                }
-
-            }
-            if(CheckFeat('flensing-slice', false)) {
-                if (dosFirst.value > 1 && dosSecond.value > 1) {
-                    let content = 'Flensing Slice available'
-                    let chatData = {
-                        user: game.user.id,
-                        content,
-                        speaker: ChatMessage.getSpeaker(),
-                    }
-                    ChatMessage.create(chatData, {})
-                }
-            }
-        })();
-    }
+		// first strike normal
+		if (targetSelected) {
+			strike1.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike1, dosFirst)}, dc: dc});
+		} else {
+			strike1.attack({event: event, options: options});
+		}
+		// second strike with the negative modifier
+		await actor.addCustomModifier(
+			"attack",
+			"Double Slice",
+			-2,
+			"untyped"
+		);
+		strike3 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item === weapon2.data._id)
+		if (targetSelected) {
+			strike3.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike3, dosSecond)}, dc: dc});
+		} else {
+			strike3.attack({event: event, options: options});
+		}
+		await token.actor.removeCustomModifier('attack', 'double-slice');
+	}
 }
 
 // ------------------ sanity check ------------------
@@ -204,6 +200,7 @@ if(!token){
     
     var targetSelected = false;
     var targetArray = Array.from(game.user.targets);
+	var resultQ = [];
     
     //if no target selected show a info notification
     if(targetArray[0]){
