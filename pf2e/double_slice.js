@@ -27,8 +27,8 @@ const DoubleSliceDamage = (roll, strike, dos, targetAC) => {
 // ------------------ hit calculation ------------------
 function DoubleSliceStrike(weapon1, weapon2) {
     let targetAC = 0;
-    var strike1 = actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon1._id);
-    var strike2 = actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon2._id);
+    var strike1 = actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon1.data._id);
+    var strike2 = actor.data.data.actions.find(a => a.type === 'strike' && a.item === weapon2.data._id);
     if(targetSelected) {
         targetAC = target.data.attributes.ac.value;
     }
