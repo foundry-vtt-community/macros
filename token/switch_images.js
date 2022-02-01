@@ -11,4 +11,4 @@ let tok = canvas.tokens.controlled[0];
 let img = tok.data.img;
 var currentSide = img[img.length - aName.length];
 img = img.slice(0,-Math.abs(aName.length)) + (currentSide == 'a' ? bName: aName);
-tok.update({ img });
+tok.document.update({ img });
