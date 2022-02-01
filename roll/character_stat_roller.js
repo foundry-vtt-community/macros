@@ -13,7 +13,7 @@ const numRolls = 6;
 //////////////////////////////////////////
 // Don't touch anything below this line //
 //////////////////////////////////////////
-const stats = Array(numRolls).fill(0).map(e=>new Roll(statString).roll());
+const stats = Array(numRolls).fill(0).map(e=>new Roll(statString).evaluate({async: false}));
 
 const rollData = stats[0].dice[0];
 const {faces, values: keptRolls, results: rolls} = rollData;
