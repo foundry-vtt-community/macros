@@ -102,6 +102,23 @@ Here a json example:
 }
 ```
 
+## Other macro repositories from the community
+
+- [Kekilla0 Personal-Macros](https://github.com/Kekilla0/Personal-Macros)
+- [Otigon Foundry-Macros](https://github.com/otigon/Foundry-Macros)
+- [MisterHims DnD5e-WildShape-Macro](https://github.com/MisterHims/DnD5e-WildShape-Macro)
+- [Crymic foundry-vtt-macros](https://gitlab.com/crymic/foundry-vtt-macros)
+- [Rinnocenti Personal-Macros](https://github.com/rinnocenti/Personal-Macros)
+- [VanceCole macros](https://github.com/VanceCole/macros)
+- [Unsoluble fvtt-macros](https://github.com/unsoluble/fvtt-macros)
+- [flamewave000 fvtt-macros](https://github.com/flamewave000/fvtt-macros)
+- [itamarcu foundry-macros](https://github.com/itamarcu/foundry-macros)
+- [trioderegion fvtt-macros](https://github.com/trioderegion/fvtt-macros)
+- [theripper93 FoundryVTT-Macro](https://github.com/theripper93/FoundryVTT-Macros)
+- [itamarcu shemetz-macros](https://github.com/itamarcu/shemetz-macros)
+- [Freeze020 foundry-vtt-scripts](https://gitlab.com/Freeze020/foundry-vtt-scripts)
+- [Jeznar Utility-Macros](https://github.com/Jeznar/Utility-Macros)
+
 # Build
 
 ## Install all packages
