@@ -92,7 +92,7 @@ Here a json example:
 }
 ```
 
-## Other macro repositories from the community
+## Other macro repositories with some good macros from the community
 
 - [Kekilla0 Personal-Macros](https://github.com/Kekilla0/Personal-Macros)
 - [Otigon Foundry-Macros](https://github.com/otigon/Foundry-Macros)
@@ -103,11 +103,13 @@ Here a json example:
 - [Unsoluble fvtt-macros](https://github.com/unsoluble/fvtt-macros)
 - [flamewave000 fvtt-macros](https://github.com/flamewave000/fvtt-macros)
 - [itamarcu foundry-macros](https://github.com/itamarcu/foundry-macros)
+- [itamarcu shemetz-macros](https://github.com/itamarcu/shemetz-macros)
 - [trioderegion fvtt-macros](https://github.com/trioderegion/fvtt-macros)
 - [theripper93 FoundryVTT-Macro](https://github.com/theripper93/FoundryVTT-Macros)
-- [itamarcu shemetz-macros](https://github.com/itamarcu/shemetz-macros)
 - [Freeze020 foundry-vtt-scripts](https://gitlab.com/Freeze020/foundry-vtt-scripts)
 - [Jeznar Utility-Macros](https://github.com/Jeznar/Utility-Macros)
+- [Kuffeh1 Foundry](https://github.com/Kuffeh1/Foundry)
+- [caewok Foundry-Macros](https://github.com/caewok/Foundry-Macros)
 
 # Build
 
