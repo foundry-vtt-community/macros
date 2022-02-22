@@ -57,7 +57,7 @@ else
                     let flavor = `<strong>${html.find('#flavor')[0].value}</strong><br>`;
                     if (targetActor.permission !== CONST.ENTITY_PERMISSIONS.OWNER)
                         // We need help applying the healing, so make a roll message for right-click convenience.
-                        new Roll(`${number}`).roll().toMessage({
+                        await new Roll(`${number}`).toMessage({
                             speaker: ChatMessage.getSpeaker(),
                             flavor: `${actorData.name} lays hands on ${targetActor.data.name}.<br>${flavor}
                             <p><em>Manually apply ${number} HP of healing to ${targetActor.data.name}</em></p>` });

@@ -1,9 +1,9 @@
 function printMessage(message){
         let chatData = {
-                user : game.user._id,
+                user : game.user.id,
                 content : message,
                 blind: true,
-                whisper : game.users.entities.filter(u => u.isGM).map(u => u._id)
+                whisper : game.users.filter(u => u.isGM).map(u => u.id)
         };
 
         ChatMessage.create(chatData,{});        
@@ -11,11 +11,11 @@ function printMessage(message){
 
 
 const roll = new Roll(`1d20`);
-let result = roll.roll();
+let result = await roll.roll();
 
-if (result.results[0] == 1) {
+if (result.total == 1) {
     printMessage('<p style="color:red;">Wild magic has been triggered.</p>');
 }
 else{
-    printMessage("Wild magic was not triggered on a " + result.results[0]);
+    printMessage("Wild magic was not triggered on a " + result.total);
 }
