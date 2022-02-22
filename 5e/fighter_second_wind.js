@@ -41,7 +41,7 @@ if (macroActor !== undefined && macroActor !== null) {
     if (checkResource(macroActor)) {
       // Calculate string to roll based on fighter level
       let fighterLvl = fighter.data.data.levels;
-      let healRoll = new Roll(`1d10 + ${fighterLvl}`).roll();
+      let healRoll = await new Roll(`1d10 + ${fighterLvl}`).roll();
 
       ChatMessage.create({
         user: game.user._id,
