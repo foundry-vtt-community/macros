@@ -4,7 +4,7 @@ async function renameToken(newName)
 {
     for (const token of canvas.tokens.controlled) {
         console.log(newName);
-        await token.update({'name':newName});
+        await token.document.update({'name':newName});
         await token.actor.update({'name' : newName});
     }
 }            
