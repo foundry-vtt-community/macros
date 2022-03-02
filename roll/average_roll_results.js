@@ -15,17 +15,19 @@ let dialogue = new Dialog({
                 const chatLog = game.messages;
                 let rolls = 0;
                 let total = 0;
-                
+
                 chatLog.forEach(entry => {
-                    const {terms} = entry._roll;
-                    terms
-                        .filter(die => die.faces === diceToCheck)
-                        .forEach(die => {
-                            rolls = rolls + die.number;
-                            total = total + die.total;
-                        })
+                    if (entry.roll) {
+                        const { terms } = entry.roll;
+                        terms
+                            .filter(die => die.faces === diceToCheck)
+                            .forEach(die => {
+                                rolls = rolls + die.number;
+                                total = total + die.total;
+                            })
+                    }
                 });
-                
+
                 console.log(rolls, total);
 
                 let dialogue = new Dialog({

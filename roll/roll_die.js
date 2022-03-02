@@ -4,7 +4,6 @@
     //n: number of dice
     //x: value (number of sides) on die
 const roll = new Roll(`1d6`);
-roll.roll();
-roll.toMessage({
+await roll.toMessage({
     flavor: "Sneak Attack Damage",
 });

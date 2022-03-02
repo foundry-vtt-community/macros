@@ -27,7 +27,7 @@ Example:
     1: 0
   }
 
-  function rollDie(html, ammo) {
+  async function rollDie(html, ammo) {
     const ammoId = html[0].querySelector('input:checked')?.value;
     if (!ammoId) {
       ui.notifications.error("No ammunition selected.");
@@ -38,8 +38,8 @@ Example:
 
     const die = dice[ammoId];
     const roll = new Roll(`1d${die}`);
-    roll.roll();
-    dice[ammoId] = roll.result == 1 ? (dieMap[die] || die - 1) : die;
+    await roll.roll();
+    dice[ammoId] = roll.total === 1 ? (dieMap[die] || die - 1) : die;
     token.actor.unsetFlag('world', 'ammunition-dice')
       .then(entity => entity.setFlag('world', 'ammunition-dice', dice));
     roll.toMessage({
@@ -81,7 +81,7 @@ Example:
       title: "Roll ammunition die",
       content: form,
       buttons: {
-        yes: { label: "Roll", callback: html => rollDie(html, ammunition) },
+        yes: { label: "Roll", callback: async html => rollDie(html, ammunition) },
         no: (game.user.isGM ? { label: "Update", callback: html => updateDice(html) } : { label: "Cancel" })
       },
       default: (game.user.isGM ? 'no' : 'yes')
