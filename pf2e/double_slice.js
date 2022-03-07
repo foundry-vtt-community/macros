@@ -54,8 +54,8 @@ function getContent(slug){
 // ------------------ hit calculation ------------------
 async function DoubleSliceStrike(weapon1, weapon2) {
     let targetAC = 0;
-    var strike1 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item === weapon1.data._id);
-    var strike2 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item === weapon2.data._id);
+    var strike1 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item.data._id === weapon1.data._id);
+    var strike2 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item.data._id === weapon2.data._id);
     if(targetSelected) {
         targetAC = target.data.attributes.ac.value;
     }
@@ -167,7 +167,7 @@ function DoubleSliceUI() {
 
 // ------------------ helper functions ------------------
 
-//Determines if the Actor selected as the user has the requisite feat to use the ability, returns true if it does and false if it does not
+// Determines if the Actor selected as the user has the requisite feat to use the ability, returns true if it does and false if it does not
 function CheckFeat(slug, required) {
 
     if(token.actor.items.find(i => i.data.data.slug === slug && i.type === 'feat')){
@@ -179,13 +179,10 @@ function CheckFeat(slug, required) {
     return false;
 }
 
-//Creates and returns an array of all items that can be used for Hunted Shot (Ranged weapons with Reload 0)
+// Creates and returns an array of all items that can be used for Double Slice
 function GetWeapons(){
     let weapons
-    
-    weapons = actor.items.filter(i => i.type === 'weapon' 
-                                    && i.data.data.equipped.value === true);
-    
+    weapons = actor.items.filter(i => i.type === 'weapon').filter(i => i.handsHeld === 1);
     return weapons;
 }
 
