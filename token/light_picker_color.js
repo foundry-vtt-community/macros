@@ -1,5 +1,5 @@
 function tokenUpdate(data) {
-    canvas.tokens.controlled.map(token => token.update(data));
+    canvas.tokens.controlled.map(token => token.document.update({ light: data }));
 }
 
 const isGM = game.user.isGM;
@@ -8,8 +8,8 @@ let color = "#ffffff";
 let alpha = 1.0;
 let tokens = canvas.tokens.controlled;
 if (tokens.length === 1) {
-    color = tokens[0].data.lightColor;
-    alpha = tokens[0].data.lightAlpha;
+    color = tokens[0].data.light.color ?? color;
+    alpha = tokens[0].data.light.alpha ?? alpha;
 }
 
 const torchAnimation = {type: "torch", speed: 1, intensity: 1};
@@ -17,27 +17,27 @@ const energyShield = {type: "energy", speed: 1, intensity: 1};
 const lights = {
     none: {
         label: "None",
-        data: {dimLight: null, brightLight: null, lightAngle: 360}
+        data: {dim: null, bright: null, angle: 360}
     },
     torch: {
         label: "Torch",
-        data: {dimLight: 40, brightLight: 20, lightAngle: 360, lightAnimation: torchAnimation}
+        data: {dim: 40, bright: 20, angle: 360, animation: torchAnimation}
     },
     light: {
         label: "Light cantrip",
-        data: {dimLight: 40, brightLight: 20, lightAngle: 360, lightAnimation: {type: "none"}}
+        data: {dim: 40, bright: 20, angle: 360, animation: {type: "none"}}
     },
     lamp: {
         label: "Lamp",
-        data: {dimLight: 45, brightLight: 15, lightAngle: 360, lightAnimation: torchAnimation}
+        data: {dim: 45, bright: 15, angle: 360, animation: torchAnimation}
     },
     shield: {
         label: "Shield",
-        data: {dimLight: 0.5, brightLight: 0, lightAngle: 360, lightAnimation: energyShield}
+        data: {dim: 0.5, bright: 0, angle: 360, animation: energyShield}
     },
     bullseye: {
         label: "Bullseye Lantern",
-        data: {dimLight: 120, brightLight: 60, lightAngle: 45, lightAnimation: torchAnimation}
+        data: {dim: 120, bright: 60, angle: 45, animation: torchAnimation}
     }
 };
 
@@ -50,7 +50,7 @@ function getLights() {
                 const newColor = html.find("#color").val();
                 const newAlpha = Number(html.find("#alpha").val());
                 var data = light.data;
-                tokenUpdate(Object.assign(data, {lightColor: newColor, lightAlpha: newAlpha}));
+                tokenUpdate(Object.assign(data, {color: newColor, alpha: newAlpha}));
             }
         }
     });

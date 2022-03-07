@@ -11,4 +11,4 @@ const tokens = canvas.tokens.placeables.map(token => {
   };
 });
 
-canvas.scene.updateEmbeddedEntity('Token', tokens)
+canvas.scene.updateEmbeddedDocuments('Token', tokens)
