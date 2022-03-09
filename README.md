@@ -110,6 +110,7 @@ Here a json example:
 - [Jeznar Utility-Macros](https://github.com/Jeznar/Utility-Macros)
 - [Kuffeh1 Foundry](https://github.com/Kuffeh1/Foundry)
 - [caewok Foundry-Macros](https://github.com/caewok/Foundry-Macros)
+- [GeneralZero FounderyMacros](https://github.com/GeneralZero/FounderyMacros)
 
 # Build
 
