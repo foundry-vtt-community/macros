@@ -90,7 +90,7 @@ async function DoubleSliceStrike(weapon1, weapon2) {
 			-2,
 			"untyped"
 		);
-		strike3 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item === weapon2.data._id)
+		strike3 = actor.data.data.actions.filter(a => a.type === 'strike').find(b => b.item.data._id === weapon2.data._id)
 		if (targetSelected) {
 			strike3.attack({event: event, options: options, callback: (roll) => {DoubleSliceDamage(roll, strike3, dosSecond)}, dc: dc});
 		} else {
