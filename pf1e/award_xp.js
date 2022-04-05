@@ -11,9 +11,9 @@ const tokens = canvas.tokens.controlled;
 let actorsSelected = tokens.map(o => o.actor);
 console.log(actorsSelected);
 let actors = [];
-if (!actors.length && c.ignorePCs.length > 0) actors = game.actors.entities.filter(o => !c.ignorePCs.includes(o.name));
-if (!actors.length) actors = game.actors.entities.filter(o => o.hasPlayerOwner);
-actors = actors.filter(o => o.hasPerm(game.user, "OWNER") && !c.ignorePCs?.includes(o.name));
+if (!actors.length && c.ignorePCs.length > 0) actors = game.actors.filter(o => !c.ignorePCs.includes(o.name));
+if (!actors.length) actors = game.actors.filter(o => o.hasPlayerOwner);
+actors = actors.filter(o => o.testUserPermission(game.user, "OWNER") && !c.ignorePCs?.includes(o.name));
 
 if (!actors.length) ui.notifications.warn("No applicable actor(s) found");
 else {
