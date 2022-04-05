@@ -62,7 +62,8 @@ else {
   let hasNPCs = false;
   let npcXpTotal = 0;
   
-  if (thisCombat && thisCombat.length > 0) {
+      console.log(thisCombat);
+  if (thisCombat && thisCombat.size > 0) {
       let combatNPCs = thisCombat.filter(o => !o.actor.hasPlayerOwner && o.actor.data.type === "npc" && !c.ignoreNPCs.includes(o.actor.name));
       hasNPCs = (combatNPCs.length > 0);
       if (hasNPCs) {
