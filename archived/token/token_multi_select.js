@@ -24,7 +24,7 @@ if (actor !== undefined && actor !== null) {
         icon: '<i class="fas fa-check"></i>',
         label: "Do it!",
         callback: () =>
-          token.update({
+          token.document.update({
             img: token.data.img.slice(0, token.data.img.lastIndexOf('_')) + document.getElementById("token").value
           })
       },

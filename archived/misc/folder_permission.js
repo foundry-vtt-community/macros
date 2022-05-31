@@ -91,7 +91,7 @@ async function repermission(currentFolder, desiredPermission, recurse) {
 		currentFolder.content.forEach(async doc => {
 			const newPerms = duplicate(doc.data.permission);
 			newPerms.default = Number(desiredPermission);
-			await doc.data.update({ permission: newPerms });
+			await doc.update({ permission: newPerms });
 		});
 	}
 
