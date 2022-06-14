@@ -3,7 +3,7 @@ function printMessage(message){
 		user : game.user._id,
 		content : message,
 		//blind: true,
-		whisper : game.users.entities.filter(u => u.isGM).map(u => u._id)
+		whisper : game.users.filter(u => u.isGM).map(u => u.data._id)
 	};
 
 	ChatMessage.create(chatData,{});	
@@ -106,13 +106,15 @@ new Dialog({
 				for (var i = 0; i < count; i++) {
 					let roll = new Roll(`1d20+8`);
 
-					rolls.push(roll.evaluate());
+					rolls.push(roll.evaluate({async: false}));
 					//console.log(rolls);
 					//console.log(rolls[rolls.length - 1].terms);
 
 					debugOutput = debugOutput.concat(rolls[rolls.length - 1].total);
 					debugOutput = debugOutput.concat(" ");
 				}
+
+
 				//console.log(debugOutput);
 				printMessage("Animated Weapons (tiny) Attacks: " + OutputManySameDice(rolls));
 
