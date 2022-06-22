@@ -1,40 +1,30 @@
 /* 
  * Macro: GeekDad's Compendium to Table Script
- * Version: 1 for v9
- * Updated: 22-12-2021 by Freeze#2689
+ * Version: 2
+ * Updated: 06-21-2022
  * Description: A nice friendly UI that takes a compendium and appends it to a table.
 */
 
 function getPackNames() {
- let packs = [];
- let keys = game.packs.keys();
- let done = false;
- while (!done) {
-  let key = keys.next();
-  done = key.done;
-  if (!done) {
-   let pack = game.packs.get(key.value);
-   if (pack.documentName === "Item") {
-    packs.push({ key: key.value, name: pack.metadata.label });
-   }
+ const itemPacks = game.packs.filter((pack) => pack.metadata.type === "Item");
+ return itemPacks.map((pack) => {
+  if (pack.metadata.type === "Item") {
+   return {key: pack.collection, name: pack.metadata.label} 
   }
- }
- return packs;
+ });
 }
 
 function getTableNames() {
- let tables = game.tables.reduce((acc,table) => {
-  acc.push({ key: table.id, name: table.name });
-  return acc;
- },[]);
-
- return tables;
+ return game.tables.map(table => {
+  return { key: table.id, name: table.name };
+ });
 }
 
 async function convertToTable(packKey, tableKey) {
   let pack = game.packs.get(packKey);
   let table = game.tables.get(tableKey);
 
+  const entityType = "Compendium";
   await pack.getIndex();
   let range = 0;
   
