@@ -14,32 +14,31 @@ const effectIconPath = 'icons/svg/shield.svg'; // <--- Add the effect icon you w
 let toggleResult = false;
 
 if (!actor) {
-    ui.notifications.warn('You need to select a token before using this macro!');
+	ui.notifications.warn('You need to select a token before using this macro!');
 } else {
 
 	const myItem = actor.items.getName(itemName);
-	if (myItem)
-	{
+	if (myItem) {
 		let item = actor.items.get(myItem.id);
 		let attr = "data.equipped";
 		let equipped = getProperty(item.data, attr);
-		if (sendToChat) {			
+		if (sendToChat) {
 			if (!equipped) {
-				chatMessage(actor.name + ' <b>equips</b> their <i>' + ' ' + itemName+ '</i>');
+				chatMessage(actor.name + ' <b>equips</b> their <i>' + ' ' + itemName + '</i>');
 			} else {
-				chatMessage(actor.name + ' <b>un-equips</b> their <i>' + ' ' + itemName + '</i>');			
+				chatMessage(actor.name + ' <b>un-equips</b> their <i>' + ' ' + itemName + '</i>');
 			}
 		}
-		item.update({[attr]: !getProperty(item.data, attr)});
-		
+		item.update({ [attr]: !getProperty(item.data, attr) });
+
 		// mark/unmark character's token with an effect icon when displayToken is true
-		(async () => { 
+		(async () => {
 			if (displayIcon) {
-				toggleResult = await token.toggleEffect(effectIconPath);
-				if (toggleResult == equipped) token.toggleEffect(effectIconPath);  
+				toggleResult = await token.toggleEffect(effectIconPath, { active: !equipped });
+				//	if (toggleResult == equipped) token.toggleEffect(effectIconPath, {active: equipped});  
 			}
 		})();
-		
+
 	} else {
 		ui.notifications.warn("No item named '" + itemName + "' found on character!");
 	}
