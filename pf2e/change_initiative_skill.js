@@ -6,7 +6,7 @@ async function setInitSkill(skillname)
 {
     canvas.tokens.controlled.forEach(async function(changetoken){
         if(changetoken.actor.data.type!="character"){
-            let skillval=changetoken.actor.data.data.skills[skillname].totalModifier;
+            let skillval=skillname=="perception"? changetoken.actor.data.data.attributes.perception.totalModifier : changetoken.actor.data.data.skills[skillname].totalModifier;
             await changetoken.actor.update({
             'data.attributes.initiative.ability':skillname,
             'data.attributes.initiative.totalModifier':skillval
