@@ -1,21 +1,19 @@
 // A simple macro for maximizing NPC HP
 
-const dir = new ActorDirectory();
-const regEx = /(\d+d\d+)/;
+// Choose one of the following to update by uncommenting one of the two lines below
+//const actors = game.actors; // update all actors in the sidebar
+const actors = canvas.tokens.controlled.map((t) => t.actor); // update all selected tokens
 
-dir.documents.forEach(function(obj){
-    let formula, match, math, solution;
-    let attributes = obj.data.data.attr;
-    if(!attributes){ return; }
-    formula = attributes.hp.formula;
-    if(!formula){return;}
-    match    = formula.match(regEx);
-    if(!match){return;}
-    math     = match[0].replace('d','*');
-    math     = '('+math+')';
-    formula  = formula.replace(match[0], math);
-    solution = eval(formula);
-    obj.data.data.attr.hp.value = solution;
-    obj.data.data.attr.hp.max = solution;
-    await obj.update();
+actors
+  .filter((actor) => actor.type === "npc")
+  .forEach(async (actor) => {
+    const formula = actor.data.data?.attributes?.hp?.formula;
+    if (!formula) return;
+
+    const roll = await new Roll(formula).roll({ maximize: true });
+    const data = {
+      "data.attributes.hp.value": roll.total,
+      "data.attributes.hp.max": roll.total,
+    };
+    await actor.update(data);
   });

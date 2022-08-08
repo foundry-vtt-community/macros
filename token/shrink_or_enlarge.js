@@ -12,4 +12,4 @@ for (let token of canvas.tokens.controlled) {
 
 // use `canvas.tokens.updateMany` instead of `token.update` to prevent race conditions
 // (meaning not all updates will be persisted and might only show locally)
-canvas.tokens.updateMany(updates);
+canvas.scene.updateEmbeddedDocuments("Token", updates);

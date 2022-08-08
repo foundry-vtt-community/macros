@@ -1,3 +1,4 @@
+// This macro is for Pathfinder 2E
 // Makes an always-secret roll with a skill using the selected token, or the configured character if none are selected
 // Make a roll with a dialog to choose the skill
 game.PF2EToolbox.secretSkillRoll()

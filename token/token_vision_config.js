@@ -1,4 +1,4 @@
-// A macro for the Foundry virtual tabletop that lets a user configure their token's vision and lighting settings. This script is taken from Sky's foundry repo here: https://github.com/Sky-Captain-13/foundry/blob/master/scriptMacros/tokenVision.js.
+// A macro for the Foundry virtual tabletop that lets a user configure their token's vision and lighting settings. 
 
 let applyChanges = false;
 new Dialog({
@@ -50,6 +50,7 @@ new Dialog({
   default: "yes",
   close: html => {
     if (applyChanges) {
+      let updates = [];
       for ( let token of canvas.tokens.controlled ) {
         let visionType = html.find('[name="vision-type"]')[0].value || "none";
         let lightSource = html.find('[name="light-source"]')[0].value || "none";
@@ -59,9 +60,9 @@ new Dialog({
         let brightLight = 0;
         let lightAngle = 360;
         let lockRotation = token.data.lockRotation;
-        let lightAnimation = token.data.lightAnimation;
-        let lightAlpha = token.data.lightAlpha;
-        let lightColor = token.data.lightColor;
+        let lightAnimation = token.data.light.animation;
+        let lightAlpha = token.data.light.alpha;
+        let lightColor = token.data.light.color;
         const colorFire = "#f8c377";
         const colorWhite = "#ffffff";
         const colorMoonGlow = "#f4f1c9";
@@ -170,29 +171,30 @@ new Dialog({
             break;
           case "nochange":
           default:
-            dimLight = token.data.dimLight;
-            brightLight = token.data.brightLight;
-            lightAngle = token.data.lightAngle;
+            dimLight = token.data.light.dim;
+            brightLight = token.data.light.bright;
+            lightAngle = token.data.light.angle;
             lockRotation = token.data.lockRotation;
-            lightAnimation = token.data.lightAnimation;
-            lightAlpha = token.data.lightAlpha;
-            lightColor = token.data.lightColor;
+            lightAnimation = token.data.light.animation;
+            lightAlpha = token.data.light.alpha;
+            lightColor = token.data.light.color;
         }
         // Update Token
-        console.log(token);
-        token.update({
+        updates.push({
+          _id: token.id,
           vision: true,
           dimSight: dimSight,
           brightSight: brightSight,
-          dimLight: dimLight,
-          brightLight:  brightLight,
-          lightAngle: lightAngle,
+          "light.dim": dimLight,
+          "light.bright":  brightLight,
+          "light.angle": lightAngle,
           lockRotation: lockRotation,
-          lightAnimation: lightAnimation,
-          lightAlpha: lightAlpha,
-          lightColor: lightColor
+          "light.animation": lightAnimation,
+          "light.alpha": lightAlpha,
+          "light.color": lightColor
         });
       }
+      canvas.scene.updateEmbeddedDocuments("Token", updates);
     }
   }
 }).render(true);

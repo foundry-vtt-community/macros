@@ -18,7 +18,7 @@ async function rollHP(token, index){
 		
 	if (actor.data.type != "npc" || !formula) return;
 	
-	let hp = new Roll(formula).roll().total;
+	let hp = (await new Roll(formula).roll()).total;
 	
 	await actor.update({"data.attributes.hp.value": hp, "data.attributes.hp.max": hp});
 	
@@ -30,7 +30,7 @@ function printMessage(message){
 		user : game.user._id,
 		content : message,
 		blind: true,
-		whisper : game.users.entities.filter(u => u.isGM).map(u => u._id)
+		whisper : game.users.filter(u => u.isGM).map(u => u.id)
 	};
 
 	ChatMessage.create(chatData,{});	

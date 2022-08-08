@@ -144,7 +144,7 @@ function getSpellSlots(actor, level, isPact) {
  * @param {boolean} consume - whether to consume the spell slot.
  * @param {boolean} isPact - whether the spell slot used is obtained through pact.
  */
-function smite(actor, slotLevel, criticalHit, consume, isPact) {
+async function smite(actor, slotLevel, criticalHit, consume, isPact) {
     let targets = game.user.targets;
 
     let chosenSpellSlots = getSpellSlots(actor, slotLevel, isPact);
@@ -158,32 +158,31 @@ function smite(actor, slotLevel, criticalHit, consume, isPact) {
         return;
     }
 
-    targets.forEach(target => {
-        let numDice = slotLevel + 1;
-        let type = target.actor.data.data.details.type.value?.toLocaleLowerCase();
-        if (affectedCreatureTypes.includes(type)) numDice += 1;
-        if (criticalHit) numDice *= 2;
-        const flavor = `Macro Divine Smite - ${game.i18n.localize("DND5E.DamageRoll")} (${game.i18n.localize("DND5E.DamageRadiant")})`;
-        let damageRoll = new Roll(`${numDice}d8`);
+    const [target] = targets;
+    let numDice = slotLevel + 1;
+    let type = target.actor.data.data.details.type.value?.toLocaleLowerCase();
+    if (affectedCreatureTypes.includes(type)) numDice += 1;
+    if (criticalHit) numDice *= 2;
+    const flavor = `Macro Divine Smite - ${game.i18n.localize("DND5E.DamageRoll")} (${game.i18n.localize("DND5E.DamageRadiant")})`;
+    let damageRoll = new Roll(`${numDice}d8`);
 
-        let targetActor = game.user.targets.values().next().value.actor;
-        
-        if (targetActor.permission !== CONST.ENTITY_PERMISSIONS.OWNER) {
-            // We need help applying the damage, so make a roll message for right-click convenience.
-            damageRoll.roll().toMessage({
-                speaker: ChatMessage.getSpeaker(),
-                flavor: `${actor.name} smited ${targetActor.data.name}.<br>${flavor}
-                <p><em>Manually apply (or right-click) ${damageRoll.result} HP of damage to ${targetActor.data.name}</em></p>` });
-        }
-        else {
-            // We can apply damage automatically, so just show a normal chat message.
-            damageRoll.roll().toMessage({
-                speaker: ChatMessage.getSpeaker(),
-                flavor: `${actor.name} smited ${targetActor.data.name}.<br>${flavor}
-                <p><em>${targetActor.data.name} has taken ${damageRoll.result} HP of damage.</em></p>` });
-            targetActor.update({"data.attributes.hp.value" : targetActor.data.data.attributes.hp.value - damageRoll.result});
-        }
-    })
+    let targetActor = game.user.targets.values().next().value.actor;
+    
+    if (targetActor.permission !== CONST.ENTITY_PERMISSIONS.OWNER) {
+        // We need help applying the damage, so make a roll message for right-click convenience.
+        await damageRoll.toMessage({
+            speaker: ChatMessage.getSpeaker(),
+            flavor: `${actor.name} smited ${targetActor.data.name}.<br>${flavor}
+            <p><em>Manually apply (or right-click) ${damageRoll.result} HP of damage to ${targetActor.data.name}</em></p>` });
+    }
+    else {
+        // We can apply damage automatically, so just show a normal chat message.
+        await damageRoll.toMessage({
+            speaker: ChatMessage.getSpeaker(),
+            flavor: `${actor.name} smited ${targetActor.data.name}.<br>${flavor}
+            <p><em>${targetActor.data.name} has taken ${damageRoll.result} HP of damage.</em></p>` });
+        targetActor.update({"data.attributes.hp.value" : targetActor.data.data.attributes.hp.value - damageRoll.result});
+    }
 
     if (consume){
         let objUpdate = new Object();
