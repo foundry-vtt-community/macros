@@ -8,5 +8,7 @@
 const actorNameSuffix = "_cloned";
 
 canvas.tokens.controlled.forEach(o => {
-  o.actor.clone({ name: o.name + actorNameSuffix }, {save: true});
+  Actor.create(o.actor).then(a => {
+    a.update({name: a.name + actorNameSuffix});
+  });
 });
