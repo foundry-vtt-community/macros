@@ -5,5 +5,10 @@
 ._*
 .Spotlight-V100
 .Trashes
+node_modules
+.eslintrc.json
+jsconfig.json
+package-lock.json
+package.json
 ehthumbs.db
 Thumbs.db
