@@ -3,9 +3,11 @@
 A macro for working out the passive income for a temple.
 Things to add:
  - Use character variables to store temple stats
+ - Possibility of generating favours
  - Consider a popularity value above 100%
- - Income possibility for spare beds, or not??????
-  - Likely would impact other aspects due to laws n shit
+   - Potentially split into localPopularity and realmPopularity
+ - Possible converts from sermons
+   - Spare beds may improve this chance
 */
 // Total livible rooms
 const totalRoomNumber = 8;
@@ -149,6 +151,7 @@ async function main (days, pcSermon) {
     <p>Days: ${days}</p>
     <p>Total income: ${totalIncome}gp</p>
     <p>New popularity: ${newPopularity}</p>
+    <p>Player sermon: ${pcSermon}</p>
     `;
   // Send the chat message
   ChatMessage.create({ content: chatMsg, speaker: ChatMessage.getSpeaker() });
