@@ -24,6 +24,13 @@
             "type": "Macro"
         },
         {
+            "name": "community-macros-dsa5e",
+            "label": "FVTT Community Macros - The Dark Eye 5e",
+            "path": "packs/macros-dsa5e.db",
+            "module": "foundry_community_macros",
+            "type": "Macro"
+        },
+        {
             "name": "community-macros-pf1e",
             "label": "FVTT Community Macros - Pathfinder 1e",
             "path": "packs/macros-pf1e.db",
