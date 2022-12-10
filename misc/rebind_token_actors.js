@@ -5,8 +5,6 @@
 
 // Any Token with an altered name and an img path attached 
 // will look up the default actor name via provided URL.
-// Very useful when using eg. Plutonium in combination with
-// 5e.tools for importing creatures or other actors.
 let tname, results, str, arr;
 
 const dir = new ActorDirectory();
