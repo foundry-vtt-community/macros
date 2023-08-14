@@ -8,6 +8,28 @@
             "name": "FoundryVTTCommunity"
         }
     ],
+    "packFolders":[
+    {
+      "name": "Foundry Community Macros",
+      "sorting": "m",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      },
+      "packs":[
+        "community-macros-5e",
+        "community-macros-age",
+        "community-macros-dsa5e",
+        "community-macros-pf1e",
+        "community-macros-pf2e",
+        "community-macros-misc",
+        "community-macros-module-specific",
+        "community-macros-roll",
+        "community-macros-token",
+        "community-macros-wfrp4e"
+      ]
+    }
+  ],
     "packs": [
         {
             "name": "community-macros-5e",
