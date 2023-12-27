@@ -2,7 +2,7 @@
     "id": "foundry_community_macros",
     "title": "Foundry Community Macros",
     "description": "<p>This is a collection of Macros added by the FoundryVTT Community!<br><br>You can add your own macros by making a pull request here: https://github.com/foundry-vtt-community/macros</p>",
-    "version": "10.4",
+    "version": "11.0",
     "authors": [
         {
             "name": "FoundryVTTCommunity"
@@ -33,70 +33,70 @@
     "packs": [
         {
             "name": "community-macros-5e",
-            "label": "FVTT Community Macros - D&D 5e",
+            "label": "D&D 5E",
             "path": "packs/macros-5e.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-age",
-            "label": "FVTT Community Macros - AGE System",
+            "label": "AGE System",
             "path": "packs/macros-age.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-dsa5e",
-            "label": "FVTT Community Macros - The Dark Eye 5e",
+            "label": "The Dark Eye 5E",
             "path": "packs/macros-dsa5e.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-pf1e",
-            "label": "FVTT Community Macros - Pathfinder 1e",
+            "label": "Pathfinder 1E",
             "path": "packs/macros-pf1e.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-pf2e",
-            "label": "FVTT Community Macros - Pathfinder 2e",
+            "label": "Pathfinder 2E",
             "path": "packs/macros-pf2e.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-misc",
-            "label": "FVTT Community Macros - Misc",
+            "label": "Misc",
             "path": "packs/macros-misc.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-module-specific",
-            "label": "FVTT Community Macros - Module Specific",
+            "label": "Module Specific",
             "path": "packs/macros-module-specific.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-roll",
-            "label": "FVTT Community Macros - Roll",
+            "label": "Roll",
             "path": "packs/macros-roll.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-token",
-            "label": "FVTT Community Macros - Token",
+            "label": "Token",
             "path": "packs/macros-token.db",
             "module": "foundry_community_macros",
             "type": "Macro"
         },
         {
             "name": "community-macros-wfrp4e",
-            "label": "FVTT Community Macros - Warhammer 4e",
+            "label": "Warhammer 4E",
             "path": "packs/macros-wfrp4e.db",
             "module": "foundry_community_macros",
             "type": "Macro"
@@ -104,14 +104,14 @@
     ],
     "url": "https://github.com/foundry-vtt-community/macros",
     "manifest": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/module.json",
-    "download": "https://github.com/foundry-vtt-community/macros/archive/refs/tags/v10.4.zip",
+    "download": "https://github.com/foundry-vtt-community/macros/archive/refs/tags/v11.0.zip",
     "bugs": "https://github.com/foundry-vtt-community/macros/issues",
     "readme": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/README.md",
     "changelog": "https://github.com/foundry-vtt-community/macros/releases",
     "license": "https://raw.githubusercontent.com/foundry-vtt-community/macros/main/LICENSE.md",
     "socket": true,
     "compatibility": {
-        "minimum": "10",
-        "verified": "10"
+        "minimum": "11",
+        "verified": "11"
       }
 }
