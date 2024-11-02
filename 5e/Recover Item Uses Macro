@@ -1,0 +1,72 @@
+const token = canvas.tokens.controlled[0];
+const actor = token.actor;
+const item = actor.items.find(i => i.name === "Throwing Cards");    // item name
+
+
+const config = {
+    Actor: {  
+        items: {
+            name: "Throwing Cards"  // Item name
+        },
+        system: {
+            activities: {
+                uses: {
+                    spent: item.system.uses.spent || 0, 
+                    max: 52                          // item max uses    
+                }
+            }
+        }
+    }
+};
+
+
+const currentSpent = config.Actor.system.activities.uses.spent;
+
+const max = config.Actor.system.activities.uses.max;
+
+ // change to skill or ability that makes sense
+
+const perceptionBonus = actor.system.skills.prc.mod;  
+
+// update to the roll you want to make and the skill or ability
+
+async function calculateIncreaseAmount(perceptionBonus) {
+    const roll = new Roll("1d5");
+    await roll.evaluate();  // Await the roll evaluation
+    return roll.total + perceptionBonus; 
+}
+
+// Calculate the increase amount
+
+const increaseAmount = await calculateIncreaseAmount(perceptionBonus);
+
+// update for your items max uses
+
+const currentUses = currentSpent || 0;
+const maxUses = parseInt(max) || 52;
+
+// Calculate new uses
+
+const newUses = Math.min(currentUses - increaseAmount, maxUses);
+
+async function updateSpent(newSpent) { 
+    try {
+        await item.update({ "system.uses.spent": newSpent });
+        console.log("Item updated successfully.");
+    } catch (updateError) {
+        console.error("Error updating item:", updateError);
+    }
+}
+
+// Update the spent value
+
+await updateSpent(newUses);   
+
+ChatMessage.create({
+        content: `${actor.name} searched around and found ${increaseAmount} undamaged ${item.name}.`,
+        speaker: { alias: actor.name },
+    });
+
+// Check the updated value
+
+console.log("Updated spent value:", config.Actor.system.activities.use);
