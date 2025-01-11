@@ -2,7 +2,7 @@
 
 const updates = [];
 for (let token of canvas.tokens.controlled) {
-  let newSize = (token.data.height == 1 && token.data.width == 1) ? 2 : 1;
+  let newSize = (token.document.height == 1 && token.document.width == 1) ? 2 : 1;
   updates.push({
     _id: token.id,
     height: newSize,
